@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aprenda — Fundamentos de Estatística</title>
+<style>
+  :root{
+    --bg:#0b1120; --bg2:#1e293b; --card:#1a2540; --border:#2d3f63;
+    --primary:#6366f1; --primary2:#818cf8; --accent:#22d3ee;
+    --good:#10b981; --bad:#ef4444; --warn:#f59e0b; --pink:#ec4899;
+    --text:#e2e8f0; --muted:#94a3b8;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:Georgia,'Times New Roman',serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:17px}
+  /* Hero */
+  .hero{min-height:60vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:60px 24px;background:radial-gradient(ellipse at top,#312e81 0%,#0b1120 70%);position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 20% 30%,rgba(99,102,241,.15) 0,transparent 50%),radial-gradient(circle at 80% 70%,rgba(34,211,238,.1) 0,transparent 50%)}
+  .hero-content{position:relative;z-index:1;max-width:800px}
+  .hero h1{font-size:3.5em;margin:0 0 12px;background:linear-gradient(135deg,#a5b4fc,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
+  .hero .subtitle{font-size:1.3em;color:var(--muted);font-style:italic;margin-bottom:30px}
+  .hero .meta{display:flex;justify-content:center;gap:30px;flex-wrap:wrap;color:var(--muted);font-size:.9em;font-family:sans-serif}
+  .hero .meta span{display:flex;align-items:center;gap:6px}
+
+  /* Progress bar */
+  #progressBar{position:fixed;top:0;left:0;height:4px;background:linear-gradient(90deg,var(--primary),var(--accent));z-index:1000;transition:width .1s;width:0%}
+
+  /* TOC */
+  .toc{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:30px;margin:40px auto;max-width:900px}
+  .toc h2{margin-top:0;color:var(--primary2);font-family:sans-serif}
+  .toc ol{padding-left:24px;font-family:sans-serif}
+  .toc li{margin:10px 0}
+  .toc a{color:var(--text);text-decoration:none;border-bottom:1px dashed transparent;transition:all .2s}
+  .toc a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+
+  main{max-width:820px;margin:0 auto;padding:40px 24px 80px}
+
+  .chapter{margin:80px 0;padding-top:40px;border-top:1px solid var(--border)}
+  .chapter:first-child{border-top:none}
+  .chapter-num{display:inline-block;font-family:sans-serif;color:var(--accent);font-size:.85em;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px}
+  .chapter h2{font-size:2.4em;margin:0 0 24px;color:var(--text);line-height:1.2;font-weight:700}
+  .chapter h3{font-size:1.5em;color:var(--primary2);margin:40px 0 12px;font-family:sans-serif}
+  .chapter h4{color:var(--accent);margin:24px 0 8px;font-family:sans-serif;font-size:1.1em}
+  .chapter p{margin:18px 0}
+  .lead{font-size:1.2em;color:var(--muted);font-style:italic;border-left:3px solid var(--primary);padding:8px 0 8px 20px;margin:24px 0}
+
+  /* Boxes */
+  .analogy,.example,.warning,.deep,.story,.def{margin:28px 0;padding:20px 24px;border-radius:12px;font-family:sans-serif;font-size:.95em;line-height:1.7}
+  .analogy{background:linear-gradient(135deg,rgba(236,72,153,.12),rgba(236,72,153,.04));border-left:4px solid var(--pink)}
+  .analogy::before{content:'🎭 Analogia';display:block;font-weight:700;color:var(--pink);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .example{background:linear-gradient(135deg,rgba(34,211,238,.1),rgba(34,211,238,.02));border-left:4px solid var(--accent)}
+  .example::before{content:'💡 Exemplo prático';display:block;font-weight:700;color:var(--accent);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .warning{background:linear-gradient(135deg,rgba(245,158,11,.12),rgba(245,158,11,.02));border-left:4px solid var(--warn)}
+  .warning::before{content:'⚠️ Cuidado';display:block;font-weight:700;color:var(--warn);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .deep{background:linear-gradient(135deg,rgba(99,102,241,.12),rgba(99,102,241,.02));border-left:4px solid var(--primary)}
+  .deep::before{content:'🔍 Aprofundando';display:block;font-weight:700;color:var(--primary2);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .story{background:linear-gradient(135deg,rgba(16,185,129,.1),rgba(16,185,129,.02));border-left:4px solid var(--good)}
+  .story::before{content:'📖 História/Contexto';display:block;font-weight:700;color:var(--good);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .def{background:var(--bg2);border:1px solid var(--border);border-radius:8px}
+  .def::before{content:'📌 Definição';display:block;font-weight:700;color:var(--primary2);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+
+  /* Visualizations */
+  .viz{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;margin:24px 0;font-family:sans-serif}
+  .scale-bar{display:flex;height:60px;border-radius:8px;overflow:hidden;margin:20px 0;font-weight:700;color:white;text-shadow:0 1px 3px rgba(0,0,0,.5)}
+  .scale-bar div{flex:1;display:flex;align-items:center;justify-content:center;border-right:2px solid var(--bg);transition:flex .3s}
+  .scale-bar div:hover{flex:2}
+  .scale-bar div:last-child{border-right:none}
+
+  .prob-bar{height:50px;background:linear-gradient(90deg,#ef4444 0%,#f59e0b 50%,#10b981 100%);border-radius:8px;position:relative;margin:30px 0 50px;font-family:sans-serif}
+  .prob-bar::before{content:'0 (impossível)';position:absolute;left:0;top:55px;color:var(--muted);font-size:.85em}
+  .prob-bar::after{content:'1 (certeza)';position:absolute;right:0;top:55px;color:var(--muted);font-size:.85em}
+  .prob-mark{position:absolute;top:-5px;width:4px;height:60px;background:white;box-shadow:0 0 10px rgba(255,255,255,.8)}
+  .prob-mark span{position:absolute;top:-25px;left:50%;transform:translateX(-50%);background:var(--card);padding:2px 8px;border-radius:4px;font-size:.85em;white-space:nowrap;border:1px solid var(--border)}
+
+  /* Compare table */
+  table{width:100%;border-collapse:collapse;margin:24px 0;background:var(--card);border-radius:12px;overflow:hidden;font-family:sans-serif;font-size:.95em}
+  th,td{padding:14px 16px;text-align:left;border-bottom:1px solid var(--border)}
+  th{background:linear-gradient(135deg,var(--primary),#8b5cf6);color:white;font-weight:700}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:rgba(99,102,241,.05)}
+
+  /* Inline tools */
+  .key{background:rgba(99,102,241,.15);color:var(--primary2);padding:2px 8px;border-radius:4px;font-weight:600;font-family:sans-serif}
+  blockquote{border-left:4px solid var(--accent);padding:8px 24px;margin:24px 0;font-style:italic;color:var(--muted);background:rgba(34,211,238,.05);border-radius:0 8px 8px 0}
+
+  /* Self-check */
+  .selfcheck{background:var(--card);border:2px dashed var(--primary);border-radius:12px;padding:20px;margin:30px 0;font-family:sans-serif}
+  .selfcheck-q{font-weight:600;color:var(--primary2);margin-bottom:12px}
+  .selfcheck-q::before{content:'🤔 Pergunta para você: ';font-weight:700;color:var(--accent)}
+  details summary{cursor:pointer;color:var(--accent);font-weight:600;outline:none;list-style:none}
+  details summary::before{content:'👁️ Mostrar resposta ▼';font-size:.9em}
+  details[open] summary::before{content:'🙈 Esconder ▲'}
+  details[open] .answer{margin-top:12px;padding:14px;background:var(--bg2);border-radius:8px;border-left:3px solid var(--good);font-style:italic;color:var(--text);font-weight:normal}
+
+  /* Inference cards */
+  .inf-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin:24px 0;font-family:sans-serif}
+  .inf-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;position:relative;overflow:hidden}
+  .inf-card.ded{border-top:4px solid var(--primary)}
+  .inf-card.ind{border-top:4px solid var(--accent)}
+  .inf-card.abd{border-top:4px solid var(--pink)}
+  .inf-card .tag{font-size:.75em;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+  .inf-card h4{margin:0 0 12px;font-size:1.2em}
+  .arrow{font-family:monospace;color:var(--accent);font-size:1.2em}
+
+  /* Floating nav */
+  .floating{position:fixed;right:24px;bottom:24px;display:flex;flex-direction:column;gap:8px;z-index:50}
+  .floating button{background:var(--card);border:1px solid var(--border);color:var(--text);width:48px;height:48px;border-radius:50%;cursor:pointer;font-size:1.2em;transition:all .2s;box-shadow:0 4px 12px rgba(0,0,0,.4)}
+  .floating button:hover{background:var(--primary);transform:scale(1.1)}
+
+  /* Final */
+  .end{text-align:center;padding:60px 24px;background:radial-gradient(ellipse at center,rgba(99,102,241,.15),transparent);margin-top:80px;border-top:1px solid var(--border)}
+  .end h2{font-size:2em;color:var(--primary2)}
+  .cta{display:inline-block;margin-top:20px;padding:14px 28px;background:linear-gradient(135deg,var(--primary),var(--accent));color:white;border-radius:99px;text-decoration:none;font-family:sans-serif;font-weight:600;transition:transform .2s}
+  .cta:hover{transform:scale(1.05)}
+
+  /* Mini illustration boxes */
+  .ladder{font-family:sans-serif;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:24px 0}
+  .ladder-step{display:flex;align-items:center;padding:12px;margin:6px 0;border-radius:8px;background:var(--bg2);position:relative;transition:transform .2s}
+  .ladder-step:hover{transform:translateX(8px)}
+  .ladder-step .lvl{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;font-weight:700;margin-right:14px;flex-shrink:0;color:white}
+  .ladder-step:nth-child(1) .lvl{background:#64748b}
+  .ladder-step:nth-child(2) .lvl{background:#0891b2}
+  .ladder-step:nth-child(3) .lvl{background:#7c3aed}
+  .ladder-step:nth-child(4) .lvl{background:#dc2626}
+</style>
+</head>
+<body>
+
+<div id="progressBar"></div>
+
+<div class="hero">
+  <div class="hero-content">
+    <h1>Fundamentos de Estatística</h1>
+    <p class="subtitle">"Entender os dados é entender o mundo. E entender o mundo começa por entender a incerteza."</p>
+    <div class="meta">
+      <span>📚 Guia imersivo</span>
+      <span>⏱️ ~25 minutos de leitura</span>
+      <span>🎓 Ciência de Dados / FICR</span>
+    </div>
+  </div>
+</div>
+
+<div class="toc" id="top">
+  <h2>📑 Sumário</h2>
+  <ol>
+    <li><a href="#cap1">Por que estatística importa?</a></li>
+    <li><a href="#cap2">Probabilidade: a linguagem da incerteza</a></li>
+    <li><a href="#cap3">Inferência estatística: as três formas de raciocinar</a></li>
+    <li><a href="#cap4">Tipos de análise: descobrir, prever, decidir</a></li>
+    <li><a href="#cap5">Estatística descritiva em profundidade</a></li>
+    <li><a href="#cap6">População vs. amostra: a arte de generalizar</a></li>
+    <li><a href="#cap7">Escalas de medida: a hierarquia de Stevens</a></li>
+    <li><a href="#cap8">Variáveis numéricas: contar ou medir?</a></li>
+    <li><a href="#cap9">Como tudo se conecta</a></li>
+  </ol>
+</div>
+
+<main>
+
+<!-- ============ CAPÍTULO 1 ============ -->
+<article class="chapter" id="cap1">
+  <div class="chapter-num">Capítulo 1</div>
+  <h2>Por que estatística importa?</h2>
+
+  <p class="lead">A estatística não é "matemática chata sobre dados" — é a forma como tomamos decisões inteligentes em um mundo cheio de incerteza.</p>
+
+  <p>Imagine que você é um médico recebendo o exame de um paciente. Os números mostram um valor "um pouco alto". Isso é normal? É grave? Quanto "alto" é "alto demais"? Sem estatística, você está chutando. Com estatística, você compara aquele valor com o que se sabe da população — quantas pessoas saudáveis têm valores parecidos, quantas pessoas doentes têm — e toma uma decisão informada.</p>
+
+  <p>É exatamente esse o papel da estatística na <span class="key">Ciência de Dados</span>: transformar números brutos em <em>compreensão</em>. O PDF do professor Fred coloca isso de forma direta: <q>A estatística é a base sobre a qual a ciência de dados se constrói. Ela fornece as ferramentas e o pensamento crítico necessários para explorar, analisar e interpretar dados.</q></p>
+
+  <div class="analogy">
+    Pense nos dados como ingredientes crus em uma cozinha. Você pode olhar para uma cesta cheia de tomates, cebolas e azeite e ver... uma cesta cheia. Mas um chef olha aquilo e enxerga um <em>molho</em>. A estatística é a culinária dos dados — é o que transforma matéria-prima em algo que alimenta decisões.
+  </div>
+
+  <h3>As duas portas para explorar dados</h3>
+  <p>Quando recebemos um conjunto de dados, há essencialmente <strong>duas formas</strong> de "entrar" nele:</p>
+
+  <ol>
+    <li><strong>Pela porta dos números</strong>: extraindo <em>medidas estatísticas</em> — médias, medianas, desvios. Cada medida é como um "sensor" que captura uma característica diferente do conjunto.</li>
+    <li><strong>Pela porta dos olhos</strong>: usando <em>visualizações</em> — gráficos, histogramas, mapas de calor. O cérebro humano é absurdamente bom em detectar padrões visuais que passariam despercebidos em uma planilha.</li>
+  </ol>
+
+  <p>Profissionais experientes <strong>sempre usam as duas portas</strong>. Os números dão precisão; os gráficos dão intuição. Confiar apenas em um lado é como tentar atravessar uma cidade vendado — você pode até chegar, mas vai bater em muita coisa no caminho.</p>
+
+  <div class="selfcheck">
+    <div class="selfcheck-q">Por que não basta calcular a média de um conjunto e parar por aí?</div>
+    <details><summary></summary>
+    <div class="answer">Porque a média sozinha esconde informação crucial. Dois conjuntos de dados podem ter a <em>mesma média</em> e serem completamente diferentes — um com valores próximos do centro e outro com valores extremamente espalhados. Por isso usamos várias medidas (dispersão, posição) e visualizações em conjunto. A média é só o começo da história.</div>
+    </details>
+  </div>
+</article>
+
+<!-- ============ CAPÍTULO 2 ============ -->
+<article class="chapter" id="cap2">
+  <div class="chapter-num">Capítulo 2</div>
+  <h2>Probabilidade: a linguagem da incerteza</h2>
+
+  <p class="lead">Se a estatística analisa o que aconteceu, a probabilidade modela o que <em>pode</em> acontecer. As duas andam de mãos dadas.</p>
+
+  <div class="def">
+    <strong>Probabilidade</strong> é a medida numérica da chance, ou possibilidade, de um evento ocorrer. Ela quantifica a incerteza atribuindo um valor entre <strong>0 e 1</strong>, onde 0 significa que o evento não pode ocorrer e 1 significa que o evento certamente ocorrerá.
+  </div>
+
+  <p>Vamos visualizar isso. Toda probabilidade vive nessa régua:</p>
+
+  <div class="prob-bar">
+    <div class="prob-mark" style="left:0%"><span>impossível</span></div>
+    <div class="prob-mark" style="left:50%"><span>50/50</span></div>
+    <div class="prob-mark" style="left:85%"><span>muito provável</span></div>
+    <div class="prob-mark" style="left:100%"><span>certo</span></div>
+  </div>
+
+  <p>Por que entre 0 e 1, e não, digamos, entre 0 e 100? Por convenção matemática — torna as fórmulas mais limpas. Mas você pode mentalmente pensar como porcentagem: 0,85 = 85% de chance.</p>
+
+  <div class="analogy">
+    Imagine que você está na praia e quer saber se vai chover. Olha para o céu e vê algumas nuvens cinzentas. Você não diz "vai chover" nem "não vai chover" — você diz <em>"talvez chova"</em>. Esse "talvez" tem um valor numérico na sua cabeça: talvez 30%, talvez 70%. A probabilidade é só dar nome a esse "talvez" interno que todos usamos o tempo todo.
+  </div>
+
+  <h3>Por que isso importa para Ciência de Dados?</h3>
+  <p>Quase todo modelo preditivo moderno fala a língua da probabilidade. Quando o filtro de spam do Gmail decide se um email é lixo, ele não responde "sim" ou "não" — ele calcula uma probabilidade ("87% de chance de ser spam") e age de acordo. Quando o Netflix recomenda um filme, está estimando a probabilidade de você gostar.</p>
+
+  <div class="warning">
+    Cuidado com o equívoco comum: probabilidade <strong>não prevê o futuro</strong> — ela quantifica o quão razoável é uma previsão. Dizer "há 70% de chance de chover amanhã" não significa que vai chover. Significa que, em situações <em>parecidas</em> com a de hoje, choveu em 7 de cada 10 vezes.
+  </div>
+</article>
+
+<!-- ============ CAPÍTULO 3 ============ -->
+<article class="chapter" id="cap3">
+  <div class="chapter-num">Capítulo 3</div>
+  <h2>Inferência estatística: as três formas de raciocinar</h2>
+
+  <p class="lead">"Inferir" é o ato de chegar a uma conclusão a partir de evidências. Mas há três caminhos diferentes para fazer isso — e confundi-los é o erro mais comum em provas (e na vida).</p>
+
+  <p>Antes de mergulhar nos três tipos, entenda a definição-mãe:</p>
+
+  <div class="def">
+    <strong>Inferência estatística</strong> é o processo de fazer conclusões ou generalizações sobre uma população com base em uma amostra de dados. Em vez de analisar todos os membros de uma população (o que pode ser impraticável), usamos uma amostra representativa para estimar características ou testar hipóteses sobre toda a população.
+  </div>
+
+  <p>Existem três formas de inferir, cada uma com seu sabor:</p>
+
+  <div class="inf-grid">
+    <div class="inf-card ded">
+      <div class="tag">do geral → específico</div>
+      <h4>🔻 Dedutiva</h4>
+      <p>Parte de premissas amplas e desce até um caso particular. Se as premissas forem verdadeiras, a conclusão é <strong>necessariamente</strong> verdadeira.</p>
+    </div>
+    <div class="inf-card ind">
+      <div class="tag">do específico → geral</div>
+      <h4>🔺 Indutiva</h4>
+      <p>Observa casos particulares e sobe até uma generalização. A conclusão é <strong>provável</strong>, mas não garantida.</p>
+    </div>
+    <div class="inf-card abd">
+      <div class="tag">a melhor explicação</div>
+      <h4>🎯 Abdutiva</h4>
+      <p>Diante de um fato, escolhe a hipótese que <strong>melhor explica</strong> o que foi observado.</p>
+    </div>
+  </div>
+
+  <h3>Dedução em ação</h3>
+  <p>A dedução é a estrela do raciocínio matemático. Ela não <em>descobre</em> coisas novas no sentido empírico — ela revela o que já estava escondido nas premissas.</p>
+
+  <div class="example">
+    <strong>Premissa 1:</strong> Todos os mamíferos têm pulmões.<br>
+    <strong>Premissa 2:</strong> Uma baleia é um mamífero.<br>
+    <span class="arrow">⟹</span> <strong>Conclusão:</strong> Logo, uma baleia tem pulmões.
+    <br><br>
+    Se você concordou com as duas premissas, é <em>impossível</em> negar a conclusão sem se contradizer. Esse é o poder — e a limitação — da dedução: ela é precisa, mas só te leva onde as premissas já apontavam.
+  </div>
+
+  <h3>Indução em ação</h3>
+  <p>A indução é como a ciência funciona no dia a dia. Você observa, observa, observa — e em algum momento se arrisca a generalizar.</p>
+
+  <div class="example">
+    <strong>Observação:</strong> Todos os cisnes que observei são brancos.<br>
+    <span class="arrow">⟹</span> <strong>Conclusão:</strong> Provavelmente, todos os cisnes são brancos.
+  </div>
+
+  <div class="story">
+    <strong>O Cisne Negro:</strong> Por séculos, europeus consideraram "todos os cisnes são brancos" como verdade óbvia — porque era tudo que tinham observado. Aí, em 1697, exploradores holandeses chegaram à Austrália e encontraram <em>cisnes negros</em>. Uma única observação destruiu uma generalização indutiva centenária. Esse é o calcanhar de Aquiles da indução: ela é frágil. Mas é também como descobrimos quase tudo.
+  </div>
+
+  <h3>Abdução em ação</h3>
+  <p>A abdução é o raciocínio do detetive. Sherlock Holmes raramente "deduzia" no sentido estrito — ele <em>abduzia</em>: dadas as pistas, qual é a hipótese que melhor as explica?</p>
+
+  <div class="example">
+    <strong>Evidência:</strong> O chão está molhado.<br>
+    <span class="arrow">⟹</span> <strong>Conclusão provável:</strong> Deve ter chovido.
+    <br><br>
+    Note o "<em>provável</em>". Pode ter sido um cano estourado, um carro-pipa passando, uma criança brincando com a mangueira. Mas, sem mais informações, "choveu" é a hipótese mais econômica e verossímil.
+  </div>
+
+  <div class="deep">
+    A abdução está no coração da medicina (diagnóstico), do jornalismo investigativo, do machine learning explicável e até da depuração de código. Quando seu programa quebra e você pensa "deve ser aquela variável nula", você está abduzindo — escolhendo a explicação mais provável dentre várias possíveis.
+  </div>
+
+  <table>
+    <tr><th>Tipo</th><th>Direção</th><th>Garantia</th><th>Quando usar</th></tr>
+    <tr><td>Dedutiva</td><td>Geral → específico</td><td>Conclusão necessária</td><td>Provas matemáticas, lógica formal</td></tr>
+    <tr><td>Indutiva</td><td>Específico → geral</td><td>Conclusão provável</td><td>Prever padrões, ciência empírica</td></tr>
+    <tr><td>Abdutiva</td><td>Fato → hipótese</td><td>Melhor explicação disponível</td><td>Diagnósticos, investigações</td></tr>
+  </table>
+
+  <div class="selfcheck">
+    <div class="selfcheck-q">Você acorda, abre a janela e vê o vizinho com guarda-chuva fechado mas molhado. Que tipo de inferência você usa para concluir "choveu"?</div>
+    <details><summary></summary>
+    <div class="answer"><strong>Abdutiva.</strong> Você tem um fato (guarda-chuva molhado) e escolhe a hipótese que melhor explica (choveu). Não é dedução porque não há premissa garantida. Não é indução porque você não está generalizando casos — está explicando um caso único.</div>
+    </details>
+  </div>
+</article>
+
+<!-- ============ CAPÍTULO 4 ============ -->
+<article class="chapter" id="cap4">
+  <div class="chapter-num">Capítulo 4</div>
+  <h2>Tipos de análise: descobrir, prever, decidir</h2>
+
+  <p class="lead">Toda análise estatística responde, no fundo, a uma pergunta diferente. Saber qual pergunta você está fazendo é metade da batalha.</p>
+
+  <p>Existem seis grandes "famílias" de análise. Pense nelas como uma escada que sobe da pergunta mais simples ("o que aconteceu?") até a mais complexa ("o que devemos fazer?").</p>
+
+  <div class="ladder">
+    <div class="ladder-step"><div class="lvl">1</div><div><strong>Descritiva</strong> — "O que aconteceu?"<br><small style="color:var(--muted)">Resume e organiza dados.</small></div></div>
+    <div class="ladder-step"><div class="lvl">2</div><div><strong>Exploratória</strong> — "O que está acontecendo?"<br><small style="color:var(--muted)">Procura padrões iniciais.</small></div></div>
+    <div class="ladder-step"><div class="lvl">3</div><div><strong>Diagnóstica</strong> — "Por que aconteceu?"<br><small style="color:var(--muted)">Investiga causas.</small></div></div>
+    <div class="ladder-step"><div class="lvl">4</div><div><strong>Inferencial</strong> — "Vale para todos?"<br><small style="color:var(--muted)">Generaliza da amostra para a população.</small></div></div>
+    <div class="ladder-step"><div class="lvl">5</div><div><strong>Preditiva</strong> — "O que vai acontecer?"<br><small style="color:var(--muted)">Estima o futuro.</small></div></div>
+    <div class="ladder-step"><div class="lvl">6</div><div><strong>Prescritiva</strong> — "O que devemos fazer?"<br><small style="color:var(--muted)">Recomenda ações.</small></div></div>
+  </div>
+
+  <h3>Descritiva — o ponto de partida</h3>
+  <p><strong>Objetivo:</strong> organizar, resumir e descrever dados de forma clara e objetiva. <strong>Exemplo do PDF:</strong> identificar a média de vendas diárias de um produto em um mês.</p>
+  <p>É a análise que todo trabalho começa. Antes de prever, antes de decidir, você precisa saber <em>onde está pisando</em>.</p>
+
+  <h3>Exploratória — o reconhecimento de terreno</h3>
+  <p><strong>Objetivo:</strong> explorar os dados para descobrir padrões, relações ou insights iniciais. É a análise mais "livre" e flexível, ideal nas fases iniciais de um projeto, quando você ainda não tem hipóteses bem formadas.</p>
+  <p>Aqui entram visualizações criativas, gráficos de dispersão, mapas de calor. Você está procurando <em>algo interessante</em>.</p>
+
+  <h3>Diagnóstica — o detetive</h3>
+  <p><strong>Objetivo:</strong> entender as causas de um evento. Foca no <em>"por quê"</em>. <strong>Exemplo do PDF:</strong> investigar por que as vendas diminuíram em um período específico.</p>
+  <p>Ferramentas comuns: análise de correlação, análise de variância (ANOVA), mineração de dados.</p>
+
+  <h3>Inferencial — a ponte entre amostra e mundo</h3>
+  <p><strong>Objetivo:</strong> fazer previsões ou generalizações sobre uma população com base em uma amostra. <strong>Exemplo do PDF:</strong> determinar, com base em uma pesquisa amostral, se um medicamento é eficaz para uma população maior.</p>
+
+  <div class="warning">
+    A análise inferencial é onde estudantes mais erram em provas: muita gente confunde com a preditiva. <strong>Diferença-chave:</strong> a inferencial generaliza para <em>uma população existente</em> ("o medicamento funciona em pessoas como as testadas?"). A preditiva projeta um <em>futuro</em> ("quantas vendas teremos no próximo trimestre?").
+  </div>
+
+  <h3>Preditiva — o oráculo</h3>
+  <p><strong>Objetivo:</strong> usar dados históricos para prever resultados futuros. Aqui entram regressão linear, redes neurais, árvores de decisão — toda a maquinaria do machine learning.</p>
+
+  <h3>Prescritiva — o conselheiro</h3>
+  <p><strong>Objetivo:</strong> recomendar ações baseadas nos dados. Combina análise descritiva, preditiva e otimização. <strong>Exemplo do PDF:</strong> sugerir estratégias de marketing para aumentar as vendas de um produto com baixa performance.</p>
+
+  <div class="analogy">
+    Pense num GPS. A descritiva diz "você está aqui". A diagnóstica explica "você está parado porque há trânsito". A preditiva avisa "vai levar 40 minutos no ritmo atual". A prescritiva sugere "vire à direita na próxima — economiza 15 minutos". Toda análise útil é, no fundo, uma mistura desses passos.
+  </div>
+
+  <div class="selfcheck">
+    <div class="selfcheck-q">Uma rede de farmácias quer saber se deve abrir uma loja em um bairro novo. Que tipos de análise ela precisaria combinar?</div>
+    <details><summary></summary>
+    <div class="answer">Começaria com <strong>descritiva</strong> (perfil demográfico atual do bairro), passaria pela <strong>exploratória</strong> (há padrões interessantes? concentração de idosos? renda?), faria <strong>diagnóstica</strong> (por que lojas semelhantes em outros bairros foram bem ou mal?), aplicaria <strong>inferencial</strong> (esse padrão observado é estatisticamente significativo?), <strong>preditiva</strong> (qual o faturamento esperado?) e finalmente <strong>prescritiva</strong> (abrir? em que ponto? com qual mix de produtos?). É uma cascata.</div>
+    </details>
+  </div>
+</article>
+
+<!-- ============ CAPÍTULO 5 ============ -->
+<article class="chapter" id="cap5">
+  <div class="chapter-num">Capítulo 5</div>
+  <h2>Estatística descritiva em profundidade</h2>
+
+  <p class="lead">Dentro da estatística descritiva existem três famílias de medidas, cada uma respondendo a uma pergunta diferente sobre seus dados.</p>
+
+  <h3>1. Medidas de tendência central — "onde está o meio?"</h3>
+  <p>Indicam o ponto central ou mais representativo de um conjunto. As três principais:</p>
+  <ul>
+    <li><strong>Média</strong> — soma dos valores dividida pela quantidade. Sensível a valores extremos.</li>
+    <li><strong>Mediana</strong> — o valor do meio quando os dados estão ordenados. Robusta a extremos.</li>
+    <li><strong>Moda</strong> — o valor que mais aparece. Útil para dados categóricos.</li>
+  </ul>
+
+  <div class="warning">
+    Bill Gates entra num bar com 9 pessoas comuns. A <em>média</em> de patrimônio do bar passa a ser de bilhões. A <em>mediana</em>, porém, mal se mexe. Por isso, em dados com extremos (salários, riqueza, tempos de espera), a mediana costuma representar melhor a realidade.
+  </div>
+
+  <h3>2. Medidas de dispersão — "o quanto os dados se espalham?"</h3>
+  <p>Indicam o grau de variação dos dados em relação à tendência central:</p>
+  <ul>
+    <li><strong>Amplitude</strong> — diferença entre o maior e o menor valor.</li>
+    <li><strong>Variância</strong> — média dos quadrados dos desvios em relação à média.</li>
+    <li><strong>Desvio padrão</strong> — raiz da variância. Mesma unidade dos dados.</li>
+    <li><strong>Coeficiente de variação</strong> — desvio padrão dividido pela média (em %). Útil para comparar dispersões entre conjuntos diferentes.</li>
+  </ul>
+
+  <div class="analogy">
+    Duas turmas tiram nota média 7,0. Mas na turma A todos tiraram entre 6,5 e 7,5; na turma B, metade tirou 4 e metade tirou 10. A média não distingue as duas turmas — só a dispersão revela que são realidades completamente diferentes.
+  </div>
+
+  <h3>3. Medidas de posição — "onde está cada um?"</h3>
+  <p>Indicam a localização relativa de um dado dentro do conjunto:</p>
+  <ul>
+    <li><strong>Quartis</strong> — dividem os dados em 4 partes iguais.</li>
+    <li><strong>Percentis</strong> — dividem em 100 partes (você no percentil 90 = melhor que 90% dos demais).</li>
+    <li><strong>Decis</strong> — dividem em 10 partes.</li>
+  </ul>
+
+  <p>Quando o pediatra diz "seu filho está no percentil 75 de altura", ele está usando uma medida de posição: 75% das crianças daquela idade são mais baixas.</p>
+</article>
+
+<!-- ============ CAPÍTULO 6 ============ -->
+<article class="chapter" id="cap6">
+  <div class="chapter-num">Capítulo 6</div>
+  <h2>População vs. amostra: a arte de generalizar</h2>
+
+  <p class="lead">Você raramente consegue medir tudo. A grande sacada da estatística é tirar conclusões confiáveis a partir de uma fração.</p>
+
+  <div class="def">
+    <strong>Dados populacionais</strong> representam todos os indivíduos ou elementos de uma população — o conjunto completo que se deseja estudar. <em>Exemplo: a idade de todos os habitantes de uma cidade.</em><br><br>
+    <strong>Dados amostrais</strong> representam uma parte (subconjunto) da população. Servem para estimar ou inferir características da população. <em>Exemplo: a idade de 500 habitantes selecionados aleatoriamente.</em>
+  </div>
+
+  <h3>Por que não medir tudo?</h3>
+  <p>Por três motivos crônicos:</p>
+  <ol>
+    <li><strong>Custo</strong> — entrevistar 200 milhões de brasileiros é inviável.</li>
+    <li><strong>Tempo</strong> — quando você terminasse, os dados já estariam desatualizados.</li>
+    <li><strong>Possibilidade</strong> — alguns testes destroem o que medem (ex: testar a resistência de todos os parafusos produzidos).</li>
+  </ol>
+
+  <div class="story">
+    <strong>O caso Literary Digest (1936):</strong> a revista Literary Digest enviou 10 milhões de cédulas de pesquisa eleitoral nos EUA — uma amostra gigantesca — e previu vitória esmagadora de Alf Landon sobre Roosevelt. Roosevelt venceu com 60% dos votos. Por quê? A revista enviou cédulas para sua lista de assinantes, donos de carro e telefones — gente rica, que tendia a Landon. <strong>Tamanho não é tudo: amostra precisa ser representativa.</strong> Esse fiasco fez nascer a metodologia moderna de pesquisas (Gallup acertou com apenas 50 mil entrevistas bem amostradas).
+  </div>
+
+  <p>É essa a "ponte" da inferência: amostra → inferência estatística → conclusões sobre a população. Quando feita corretamente, pesquisas com 1.000 pessoas estimam o comportamento de 200 milhões com margem de erro de poucos pontos percentuais. Magia? Não — matemática.</p>
+</article>
+
+<!-- ============ CAPÍTULO 7 ============ -->
+<article class="chapter" id="cap7">
+  <div class="chapter-num">Capítulo 7</div>
+  <h2>Escalas de medida: a hierarquia de Stevens</h2>
+
+  <p class="lead">Em 1946, o psicólogo Stanley Smith Stevens propôs uma classificação que continua sendo a referência: nem todo dado numérico é "do mesmo tipo". A operação que faz sentido depende da <em>escala</em>.</p>
+
+  <p>Antes das escalas, uma divisão geral:</p>
+  <ul>
+    <li><strong>Qualitativos / categóricos:</strong> valores não numéricos, em geral palavras. Embora o termo "qualitativo" geralmente se refira a um adjetivo, ele também pode representar um substantivo ou um símbolo.</li>
+    <li><strong>Quantitativos / numéricos:</strong> valores numéricos que, em geral, carregam mais informações e são mais fáceis de manipular por técnicas e algoritmos de Ciência de Dados.</li>
+  </ul>
+
+  <p>Dentro disso, há quatro escalas em ordem crescente de poder:</p>
+
+  <div class="scale-bar">
+    <div style="background:#64748b">Nominal</div>
+    <div style="background:#0891b2">Ordinal</div>
+    <div style="background:#7c3aed">Intervalar</div>
+    <div style="background:#dc2626">Razão</div>
+  </div>
+
+  <h3>1. Nominal — só rótulos</h3>
+  <p>A forma mais simples. Categoriza dados <strong>sem qualquer ordem ou hierarquia</strong>. Exemplos: <em>gênero</em> (masculino, feminino, não-binário), <em>cores</em> (azul, vermelho, verde), <em>tipo de produto</em> (eletrônicos, vestuário, alimentos).</p>
+  <p>Mesmo que você atribua números às categorias (1 = azul, 2 = vermelho), <em>esses números são meros identificadores</em>. Não faz sentido somar "azul + vermelho".</p>
+  <p><strong>Operações permitidas:</strong> contagem (quantos elementos por categoria) e comparação de igualdade.</p>
+
+  <h3>2. Ordinal — categorias com ordem</h3>
+  <p>Há ordem entre as categorias, mas as <strong>distâncias entre elas não são iguais nem mensuráveis</strong>. Exemplos: <em>satisfação</em> (muito satisfeito > satisfeito > insatisfeito), <em>posição em uma corrida</em> (1º, 2º, 3º), <em>nível de escolaridade</em> (fundamental, médio, superior).</p>
+
+  <div class="warning">
+    A diferença entre "muito satisfeito" e "satisfeito" não é necessariamente igual à diferença entre "satisfeito" e "insatisfeito". Por isso, calcular a média de respostas ordinais (algo muito comum em pesquisas) é tecnicamente questionável — embora amplamente feito na prática.
+  </div>
+
+  <p><strong>Operações permitidas:</strong> contagem, ordenação, comparação maior/menor.</p>
+
+  <h3>3. Intervalar — ordem + distâncias iguais (sem zero absoluto)</h3>
+  <p>Tem todas as propriedades anteriores e mais uma: <strong>as distâncias entre valores são iguais e mensuráveis</strong>. Mas o zero é <em>arbitrário</em> — não significa "ausência total".</p>
+
+  <p>Exemplos: <em>temperatura em Celsius</em> (a diferença entre 10°C e 20°C é a mesma que entre 30°C e 40°C, mas 0°C não significa ausência de temperatura), <em>ano de nascimento</em> (a diferença entre 2000 e 2010 é a mesma que entre 2010 e 2020, mas o ano 0 não representa ausência de tempo).</p>
+
+  <div class="example">
+    <strong>Por que não posso dizer "20°C é o dobro de 10°C"?</strong><br>
+    Porque a escala Celsius tem zero arbitrário (definido pelo ponto de fusão da água). Em Kelvin (zero absoluto, ausência de movimento molecular), 20K é de fato o dobro de 10K. Mas 20°C é só 10°C "a mais" que 10°C — não "duas vezes". A multiplicação só faz sentido com zero absoluto.
+  </div>
+
+  <p><strong>Operações permitidas:</strong> tudo da ordinal + soma, subtração, média aritmética. <strong>Não permite:</strong> multiplicação ou divisão significativa.</p>
+
+  <h3>4. Razão — a escala completa</h3>
+  <p>Tem <em>todas</em> as características das anteriores e mais uma: <strong>zero absoluto</strong>, que representa a ausência total da característica medida. Isso destrava tudo: inclusive razões e proporções.</p>
+
+  <p>Exemplos:</p>
+  <ul>
+    <li><strong>Peso:</strong> 0 kg = ausência total de peso. Uma pessoa de 80 kg pesa de fato o dobro de uma de 40 kg.</li>
+    <li><strong>Altura:</strong> 0 cm representa ausência de altura.</li>
+    <li><strong>Idade:</strong> 0 anos representa ausência de idade; a diferença entre 20 e 30 é a mesma que entre 40 e 50.</li>
+  </ul>
+
+  <p><strong>Operações permitidas:</strong> todas — soma, subtração, multiplicação, divisão, razões.</p>
+
+  <h3>Tabela-resumo</h3>
+  <table>
+    <tr><th>Escala</th><th>Contagem</th><th>Ordem</th><th>Soma/Sub.</th><th>Mult/Div.</th><th>Razões</th></tr>
+    <tr><td><strong>Nominal</strong></td><td>✅</td><td>❌</td><td>❌</td><td>❌</td><td>❌</td></tr>
+    <tr><td><strong>Ordinal</strong></td><td>✅</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td></tr>
+    <tr><td><strong>Intervalar</strong></td><td>✅</td><td>✅</td><td>✅</td><td>❌</td><td>❌</td></tr>
+    <tr><td><strong>Razão</strong></td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
+  </table>
+
+  <div class="deep">
+    <strong>Mnemônico:</strong> "<em>NOIR</em>" — Nominal, Ordinal, Intervalar, Razão. É também o nome de um gênero de filme em francês ("preto"). Visualize um detetive de filme noir subindo a escada das escalas, ganhando mais "poderes matemáticos" a cada degrau.
+  </div>
+
+  <div class="selfcheck">
+    <div class="selfcheck-q">Em uma pesquisa, alguém anota o CEP de cada cliente como número. CEP é uma escala de razão? Por quê?</div>
+    <details><summary></summary>
+    <div class="answer"><strong>Não.</strong> Apesar de ser numérico, o CEP é uma escala <em>nominal</em>: é apenas um identificador de região. Não faz sentido somar CEPs, calcular sua média ou dizer que um CEP é "o dobro" de outro. Essa é uma armadilha clássica: nem todo número merece tratamento numérico.</div>
+    </details>
+  </div>
+</article>
+
+<!-- ============ CAPÍTULO 8 ============ -->
+<article class="chapter" id="cap8">
+  <div class="chapter-num">Capítulo 8</div>
+  <h2>Variáveis numéricas: contar ou medir?</h2>
+
+  <p class="lead">Dentro das variáveis quantitativas, há uma fronteira sutil mas decisiva entre o que se <em>conta</em> e o que se <em>mede</em>.</p>
+
+  <div class="def">
+    <strong>Tipos numéricos</strong> referem-se às categorias de variáveis quantitativas que podem ser analisadas numericamente. Dividem-se em duas grandes categorias: <strong>discretas</strong> e <strong>contínuas</strong>.
+  </div>
+
+  <h3>Variáveis discretas — você conta</h3>
+  <p>Assumem <strong>valores finitos ou contáveis</strong> dentro de um intervalo. Não existem valores intermediários entre dois números consecutivos. Representam <em>contagens</em> e seus valores são inteiros e enumeráveis.</p>
+  <p>Exemplos:</p>
+  <ul>
+    <li>Número de alunos em uma sala (não existe "23,5 alunos")</li>
+    <li>Número de carros em um estacionamento</li>
+    <li>Quantidade de erros em um programa de software</li>
+  </ul>
+
+  <h3>Variáveis contínuas — você mede</h3>
+  <p>Podem assumir <strong>qualquer valor</strong> dentro de um intervalo, incluindo frações e decimais. Existem infinitos valores possíveis entre dois pontos dados. Representam <em>medições</em>.</p>
+  <p>Exemplos:</p>
+  <ul>
+    <li>Peso de uma pessoa (70,5 kg — e poderia ser 70,53 ou 70,538...)</li>
+    <li>Altura de uma planta (1,75 m)</li>
+    <li>Temperatura (25,3°C)</li>
+  </ul>
+
+  <div class="analogy">
+    <strong>Regra de bolso:</strong> se faz sentido dizer "metade", a variável é provavelmente <em>contínua</em>. Faz sentido dizer "1,5 metros"? Sim — é contínua. Faz sentido dizer "1,5 filhos"? Não — é discreta. Você conta filhos, mede altura.
+  </div>
+
+  <table>
+    <tr><th>Aspecto</th><th>Discretas</th><th>Contínuas</th></tr>
+    <tr><td>Natureza</td><td>Contagem</td><td>Medição</td></tr>
+    <tr><td>Valores possíveis</td><td>Finitos ou contáveis</td><td>Infinitos dentro de um intervalo</td></tr>
+    <tr><td>Exemplos</td><td>Nº de pessoas, itens vendidos</td><td>Altura, peso, tempo, distância</td></tr>
+  </table>
+
+  <p>Saber se uma variável é discreta ou contínua influencia <strong>tudo</strong> depois: o tipo de gráfico que você usa (barras vs. histograma), a distribuição estatística que você assume (Poisson vs. Normal), os algoritmos de machine learning que faz sentido aplicar.</p>
+</article>
+
+<!-- ============ CAPÍTULO 9 ============ -->
+<article class="chapter" id="cap9">
+  <div class="chapter-num">Capítulo 9</div>
+  <h2>Como tudo se conecta</h2>
+
+  <p class="lead">Conceitos isolados são fáceis de esquecer. Conceitos conectados se tornam um mapa mental que dura.</p>
+
+  <p>Vamos amarrar tudo que vimos com uma história: imagine que você foi contratado para descobrir <strong>por que um aplicativo de delivery está perdendo clientes</strong>.</p>
+
+  <ol>
+    <li><strong>Você começa com a população</strong> (todos os usuários do app) mas tira uma <strong>amostra</strong> de 5.000 pedidos recentes — não dá para olhar todos.</li>
+
+    <li><strong>Análise descritiva:</strong> você calcula a <strong>média</strong> de tempo de entrega (tendência central), o <strong>desvio padrão</strong> (dispersão) e os <strong>quartis</strong> (posição). Descobre que 25% dos pedidos demoram mais de 60 minutos. <em>Variável contínua</em>: tempo.</li>
+
+    <li><strong>Análise exploratória:</strong> você plota gráficos e percebe um padrão estranho — atrasos concentrados em bairros específicos. <em>Variável nominal</em>: bairro.</li>
+
+    <li><strong>Análise diagnóstica:</strong> investiga o porquê. Há correlação com a quantidade de motoboys disponíveis (<em>variável discreta</em>: contagem). Você <em>abduz</em> a melhor explicação: falta de motoboys nesses bairros.</li>
+
+    <li><strong>Análise inferencial:</strong> com a amostra, faz testes estatísticos para confirmar que o padrão observado <em>não é acaso</em> — vale para a população toda. Aqui você está <em>induzindo</em> da amostra para a população.</li>
+
+    <li><strong>Análise preditiva:</strong> constrói um modelo que prevê o tempo de entrega futuro com base em hora, bairro, clima.</li>
+
+    <li><strong>Análise prescritiva:</strong> recomenda à empresa <em>aumentar a frota nesses bairros nos horários de pico</em>.</li>
+  </ol>
+
+  <p>Toda a teoria do PDF apareceu nessa narrativa. Não como caixinhas separadas, mas como ferramentas trabalhando juntas para resolver um problema real. <strong>Essa é a estatística viva.</strong></p>
+
+  <div class="story">
+    <strong>Um conselho final:</strong> não estude estatística como decoreba de fórmulas. Estude como <em>linguagem</em>. Cada conceito é uma palavra que te permite descrever fenômenos que, sem ela, ficariam mudos. Quanto mais palavras você dominar, mais o mundo dos dados vai começar a falar com você.
+  </div>
+</article>
+
+</main>
+
+<div class="end">
+  <h2>🎓 Você chegou ao fim!</h2>
+  <p style="font-family:sans-serif;color:var(--muted);max-width:600px;margin:0 auto 20px">Agora você tem o panorama completo. O próximo passo é praticar — fixar o conhecimento respondendo perguntas e testando seu entendimento.</p>
+  <a href="revisao.html" class="cta">Ir para os quizzes →</a>
+</div>
+
+<div class="floating">
+  <a href="index.html" title="Voltar ao Hub" style="background:var(--accent);border:1px solid var(--accent);color:#0b1120;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2em;text-decoration:none;box-shadow:0 4px 12px rgba(0,0,0,.4);transition:transform .2s">🏠</a>
+  <button onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Voltar ao topo">⬆️</button>
+  <button onclick="document.getElementById('top').scrollIntoView({behavior:'smooth'})" title="Sumário">📑</button>
+</div>
+
+<script>
+  const bar = document.getElementById('progressBar');
+  window.addEventListener('scroll', ()=>{
+    const h = document.documentElement;
+    const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    bar.style.width = pct + '%';
+  });
+</script>
+
+</body>
+</html>

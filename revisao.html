@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Revisão — Fundamentos de Estatística</title>
+<style>
+  :root{
+    --bg:#0f172a; --bg2:#1e293b; --card:#1e293b; --border:#334155;
+    --primary:#3b82f6; --primary2:#60a5fa; --accent:#22d3ee;
+    --good:#10b981; --bad:#ef4444; --warn:#f59e0b;
+    --text:#e2e8f0; --muted:#94a3b8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+  header{background:linear-gradient(135deg,#1e3a8a,#3b82f6);padding:32px 24px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.3)}
+  header h1{margin:0;font-size:2em}
+  header p{margin:8px 0 0;color:#dbeafe}
+  nav{position:sticky;top:0;background:rgba(15,23,42,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:12px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;z-index:100}
+  nav button{background:var(--card);color:var(--text);border:1px solid var(--border);padding:8px 14px;border-radius:8px;cursor:pointer;font-size:.9em;transition:all .2s}
+  nav button:hover,nav button.active{background:var(--primary);border-color:var(--primary)}
+  main{max-width:1100px;margin:0 auto;padding:24px}
+  section{display:none;animation:fadeIn .4s}
+  section.active{display:block}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  h2{color:var(--primary2);border-bottom:2px solid var(--primary);padding-bottom:8px;margin-top:0}
+  h3{color:var(--accent);margin-top:24px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:16px 0;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+  .card.highlight{border-left:4px solid var(--primary)}
+  details{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:8px 0;cursor:pointer}
+  details[open]{border-color:var(--primary)}
+  summary{font-weight:600;color:var(--primary2);outline:none}
+  summary:hover{color:var(--accent)}
+  table{width:100%;border-collapse:collapse;margin:12px 0;background:var(--bg2);border-radius:8px;overflow:hidden}
+  th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--border)}
+  th{background:var(--primary);color:white}
+  tr:last-child td{border-bottom:none}
+  .pill{display:inline-block;background:var(--primary);color:white;padding:2px 10px;border-radius:99px;font-size:.8em;margin-right:6px}
+  .pill.good{background:var(--good)} .pill.bad{background:var(--bad)} .pill.warn{background:var(--warn)}
+  /* Flashcards */
+  .flash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+  .flash{background:var(--card);border:1px solid var(--border);border-radius:12px;height:180px;perspective:1000px;cursor:pointer}
+  .flash-inner{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+  .flash.flipped .flash-inner{transform:rotateY(180deg)}
+  .flash-front,.flash-back{position:absolute;inset:0;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;text-align:center;padding:16px;border-radius:12px}
+  .flash-front{background:linear-gradient(135deg,#1e40af,#3b82f6);font-weight:600;font-size:1.1em}
+  .flash-back{background:var(--bg2);transform:rotateY(180deg);font-size:.95em;color:var(--muted)}
+  /* Quiz */
+  .quiz-q{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:16px 0}
+  .quiz-q .q{font-weight:600;margin-bottom:12px}
+  .opts{display:flex;flex-direction:column;gap:8px}
+  .opt{background:var(--bg2);border:1px solid var(--border);padding:12px;border-radius:8px;cursor:pointer;transition:all .2s;text-align:left;color:var(--text);font-size:.95em}
+  .opt:hover:not(:disabled){border-color:var(--primary);background:#2a3a52}
+  .opt.correct{background:rgba(16,185,129,.2);border-color:var(--good);color:#a7f3d0}
+  .opt.wrong{background:rgba(239,68,68,.2);border-color:var(--bad);color:#fecaca}
+  .feedback{margin-top:12px;padding:10px 14px;border-radius:8px;font-size:.9em;display:none}
+  .feedback.show{display:block}
+  .feedback.ok{background:rgba(16,185,129,.15);border-left:3px solid var(--good)}
+  .feedback.no{background:rgba(239,68,68,.15);border-left:3px solid var(--bad)}
+  .progress{position:fixed;bottom:20px;right:20px;background:var(--card);border:1px solid var(--border);padding:12px 18px;border-radius:99px;font-size:.9em;box-shadow:0 4px 20px rgba(0,0,0,.4)}
+  .progress span{color:var(--accent);font-weight:700}
+  .tip{background:rgba(59,130,246,.1);border-left:3px solid var(--primary);padding:10px 14px;border-radius:6px;margin:10px 0;font-size:.92em}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:700px){.grid2{grid-template-columns:1fr}}
+  ul{padding-left:20px} li{margin:4px 0}
+  code{background:var(--bg2);padding:2px 6px;border-radius:4px;font-size:.9em;color:var(--accent)}
+  .ex{background:rgba(34,211,238,.08);border-left:3px solid var(--accent);padding:8px 12px;border-radius:6px;margin:6px 0;font-size:.93em}
+  .check{color:var(--good);font-weight:bold} .x{color:var(--bad);font-weight:bold}
+  .btn{background:var(--primary);color:white;border:none;padding:10px 18px;border-radius:8px;cursor:pointer;font-size:.95em;margin-top:10px}
+  .btn:hover{background:#2563eb}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📊 Fundamentos de Estatística</h1>
+  <p>Revisão Interativa para a Prova — Ciência de Dados / FICR</p>
+</header>
+
+<nav>
+  <a href="index.html" style="background:var(--accent);color:#0f172a;border:1px solid var(--accent);padding:8px 14px;border-radius:8px;font-size:.9em;text-decoration:none;font-weight:600">🏠 Hub</a>
+  <button onclick="show('intro',this)" class="active">📖 Introdução</button>
+  <button onclick="show('inferencia',this)">🧠 Inferência</button>
+  <button onclick="show('analise',this)">📈 Tipos de Análise</button>
+  <button onclick="show('abrangencia',this)">👥 Abrangência</button>
+  <button onclick="show('escalas',this)">📏 Escalas</button>
+  <button onclick="show('numericos',this)">🔢 Tipos Numéricos</button>
+  <button onclick="show('flash',this)">🃏 Flashcards</button>
+  <button onclick="show('quiz',this)">✅ Quiz</button>
+</nav>
+
+<main>
+
+<!-- INTRO -->
+<section id="intro" class="active">
+  <h2>📖 Introdução</h2>
+  <div class="card highlight">
+    <p>A <b>estatística</b> é a base da Ciência de Dados. Fornece ferramentas e pensamento crítico para <b>explorar, analisar e interpretar</b> dados.</p>
+    <p>Um projeto de Ciência de Dados depende da compreensão do problema e dos dados utilizados. É preciso explorá-los para entender o que representam e como seus valores estão distribuídos.</p>
+  </div>
+
+  <h3>Como explorar os dados?</h3>
+  <div class="grid2">
+    <div class="card">📐 <b>Extração de medidas estatísticas</b><br><small>Ex: média, mediana, desvio padrão</small></div>
+    <div class="card">🎨 <b>Padrões via técnicas de visualização</b><br><small>Ex: gráficos, histogramas</small></div>
+  </div>
+
+  <h3>O que é Probabilidade?</h3>
+  <div class="card">
+    Medida numérica da chance de um evento ocorrer. Quantifica a <b>incerteza</b> com valor entre <b>0 e 1</b>:
+    <ul>
+      <li><span class="pill bad">0</span> evento <b>não pode</b> ocorrer</li>
+      <li><span class="pill good">1</span> evento <b>certamente</b> ocorrerá</li>
+    </ul>
+  </div>
+
+  <div class="tip">💡 <b>Dica:</b> Probabilidade quantifica incerteza; Estatística analisa dados observados. Andam juntas.</div>
+</section>
+
+<!-- INFERÊNCIA -->
+<section id="inferencia">
+  <h2>🧠 Inferência Estatística</h2>
+  <div class="card highlight">
+    Processo de <b>fazer conclusões/generalizações sobre uma população</b> com base em uma <b>amostra</b>. Usa-se uma amostra representativa para estimar características ou testar hipóteses sobre toda a população.
+  </div>
+
+  <h3>Os 3 tipos — memorize bem!</h3>
+
+  <details open>
+    <summary>1️⃣ Inferência Dedutiva — do geral para o específico</summary>
+    <p>Parte de <b>premissas gerais</b> para chegar a <b>conclusões específicas</b> e <b>necessariamente verdadeiras</b> (se as premissas forem verdadeiras).</p>
+    <div class="ex">
+      • Premissa 1: Todos os mamíferos têm pulmões.<br>
+      • Premissa 2: Uma baleia é um mamífero.<br>
+      • <b>Conclusão:</b> Logo, uma baleia tem pulmões. ✅
+    </div>
+  </details>
+
+  <details>
+    <summary>2️⃣ Inferência Indutiva — do específico para o geral</summary>
+    <p>Parte de <b>observações específicas</b> para formar <b>generalizações prováveis</b>. Não garante certeza, mas sugere padrões. Indicada para <b>prever padrões futuros</b>.</p>
+    <div class="ex">
+      • Observação: Todos os cisnes que observei são brancos.<br>
+      • <b>Conclusão:</b> Provavelmente, todos os cisnes são brancos. 🤔
+    </div>
+  </details>
+
+  <details>
+    <summary>3️⃣ Inferência Abdutiva — melhor explicação</summary>
+    <p>Escolhe a <b>explicação mais provável</b> para um conjunto de fatos. Indicada para <b>hipóteses ou diagnósticos</b>.</p>
+    <div class="ex">
+      • Evidência: O chão está molhado.<br>
+      • <b>Conclusão provável:</b> Deve ter chovido. 🌧️
+    </div>
+  </details>
+
+  <h3>Conceitos relacionados</h3>
+  <div class="grid2">
+    <div class="card"><b>Dedução:</b> raciocínio do geral → específico, garante verdade se premissas são verdadeiras.</div>
+    <div class="card"><b>Indução:</b> raciocínio do particular → geral, infere o "todo" a partir de uma parte.</div>
+    <div class="card"><b>Generalização:</b> derivar princípios amplos a partir de casos específicos.</div>
+    <div class="card"><b>Métodos Estatísticos:</b> técnicas para coletar, organizar, analisar e interpretar dados.</div>
+  </div>
+
+  <div class="tip">💡 <b>Macete:</b> <b>De</b>dutiva = <b>De</b>sce do geral. <b>In</b>dutiva = sobe a partir <b>de</b> exemplos. <b>Ab</b>dutiva = busca a melhor h<b>ip</b>ótese.</div>
+</section>
+
+<!-- ANÁLISE -->
+<section id="analise">
+  <h2>📈 Tipos de Análise</h2>
+  <p>Classificadas com base nos <b>objetivos</b> e na forma como os dados são manipulados.</p>
+
+  <table>
+    <tr><th>Tipo</th><th>Objetivo</th><th>Exemplo</th><th>Ferramentas</th></tr>
+    <tr><td><b>Descritiva</b></td><td>Resumir e apresentar dados</td><td>Média salarial de uma empresa</td><td>Tabelas de freq., histogramas, média/mediana/moda</td></tr>
+    <tr><td><b>Inferencial</b></td><td>Generalizar para população</td><td>Aprovação de um produto no mercado</td><td>Testes t, ANOVA, regressão, IC</td></tr>
+    <tr><td><b>Preditiva</b></td><td>Prever resultados futuros</td><td>Demanda no próximo trimestre</td><td>Regressão, redes neurais, árvores</td></tr>
+    <tr><td><b>Diagnóstica</b></td><td>Entender causas ("porquê")</td><td>Por que vendas caíram?</td><td>Correlação, ANOVA, mineração</td></tr>
+    <tr><td><b>Prescritiva</b></td><td>Sugerir ações</td><td>Estratégias para otimizar estoque</td><td>Otimização, simulações</td></tr>
+    <tr><td><b>Exploratória</b></td><td>Descobrir padrões iniciais</td><td>Tendências em dados de clientes</td><td>Visualizações, dispersão</td></tr>
+  </table>
+
+  <h3>🎯 Foco: Análise Descritiva (classificação)</h3>
+  <p>Na estatística descritiva, as medidas se dividem em <b>3 tipos principais</b>:</p>
+  <div class="grid2">
+    <div class="card">
+      <b>Tendência Central</b><br>
+      <small>Ponto central/representativo</small>
+      <ul><li>Média</li><li>Mediana</li><li>Moda</li></ul>
+    </div>
+    <div class="card">
+      <b>Dispersão / Variabilidade</b><br>
+      <small>Grau de variação</small>
+      <ul><li>Amplitude</li><li>Variância</li><li>Desvio Padrão</li><li>Coeficiente de Variação</li></ul>
+    </div>
+    <div class="card" style="grid-column:1/-1">
+      <b>Posição / Localidade</b><br>
+      <small>Localização relativa de um dado</small>
+      <ul><li>Quartis</li><li>Percentis</li><li>Decis</li></ul>
+    </div>
+  </div>
+</section>
+
+<!-- ABRANGÊNCIA -->
+<section id="abrangencia">
+  <h2>👥 Categorias de Dados Quanto à Abrangência</h2>
+  <p>Refere-se ao <b>escopo</b> do conjunto analisado em relação à população de interesse.</p>
+
+  <div class="grid2">
+    <div class="card highlight">
+      <h3 style="margin-top:0">📊 Dados Populacionais</h3>
+      <ul>
+        <li>Representam <b>todos</b> os indivíduos/elementos</li>
+        <li>Abrangentes — refletem o conjunto completo</li>
+      </ul>
+      <div class="ex">Ex: A idade de <b>todos</b> os habitantes de uma cidade.</div>
+    </div>
+    <div class="card highlight">
+      <h3 style="margin-top:0">🎯 Dados Amostrais</h3>
+      <ul>
+        <li>Representam uma <b>parte (subconjunto)</b> da população</li>
+        <li>Usados para <b>estimar/inferir</b> características da população</li>
+      </ul>
+      <div class="ex">Ex: A idade de <b>500</b> habitantes selecionados aleatoriamente.</div>
+    </div>
+  </div>
+
+  <div class="tip">💡 Quando uma análise da população inteira é <b>impraticável</b>, usamos uma amostra representativa e fazemos <b>inferência estatística</b>.</div>
+</section>
+
+<!-- ESCALAS -->
+<section id="escalas">
+  <h2>📏 Escalas de Medidas</h2>
+  <p>Segundo <b>STEVENS (1946)</b>, atributos podem ser:</p>
+  <div class="grid2">
+    <div class="card"><b>Qualitativos / Categóricos:</b> valores não numéricos (palavras, símbolos)</div>
+    <div class="card"><b>Quantitativos / Numéricos:</b> valores numéricos — mais fáceis de manipular</div>
+  </div>
+
+  <p>Existem <b>4 tipos principais</b> de escalas, em ordem crescente de poder:</p>
+
+  <details open>
+    <summary>1. Escala Nominal — só categoriza</summary>
+    <p>Forma mais simples. Categoriza/classifica <b>sem ordem ou hierarquia</b>. Não há relação quantitativa.</p>
+    <p><b>Exemplos:</b> Gênero (masculino, feminino), Cores (azul, vermelho), Tipo de produto.</p>
+    <p><b>Operações permitidas:</b> apenas <b>contagem</b> (frequência) e comparação de igualdade.</p>
+  </details>
+
+  <details>
+    <summary>2. Escala Ordinal — categoriza + ordena</summary>
+    <p>Tem <b>ordem/hierarquia</b>, mas as <b>distâncias entre categorias não são iguais</b> nem mensuráveis.</p>
+    <p><b>Exemplos:</b> Satisfação (muito satisfeito > satisfeito > insatisfeito), Posição (1º, 2º, 3º), Escolaridade (fundamental, médio, superior).</p>
+    <p><b>Operações:</b> contagem, <b>ordenação</b>, comparação maior/menor.</p>
+    <div class="tip">⚠️ Não dá para afirmar que a diferença "muito satisfeito → satisfeito" é igual a "satisfeito → insatisfeito".</div>
+  </details>
+
+  <details>
+    <summary>3. Escala Intervalar — ordena + distâncias iguais (sem zero absoluto)</summary>
+    <p>Tem <b>ordem</b> e <b>distâncias iguais</b>, mas <b>não tem zero absoluto</b> (o zero não significa ausência total).</p>
+    <p><b>Exemplos:</b> Temperatura em °C/°F (0°C ≠ ausência de temperatura); Ano de nascimento (ano 0 ≠ ausência de tempo).</p>
+    <p><b>Operações:</b> contagem, ordenação, <b>soma e subtração</b>, média, desvio padrão.</p>
+    <div class="tip">⚠️ <b>NÃO</b> faz sentido dizer "20°C é o dobro de 10°C" (multiplicação/divisão sem significado).</div>
+  </details>
+
+  <details>
+    <summary>4. Escala Razão — a mais completa (com zero absoluto)</summary>
+    <p>Tem <b>todas as propriedades anteriores</b> + <b>zero absoluto</b> (zero = ausência total). Permite <b>razões/proporções</b>.</p>
+    <p><b>Exemplos:</b> Peso (0 kg = ausência; 80 kg é o dobro de 40 kg), Altura, Idade.</p>
+    <p><b>Operações:</b> <b>todas</b> — soma, subtração, multiplicação, divisão, razões.</p>
+  </details>
+
+  <h3>🧾 Resumo das operações por escala</h3>
+  <table>
+    <tr><th>Escala</th><th>Contagem</th><th>Ordenação</th><th>Soma/Subtração</th><th>Mult/Divisão</th><th>Razões</th></tr>
+    <tr><td>Nominal</td><td class="check">✓</td><td class="x">✗</td><td class="x">✗</td><td class="x">✗</td><td class="x">✗</td></tr>
+    <tr><td>Ordinal</td><td class="check">✓</td><td class="check">✓</td><td class="x">✗</td><td class="x">✗</td><td class="x">✗</td></tr>
+    <tr><td>Intervalar</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="x">✗</td><td class="x">✗</td></tr>
+    <tr><td>Razão</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+  </table>
+
+  <div class="tip">💡 <b>Macete:</b> <b>N</b>ão <b>O</b>rdene <b>I</b>ntervalos de <b>R</b>azão → ordem das escalas: <b>N</b>ominal, <b>O</b>rdinal, <b>I</b>ntervalar, <b>R</b>azão.</div>
+</section>
+
+<!-- NUMÉRICOS -->
+<section id="numericos">
+  <h2>🔢 Tipos Numéricos</h2>
+  <p>Categorias de variáveis <b>quantitativas</b>. Dividem-se em <b>duas</b>:</p>
+
+  <div class="grid2">
+    <div class="card highlight">
+      <h3 style="margin-top:0">🔹 Variáveis Discretas</h3>
+      <p><b>Definição:</b> valores <b>finitos ou contáveis</b>. Não há intermediários entre dois consecutivos.</p>
+      <p><b>Natureza:</b> <span class="pill">Contagem</span></p>
+      <p><b>Exemplos:</b></p>
+      <ul>
+        <li>Número de alunos em uma sala</li>
+        <li>Número de carros em um estacionamento</li>
+        <li>Quantidade de erros em um software</li>
+      </ul>
+    </div>
+    <div class="card highlight">
+      <h3 style="margin-top:0">🔸 Variáveis Contínuas</h3>
+      <p><b>Definição:</b> qualquer valor dentro de um intervalo (frações, decimais). <b>Infinitos</b> valores possíveis entre dois pontos.</p>
+      <p><b>Natureza:</b> <span class="pill">Medição</span></p>
+      <p><b>Exemplos:</b></p>
+      <ul>
+        <li>Peso de uma pessoa (70,5 kg)</li>
+        <li>Altura de uma planta (1,75 m)</li>
+        <li>Temperatura (25,3°C)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tip">💡 <b>Macete:</b> Discreta = você <b>conta</b> (1, 2, 3...). Contínua = você <b>mede</b> (1,5; 1,55; 1,555...).</div>
+</section>
+
+<!-- FLASHCARDS -->
+<section id="flash">
+  <h2>🃏 Flashcards — clique para virar</h2>
+  <p>Teste sua memória nos conceitos-chave. Clique em cada card para ver a resposta.</p>
+  <div class="flash-grid" id="flashGrid"></div>
+</section>
+
+<!-- QUIZ -->
+<section id="quiz">
+  <h2>✅ Quiz Interativo — Escolha o tema</h2>
+  <p>Cada quiz embaralha as perguntas E as alternativas. Refaça quantas vezes quiser para fixar o conteúdo.</p>
+
+  <div class="card">
+    <h3 style="margin-top:0">🎯 Escolha o tema</h3>
+    <div id="themePicker" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px"></div>
+    <label style="display:flex;align-items:center;gap:10px;margin-top:10px">
+      Quantidade de questões:
+      <select id="qCount" style="background:var(--bg2);color:var(--text);border:1px solid var(--border);padding:6px 10px;border-radius:6px">
+        <option value="5">5</option>
+        <option value="10" selected>10</option>
+        <option value="15">15</option>
+        <option value="20">20</option>
+        <option value="999">Todas</option>
+      </select>
+    </label>
+    <label style="display:flex;align-items:center;gap:10px;margin-top:10px">
+      Dificuldade:
+      <select id="qDiff" style="background:var(--bg2);color:var(--text);border:1px solid var(--border);padding:6px 10px;border-radius:6px">
+        <option value="all" selected>Todas</option>
+        <option value="1">🟢 Fácil</option>
+        <option value="2">🟡 Médio</option>
+        <option value="3">🔴 Difícil</option>
+      </select>
+    </label>
+    <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn" onclick="startQuiz()">🎲 Iniciar / Embaralhar</button>
+      <button class="btn" style="background:var(--accent);color:#0f172a" onclick="weakSpotsQuiz()">🎯 Focar nos meus erros</button>
+    </div>
+    <div id="quizStats" style="margin-top:12px;color:var(--muted);font-size:.9em"></div>
+  </div>
+
+  <div id="quizContainer"></div>
+  <div id="quizResult"></div>
+</section>
+
+</main>
+
+<div class="progress">Acertos: <span id="score">0</span>/<span id="total">0</span></div>
+
+<script>
+// Navigation
+function show(id, btn){
+  document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// Flashcards
+const flashcards = [
+  ["O que é Probabilidade?","Medida numérica da chance de um evento ocorrer (entre 0 e 1). Quantifica a incerteza."],
+  ["Inferência Dedutiva","Do geral para o específico. Premissas verdadeiras → conclusão necessariamente verdadeira."],
+  ["Inferência Indutiva","Do específico para o geral. Generalizações prováveis a partir de observações."],
+  ["Inferência Abdutiva","Escolher a explicação mais provável para fatos observados (hipóteses/diagnósticos)."],
+  ["Análise Descritiva","Organiza, resume e descreve dados. Usa média, mediana, gráficos, tabelas."],
+  ["Análise Inferencial","Generaliza resultados de uma amostra para a população. Usa testes t, ANOVA, IC."],
+  ["Análise Preditiva","Prevê resultados futuros usando dados históricos. Regressão, ML, árvores."],
+  ["Análise Diagnóstica","Investiga as CAUSAS de um evento — foca no 'porquê'."],
+  ["Análise Prescritiva","Sugere AÇÕES com base nos dados. Combina descritiva + preditiva + otimização."],
+  ["Análise Exploratória","Descobre padrões iniciais e formula hipóteses. Flexível e aberta."],
+  ["Dados Populacionais","Representam TODOS os elementos de uma população."],
+  ["Dados Amostrais","Subconjunto da população, usado para inferir características do todo."],
+  ["Escala Nominal","Categoriza SEM ordem. Ex: gênero, cores. Só permite contagem."],
+  ["Escala Ordinal","Categoriza COM ordem, mas sem distâncias iguais. Ex: satisfação, posição."],
+  ["Escala Intervalar","Ordem + distâncias iguais, SEM zero absoluto. Ex: temperatura °C, ano."],
+  ["Escala Razão","Tudo da intervalar + ZERO ABSOLUTO. Permite razões. Ex: peso, altura, idade."],
+  ["Variável Discreta","Valores contáveis/inteiros. Nasce de CONTAGEM. Ex: nº de alunos."],
+  ["Variável Contínua","Qualquer valor em um intervalo. Nasce de MEDIÇÃO. Ex: peso 70,5 kg."],
+  ["Medidas de Tendência Central","Média, Mediana, Moda."],
+  ["Medidas de Dispersão","Amplitude, Variância, Desvio Padrão, Coef. de Variação."],
+  ["Medidas de Posição","Quartis, Percentis, Decis."]
+];
+const fg = document.getElementById('flashGrid');
+flashcards.forEach(([f,b])=>{
+  const el = document.createElement('div');
+  el.className='flash';
+  el.innerHTML=`<div class="flash-inner"><div class="flash-front">${f}</div><div class="flash-back">${b}</div></div>`;
+  el.onclick=()=>el.classList.toggle('flipped');
+  fg.appendChild(el);
+});
+
+// ============ QUIZ BANK (por tema, com dificuldade 1-3) ============
+// d: 1=fácil, 2=médio, 3=difícil. a = índice da resposta correta no array original o.
+const QUIZ_BANK = {
+  "Probabilidade": [
+    {q:"Qual o intervalo de valores possíveis para uma probabilidade?",o:["Entre -1 e 1","Entre 0 e 100","Entre 0 e 1","Qualquer valor real"],a:2,d:1,e:"Probabilidade fica entre 0 (impossível) e 1 (certo)."},
+    {q:"O que significa probabilidade igual a 0?",o:["O evento certamente ocorrerá","O evento não pode ocorrer","Há 50% de chance","Falta informação"],a:1,d:1,e:"P=0 indica evento impossível."},
+    {q:"Probabilidade quantifica principalmente:",o:["A média de um conjunto","A incerteza/aleatoriedade de eventos","A dispersão dos dados","A causa de um evento"],a:1,d:1,e:"É a medida numérica da chance/incerteza."},
+    {q:"Uma probabilidade de 0,85 indica que o evento:",o:["Não pode ocorrer","É muito provável","É improvável","Tem 8,5% de chance"],a:1,d:2,e:"Valores próximos de 1 indicam alta probabilidade."},
+    {q:"Diferença essencial entre Probabilidade e Estatística:",o:["São sinônimos","Probabilidade quantifica incerteza; Estatística analisa dados observados","Estatística é só para amostras","Probabilidade só vale para dados contínuos"],a:1,d:3,e:"Probabilidade modela incerteza; Estatística analisa dados reais."},
+  ],
+
+  "Inferência": [
+    {q:"\"Todos os mamíferos têm pulmões. Baleia é mamífero. Logo, baleia tem pulmões.\" É:",o:["Indutiva","Dedutiva","Abdutiva","Preditiva"],a:1,d:1,e:"Parte do geral para o específico → Dedutiva."},
+    {q:"\"O chão está molhado, então deve ter chovido.\" É:",o:["Dedutiva","Indutiva","Abdutiva","Estatística"],a:2,d:2,e:"Escolha da explicação mais provável → Abdutiva."},
+    {q:"\"Todos os cisnes que observei são brancos, logo todos os cisnes são brancos.\" É:",o:["Dedutiva","Indutiva","Abdutiva","Generalização dedutiva"],a:1,d:2,e:"Específico → geral, com probabilidade → Indutiva."},
+    {q:"Qual inferência GARANTE que a conclusão seja verdadeira (se as premissas forem)?",o:["Indutiva","Abdutiva","Dedutiva","Probabilística"],a:2,d:1,e:"Só a dedução garante necessariamente a verdade da conclusão."},
+    {q:"Qual inferência é MAIS indicada para diagnósticos médicos?",o:["Dedutiva","Indutiva","Abdutiva","Descritiva"],a:2,d:2,e:"Abdutiva busca a hipótese mais provável → diagnóstico."},
+    {q:"Qual inferência é MAIS indicada para PREVER padrões futuros?",o:["Dedutiva","Indutiva","Abdutiva","Prescritiva"],a:1,d:2,e:"Indutiva sugere padrões a partir de observações."},
+    {q:"O que diferencia Dedução de Indução?",o:["Dedução parte de premissas gerais; Indução parte de casos particulares","Indução é sempre certa","Dedução só vale para números","Não há diferença"],a:0,d:1,e:"Dedução: geral→específico; Indução: específico→geral."},
+    {q:"Inferência estatística é usada principalmente quando:",o:["A população inteira pode ser facilmente analisada","Analisar toda a população é impraticável","Não há dados disponíveis","Os dados são qualitativos"],a:1,d:2,e:"Quando a população é inviável de analisar, usa-se amostra + inferência."},
+    {q:"O que é Generalização?",o:["Soma de várias amostras","Derivar princípios amplos a partir de casos específicos","Coletar dados populacionais","Calcular médias"],a:1,d:2,e:"Estender uma observação limitada a uma regra mais ampla."},
+    {q:"\"Todos os cães que conheci são amigáveis → todos os cães são amigáveis\" é exemplo de:",o:["Dedução","Generalização indutiva","Análise prescritiva","Inferência abdutiva"],a:1,d:3,e:"Generalização baseada em casos particulares → indutiva."},
+  ],
+
+  "Tipos de Análise": [
+    {q:"Análise que busca entender o PORQUÊ de um evento:",o:["Descritiva","Preditiva","Diagnóstica","Prescritiva"],a:2,d:1,e:"Diagnóstica foca em causas."},
+    {q:"Qual análise SUGERE AÇÕES baseadas nos dados?",o:["Exploratória","Prescritiva","Inferencial","Descritiva"],a:1,d:1,e:"Prescritiva recomenda ações."},
+    {q:"\"Calcular a média salarial de uma empresa\" é exemplo de análise:",o:["Inferencial","Descritiva","Preditiva","Prescritiva"],a:1,d:1,e:"Resumir/descrever dados → Descritiva."},
+    {q:"\"Prever a demanda de um produto no próximo trimestre\" é análise:",o:["Descritiva","Diagnóstica","Preditiva","Exploratória"],a:2,d:1,e:"Usa dados históricos para prever o futuro."},
+    {q:"\"Identificar tendências iniciais nos dados de clientes\" é:",o:["Prescritiva","Diagnóstica","Exploratória","Inferencial"],a:2,d:2,e:"Exploratória descobre padrões iniciais."},
+    {q:"Ferramentas comuns da análise INFERENCIAL incluem:",o:["Histogramas e moda","Testes t, ANOVA, intervalos de confiança","Redes neurais","Mineração de dados"],a:1,d:2,e:"Inferencial usa testes estatísticos e IC."},
+    {q:"Qual análise COMBINA descritiva + preditiva + otimização?",o:["Diagnóstica","Exploratória","Prescritiva","Inferencial"],a:2,d:3,e:"Prescritiva integra os três para recomendar ações."},
+    {q:"Determinar se um medicamento é eficaz com base numa amostra é análise:",o:["Descritiva","Inferencial","Preditiva","Prescritiva"],a:1,d:2,e:"Generalização da amostra para a população → Inferencial."},
+    {q:"Qual análise é a MAIS FLEXÍVEL e ABERTA, usada nas fases iniciais?",o:["Descritiva","Exploratória","Prescritiva","Diagnóstica"],a:1,d:2,e:"Exploratória é flexível e ajuda a formular hipóteses."},
+    {q:"Investigar por que as vendas caíram em um período específico é:",o:["Preditiva","Descritiva","Diagnóstica","Prescritiva"],a:2,d:1,e:"Foca em causas → Diagnóstica."},
+    {q:"Análise descritiva NÃO inclui qual destas medidas?",o:["Média","Mediana","Variância","Intervalo de confiança"],a:3,d:3,e:"Intervalo de confiança é INFERENCIAL, não descritivo."},
+  ],
+
+  "Estatística Descritiva": [
+    {q:"Qual NÃO é medida de tendência central?",o:["Média","Mediana","Moda","Variância"],a:3,d:1,e:"Variância é medida de dispersão."},
+    {q:"Qual NÃO é medida de dispersão?",o:["Variância","Desvio Padrão","Mediana","Amplitude"],a:2,d:1,e:"Mediana é tendência central."},
+    {q:"Quartis, percentis e decis são medidas de:",o:["Tendência central","Dispersão","Posição/localidade","Probabilidade"],a:2,d:2,e:"Indicam a localização relativa de um dado."},
+    {q:"O Coeficiente de Variação é uma medida de:",o:["Tendência central","Posição","Dispersão/variabilidade","Probabilidade"],a:2,d:2,e:"CV mede dispersão relativa à média."},
+    {q:"Quantos tipos principais de medidas existem na estatística descritiva?",o:["2","3","4","5"],a:1,d:1,e:"Tendência central, dispersão e posição."},
+    {q:"O que indica uma medida de DISPERSÃO?",o:["O ponto central dos dados","O grau de variação dos dados","A localização relativa","A causa do evento"],a:1,d:2,e:"Quanto os dados se afastam do centro."},
+    {q:"Amplitude é definida como:",o:["Soma dos valores","Maior menos o menor valor","Média dos extremos","Mediana"],a:1,d:2,e:"Amplitude = máximo − mínimo."},
+    {q:"Qual conjunto contém SOMENTE medidas de tendência central?",o:["Média, Variância, Moda","Média, Mediana, Moda","Mediana, Quartis, Moda","Média, Desvio Padrão, Moda"],a:1,d:1,e:"Tendência central: média, mediana, moda."},
+  ],
+
+  "Abrangência (População/Amostra)": [
+    {q:"A idade de 500 habitantes selecionados aleatoriamente é:",o:["Dado populacional","Dado amostral","Inferência dedutiva","Variável discreta"],a:1,d:1,e:"Subconjunto da população → amostral."},
+    {q:"A idade de TODOS os habitantes de uma cidade representa:",o:["Dado amostral","Dado populacional","Estatística inferencial","Variável contínua"],a:1,d:1,e:"Todos os elementos → populacional."},
+    {q:"Dados amostrais são usados para:",o:["Substituir totalmente a população","Estimar/inferir características da população","Eliminar incertezas","Aumentar o erro"],a:1,d:2,e:"Servem para inferência sobre a população."},
+    {q:"Por que usar amostras em vez de populações?",o:["Sempre é mais preciso","Pode ser impraticável analisar a população inteira","Amostras eliminam erros","Para evitar inferência"],a:1,d:2,e:"Custo, tempo ou impossibilidade de medir todos."},
+    {q:"\"Conjunto completo que se deseja estudar\" descreve:",o:["Amostra","População","Variável","Categoria"],a:1,d:1,e:"População = todos os elementos de interesse."},
+  ],
+
+  "Escalas de Medida": [
+    {q:"\"Cores: azul, vermelho, verde\" são da escala:",o:["Nominal","Ordinal","Intervalar","Razão"],a:0,d:1,e:"Sem ordem → Nominal."},
+    {q:"Temperatura em Celsius é da escala:",o:["Nominal","Ordinal","Intervalar","Razão"],a:2,d:2,e:"Distâncias iguais, mas 0°C não é ausência."},
+    {q:"Por que peso é escala de RAZÃO?",o:["Porque é numérico","Porque tem ordem","Porque 0 kg = ausência total e razões fazem sentido","Porque é decimal"],a:2,d:2,e:"Escala razão exige zero absoluto."},
+    {q:"Satisfação (muito satisfeito > satisfeito > insatisfeito) é escala:",o:["Nominal","Ordinal","Intervalar","Razão"],a:1,d:1,e:"Tem ordem mas distâncias não são iguais."},
+    {q:"Em qual escala é VÁLIDO calcular média mas NÃO razões?",o:["Nominal","Ordinal","Intervalar","Razão"],a:2,d:3,e:"Intervalar permite soma e média, mas sem zero absoluto."},
+    {q:"Quem propôs a classificação clássica das escalas (1946)?",o:["Pearson","Stevens","Fisher","Bayes"],a:1,d:2,e:"Stevens (1946)."},
+    {q:"Qual a ÚNICA operação válida na escala nominal?",o:["Soma","Multiplicação","Contagem/comparação de igualdade","Cálculo de média"],a:2,d:2,e:"Apenas contagem e ver se é igual ou diferente."},
+    {q:"Posições em uma corrida (1º, 2º, 3º) são da escala:",o:["Nominal","Ordinal","Intervalar","Razão"],a:1,d:1,e:"Há ordem, mas sem distâncias iguais."},
+    {q:"Ano de nascimento é da escala:",o:["Nominal","Ordinal","Intervalar","Razão"],a:2,d:3,e:"Distâncias iguais, mas o ano 0 não significa ausência de tempo."},
+    {q:"Qual escala possui TODAS as propriedades das demais + zero absoluto?",o:["Nominal","Ordinal","Intervalar","Razão"],a:3,d:1,e:"Razão é a mais completa."},
+    {q:"Em qual escala a afirmação \"X é o dobro de Y\" faz sentido?",o:["Nominal","Ordinal","Intervalar","Razão"],a:3,d:2,e:"Apenas razão permite essa comparação."},
+    {q:"Atributos QUALITATIVOS/categóricos são tipicamente:",o:["Numéricos","Não numéricos (palavras/símbolos)","Sempre ordenados","Escala de razão"],a:1,d:1,e:"Qualitativos = não numéricos em geral."},
+    {q:"Em qual escala podemos ORDENAR mas NÃO somar de forma significativa?",o:["Nominal","Ordinal","Intervalar","Razão"],a:1,d:2,e:"Ordinal permite ordem; soma exige distâncias iguais (intervalar)."},
+    {q:"Multiplicação e divisão são operações VÁLIDAS apenas em qual escala?",o:["Ordinal","Intervalar","Razão","Nominal"],a:2,d:2,e:"Só faz sentido com zero absoluto."},
+    {q:"Nível de escolaridade (fundamental/médio/superior) é escala:",o:["Nominal","Ordinal","Intervalar","Razão"],a:1,d:1,e:"Tem ordem; distâncias não mensuráveis."},
+  ],
+
+  "Tipos Numéricos": [
+    {q:"\"Número de alunos em uma sala\" é variável:",o:["Contínua","Discreta","Qualitativa","Ordinal"],a:1,d:1,e:"Contagem de inteiros → Discreta."},
+    {q:"Peso (70,5 kg) é variável:",o:["Discreta","Contínua","Nominal","Ordinal"],a:1,d:1,e:"Medida com infinitos valores possíveis → Contínua."},
+    {q:"Variáveis discretas representam tipicamente:",o:["Medições","Contagens","Categorias","Razões"],a:1,d:1,e:"Discreta = contagem; Contínua = medição."},
+    {q:"Qual é uma variável CONTÍNUA?",o:["Quantidade de erros num programa","Número de carros","Temperatura ambiente","Número de filhos"],a:2,d:2,e:"Temperatura é medida e admite infinitos valores."},
+    {q:"Entre dois pontos de uma variável contínua existem:",o:["Apenas inteiros","Nenhum valor","Infinitos valores possíveis","Apenas frações simples"],a:2,d:2,e:"Característica essencial das contínuas."},
+    {q:"\"Quantidade de erros em um software\" é:",o:["Contínua","Discreta","Qualitativa nominal","Qualitativa ordinal"],a:1,d:1,e:"Contagem inteira → Discreta."},
+    {q:"Qual NÃO é variável contínua?",o:["Altura","Tempo","Número de filhos","Distância"],a:2,d:2,e:"Número de filhos é contagem inteira → Discreta."},
+  ],
+
+  "Conceitos Gerais": [
+    {q:"Qual é a base sobre a qual a Ciência de Dados se constrói?",o:["Programação","Estatística","Banco de Dados","Marketing"],a:1,d:1,e:"Estatística é a base da Ciência de Dados."},
+    {q:"Métodos estatísticos servem para:",o:["Apenas criar gráficos","Coletar, organizar, analisar e interpretar dados","Substituir o pensamento crítico","Programar algoritmos"],a:1,d:1,e:"Conjunto de técnicas para tratar e tirar conclusões dos dados."},
+    {q:"As principais formas de explorar dados são:",o:["Apenas medidas estatísticas","Apenas visualizações","Medidas estatísticas E visualizações","Apenas inferência"],a:2,d:2,e:"Combinação de medidas + padrões visualizados."},
+    {q:"Um projeto de Ciência de Dados depende principalmente de:",o:["Algoritmos","Compreensão do problema e dos dados","Visualizações bonitas","Quantidade de dados apenas"],a:1,d:2,e:"Entender o problema e os dados é fundamental."},
+  ],
+};
+
+// Estado
+let currentTheme = "Todos";
+let currentQuiz = [];
+let score=0, answered=0;
+const stats = JSON.parse(localStorage.getItem('quizStats')||'{}'); // {questionKey:{ok:n,err:n}}
+
+// Construir picker de temas
+const tp = document.getElementById('themePicker');
+const themes = ["Todos", ...Object.keys(QUIZ_BANK)];
+themes.forEach(t=>{
+  const b=document.createElement('button');
+  b.className='opt'; b.style.flex='0 0 auto'; b.style.padding='8px 14px';
+  b.textContent = t==="Todos" ? "🎲 Todos" : t;
+  b.onclick=()=>{currentTheme=t; document.querySelectorAll('#themePicker .opt').forEach(x=>x.classList.remove('correct')); b.classList.add('correct')};
+  if(t==="Todos") b.classList.add('correct');
+  tp.appendChild(b);
+});
+
+function getPool(){
+  const diff = document.getElementById('qDiff').value;
+  let pool = currentTheme==="Todos"
+    ? Object.entries(QUIZ_BANK).flatMap(([t,arr])=>arr.map(q=>({...q,theme:t})))
+    : QUIZ_BANK[currentTheme].map(q=>({...q,theme:currentTheme}));
+  if(diff!=="all") pool = pool.filter(q=>q.d===+diff);
+  return pool;
+}
+
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+function startQuiz(){
+  const pool = getPool();
+  if(pool.length===0){ alert("Nenhuma questão para esses filtros."); return; }
+  const n = Math.min(+document.getElementById('qCount').value, pool.length);
+  currentQuiz = shuffle(pool).slice(0,n).map(q=>{
+    // embaralha alternativas mantendo resposta correta
+    const idx = q.o.map((_,i)=>i);
+    const sh = shuffle(idx);
+    return {...q, o: sh.map(i=>q.o[i]), a: sh.indexOf(q.a)};
+  });
+  renderQuiz();
+}
+
+function weakSpotsQuiz(){
+  // pega questões com mais erros
+  const all = Object.entries(QUIZ_BANK).flatMap(([t,arr])=>arr.map(q=>({...q,theme:t})));
+  const ranked = all.map(q=>{
+    const k = q.q;
+    const s = stats[k]||{ok:0,err:0};
+    const total = s.ok+s.err;
+    const errRate = total ? s.err/total : 0;
+    return {q, score: errRate*10 + (total===0?5:0)};  // erros + nunca-respondidas
+  }).sort((a,b)=>b.score-a.score);
+  const n = Math.min(+document.getElementById('qCount').value, ranked.length);
+  currentQuiz = ranked.slice(0,n).map(r=>r.q).map(q=>{
+    const idx=q.o.map((_,i)=>i); const sh=shuffle(idx);
+    return {...q, o:sh.map(i=>q.o[i]), a:sh.indexOf(q.a)};
+  });
+  renderQuiz();
+}
+
+function renderQuiz(){
+  const qc = document.getElementById('quizContainer');
+  qc.innerHTML='';
+  document.getElementById('quizResult').innerHTML='';
+  score=0; answered=0;
+  document.getElementById('score').textContent=0;
+  document.getElementById('total').textContent=currentQuiz.length;
+  const diffEmoji = {1:"🟢",2:"🟡",3:"🔴"};
+  currentQuiz.forEach((it,i)=>{
+    const div=document.createElement('div');
+    div.className='quiz-q';
+    const themeTag = it.theme ? `<span class="pill">${it.theme}</span>` : '';
+    div.innerHTML=`<div class="q">${themeTag}<span class="pill warn">${diffEmoji[it.d]} ${it.d===1?'Fácil':it.d===2?'Médio':'Difícil'}</span><br>${i+1}. ${it.q}</div><div class="opts"></div><div class="feedback"></div>`;
+    const opts=div.querySelector('.opts');
+    it.o.forEach((opt,j)=>{
+      const b=document.createElement('button');
+      b.className='opt'; b.textContent=opt;
+      b.onclick=()=>answer(div,it,j,b);
+      opts.appendChild(b);
+    });
+    qc.appendChild(div);
+  });
+  updateStatsLabel();
+  qc.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function answer(div,it,j,btn){
+  const opts=div.querySelectorAll('.opt');
+  if([...opts].some(o=>o.disabled)) return;
+  opts.forEach((o,k)=>{o.disabled=true;if(k===it.a)o.classList.add('correct')});
+  const fb=div.querySelector('.feedback');
+  const key = it.q;
+  stats[key] = stats[key]||{ok:0,err:0};
+  if(j===it.a){
+    score++; stats[key].ok++;
+    fb.className='feedback show ok'; fb.innerHTML='✅ <b>Correto!</b> '+it.e;
+  } else {
+    stats[key].err++;
+    btn.classList.add('wrong'); fb.className='feedback show no';
+    fb.innerHTML='❌ <b>Não foi dessa vez.</b> '+it.e;
+  }
+  localStorage.setItem('quizStats', JSON.stringify(stats));
+  answered++;
+  document.getElementById('score').textContent=score;
+  if(answered===currentQuiz.length) showResult();
+  updateStatsLabel();
+}
+
+function showResult(){
+  const pct = Math.round(100*score/currentQuiz.length);
+  let msg = pct===100 ? "🏆 Perfeito! Você dominou!" :
+            pct>=80 ? "🌟 Muito bem! Quase lá." :
+            pct>=60 ? "👍 Bom! Revise os pontos errados." :
+            pct>=40 ? "📚 Está pegando o jeito — refaça!" :
+                      "💪 Hora de revisar a teoria e tentar de novo!";
+  document.getElementById('quizResult').innerHTML =
+    `<div class="card highlight" style="text-align:center"><h3 style="margin-top:0">Resultado: ${score}/${currentQuiz.length} (${pct}%)</h3><p>${msg}</p>
+    <button class="btn" onclick="startQuiz()">🔄 Novo quiz embaralhado</button>
+    <button class="btn" style="background:var(--accent);color:#0f172a;margin-left:8px" onclick="weakSpotsQuiz()">🎯 Focar nos meus erros</button></div>`;
+}
+
+function updateStatsLabel(){
+  const total = Object.values(stats).reduce((s,x)=>s+x.ok+x.err,0);
+  const oks = Object.values(stats).reduce((s,x)=>s+x.ok,0);
+  const pct = total?Math.round(100*oks/total):0;
+  document.getElementById('quizStats').innerHTML =
+    `📊 Histórico geral: <b>${oks}/${total}</b> (${pct}%) — <a href="#" onclick="event.preventDefault();if(confirm('Apagar histórico?')){localStorage.removeItem('quizStats');location.reload()}" style="color:var(--accent)">limpar histórico</a>`;
+}
+
+updateStatsLabel();
+startQuiz();
+</script>
+
+</body>
+</html>

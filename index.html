@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<meta name="theme-color" content="#0b1120">
+<meta name="description" content="Hub de revisões de Estatística — FICR">
+<title>📚 Minhas Revisões</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E📚%3C/text%3E%3C/svg%3E">
+<style>
+  :root{
+    --bg:#0b1120; --bg2:#1e293b; --card:#1a2540; --border:#2d3f63;
+    --primary:#6366f1; --primary2:#818cf8; --accent:#22d3ee;
+    --good:#10b981; --warn:#f59e0b; --pink:#ec4899;
+    --text:#e2e8f0; --muted:#94a3b8;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;-webkit-font-smoothing:antialiased}
+
+  /* Hero */
+  .hero{padding:48px 20px 32px;text-align:center;background:radial-gradient(ellipse at top,rgba(99,102,241,.25) 0%,transparent 60%)}
+  .hero h1{font-size:clamp(1.8em,7vw,2.8em);margin:0 0 8px;background:linear-gradient(135deg,#a5b4fc,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:800;letter-spacing:-.02em}
+  .hero p{color:var(--muted);font-size:clamp(.95em,3.5vw,1.1em);margin:0 auto;max-width:520px}
+  .badge{display:inline-flex;align-items:center;gap:6px;background:rgba(99,102,241,.15);color:var(--primary2);padding:6px 14px;border-radius:99px;font-size:.85em;margin-bottom:14px;border:1px solid rgba(99,102,241,.3)}
+
+  /* Stats */
+  .stats{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin:24px 0 0;padding:0 20px}
+  .stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 18px;min-width:100px;text-align:center}
+  .stat .num{font-size:1.5em;font-weight:700;color:var(--accent);display:block;line-height:1.2}
+  .stat .lbl{font-size:.75em;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+
+  /* Container */
+  main{max-width:1100px;margin:0 auto;padding:32px 16px 48px}
+  h2{font-size:1.3em;margin:32px 0 16px;color:var(--text);display:flex;align-items:center;gap:10px}
+  h2::before{content:'';width:4px;height:22px;background:linear-gradient(180deg,var(--primary),var(--accent));border-radius:2px}
+
+  /* Topic cards */
+  .topics{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+  .topic{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:14px;position:relative;overflow:hidden;transition:transform .2s,border-color .2s}
+  .topic:hover{transform:translateY(-2px);border-color:var(--primary)}
+  .topic .icon{font-size:2.4em;line-height:1}
+  .topic .title{font-size:1.15em;font-weight:700;color:var(--text);margin:0}
+  .topic .desc{font-size:.9em;color:var(--muted);margin:0;flex:1;min-height:40px}
+  .topic .meta{display:flex;gap:8px;flex-wrap:wrap;font-size:.75em;color:var(--muted)}
+  .topic .meta span{background:var(--bg2);padding:3px 10px;border-radius:99px;border:1px solid var(--border)}
+  .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
+  .btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:11px 14px;border-radius:10px;text-decoration:none;font-weight:600;font-size:.92em;transition:all .15s;cursor:pointer;border:none;font-family:inherit}
+  .btn-learn{background:linear-gradient(135deg,var(--primary),#8b5cf6);color:white}
+  .btn-learn:hover{filter:brightness(1.15)}
+  .btn-quiz{background:var(--bg2);color:var(--accent);border:1px solid var(--border)}
+  .btn-quiz:hover{border-color:var(--accent);background:rgba(34,211,238,.08)}
+
+  /* Status ribbon */
+  .ribbon{position:absolute;top:14px;right:-32px;background:var(--good);color:white;font-size:.7em;font-weight:700;padding:3px 36px;transform:rotate(35deg);letter-spacing:.5px}
+  .ribbon.new{background:var(--warn)}
+
+  /* Tools/Soon */
+  .tools{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+  .tool{background:var(--card);border:1px dashed var(--border);border-radius:12px;padding:18px;text-align:center;color:var(--muted);font-size:.9em}
+  .tool .ic{font-size:1.6em;display:block;margin-bottom:6px}
+
+  /* Footer */
+  footer{text-align:center;padding:32px 16px;color:var(--muted);font-size:.85em;border-top:1px solid var(--border);margin-top:32px}
+  footer a{color:var(--accent);text-decoration:none}
+
+  /* Responsive tweaks */
+  @media(max-width:480px){
+    .topics{grid-template-columns:1fr}
+    .topic{padding:18px}
+    .stats{gap:8px}
+    .stat{padding:10px 14px;min-width:0;flex:1}
+  }
+
+  /* Install hint */
+  .install{position:fixed;bottom:16px;left:16px;right:16px;background:var(--card);border:1px solid var(--primary);border-radius:12px;padding:12px 16px;display:none;align-items:center;gap:12px;font-size:.88em;box-shadow:0 8px 24px rgba(0,0,0,.4);z-index:100}
+  .install.show{display:flex}
+  .install .x{margin-left:auto;background:none;border:none;color:var(--muted);font-size:1.4em;cursor:pointer;padding:4px 8px}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="badge">🎓 FICR · Estatística</span>
+  <h1>Minhas Revisões</h1>
+  <p>Hub de estudos para Estatística — escolha um tema e mergulhe no conteúdo ou pratique direto nos quizzes.</p>
+  <div class="stats">
+    <div class="stat"><span class="num" id="topicCount">2</span><span class="lbl">temas</span></div>
+    <div class="stat"><span class="num" id="quizCount">0</span><span class="lbl">questões</span></div>
+    <div class="stat"><span class="num" id="lastScore">—</span><span class="lbl">último acerto</span></div>
+  </div>
+</div>
+
+<main>
+  <h2>📚 Temas disponíveis</h2>
+  <div class="topics" id="topics"></div>
+
+  <h2>🛠️ Em breve</h2>
+  <div class="tools">
+    <div class="tool"><span class="ic">📊</span>Medidas de Tendência Central</div>
+    <div class="tool"><span class="ic">📈</span>Medidas de Dispersão</div>
+    <div class="tool"><span class="ic">📉</span>Gráficos & Visualizações</div>
+    <div class="tool"><span class="ic">🎲</span>Probabilidade Avançada</div>
+  </div>
+</main>
+
+<footer>
+  Feito para estudar estatística — adicione novos temas editando <code style="color:var(--accent)">index.html</code><br>
+  <span style="opacity:.6">Pode ser instalado no celular: menu do navegador → "Adicionar à tela inicial"</span>
+</footer>
+
+<div class="install" id="installHint">
+  <span>📱 Adicione à tela inicial para acesso rápido</span>
+  <button class="x" onclick="this.parentElement.classList.remove('show');localStorage.setItem('hideInstall','1')">×</button>
+</div>
+
+<script>
+  // ====== Adicione novos temas aqui ======
+  const TOPICS = [
+    {
+      icon: "📊",
+      title: "Fundamentos de Estatística",
+      desc: "Probabilidade, inferência (dedutiva/indutiva/abdutiva), tipos de análise, escalas de medida e tipos numéricos.",
+      tags: ["55 slides", "8 temas"],
+      learn: "aprenda.html",
+      quiz: "revisao.html",
+      status: "" // "new" | "done" | ""
+    },
+    {
+      icon: "🔢",
+      title: "Distribuição de Frequência",
+      desc: "Frequências absoluta, relativa, acumuladas, ROL, intervalos de classe e construção de tabelas.",
+      tags: ["24 slides", "4 temas"],
+      learn: "aprenda2.html",
+      quiz: "revisao2.html",
+      status: "new"
+    },
+    // ====== Para adicionar um novo tema, copie o bloco acima ======
+  ];
+
+  // Render topics
+  const grid = document.getElementById('topics');
+  TOPICS.forEach(t=>{
+    const card = document.createElement('div');
+    card.className = 'topic';
+    const ribbon = t.status==='new' ? '<div class="ribbon new">NOVO</div>'
+                 : t.status==='done' ? '<div class="ribbon">FEITO</div>' : '';
+    card.innerHTML = `
+      ${ribbon}
+      <div class="icon">${t.icon}</div>
+      <h3 class="title">${t.title}</h3>
+      <p class="desc">${t.desc}</p>
+      <div class="meta">${t.tags.map(x=>`<span>${x}</span>`).join('')}</div>
+      <div class="actions">
+        <a class="btn btn-learn" href="${t.learn}">📖 Aprender</a>
+        <a class="btn btn-quiz" href="${t.quiz}">✅ Quiz</a>
+      </div>`;
+    grid.appendChild(card);
+  });
+
+  // Stats — soma localStorage de todos os quizzes
+  document.getElementById('topicCount').textContent = TOPICS.length;
+  let totalQ = 0, totalOk = 0;
+  for(const k of ['quizStats','quizStats2']){
+    const s = JSON.parse(localStorage.getItem(k)||'{}');
+    Object.values(s).forEach(v=>{ totalQ += v.ok+v.err; totalOk += v.ok; });
+  }
+  document.getElementById('quizCount').textContent = totalQ;
+  document.getElementById('lastScore').textContent = totalQ ? Math.round(100*totalOk/totalQ)+'%' : '—';
+
+  // Install hint (only on mobile and not dismissed)
+  if(/Android|iPhone/i.test(navigator.userAgent) && !localStorage.getItem('hideInstall')){
+    setTimeout(()=>document.getElementById('installHint').classList.add('show'), 1500);
+  }
+</script>
+
+</body>
+</html>

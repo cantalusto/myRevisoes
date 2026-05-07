@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Revisão — Distribuição de Frequência</title>
+<style>
+  :root{
+    --bg:#0f172a; --bg2:#1e293b; --card:#1e293b; --border:#334155;
+    --primary:#3b82f6; --primary2:#60a5fa; --accent:#22d3ee;
+    --good:#10b981; --bad:#ef4444; --warn:#f59e0b;
+    --text:#e2e8f0; --muted:#94a3b8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+  header{background:linear-gradient(135deg,#1e3a8a,#3b82f6);padding:32px 24px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.3)}
+  header h1{margin:0;font-size:2em}
+  header p{margin:8px 0 0;color:#dbeafe}
+  nav{position:sticky;top:0;background:rgba(15,23,42,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:12px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;z-index:100}
+  nav button{background:var(--card);color:var(--text);border:1px solid var(--border);padding:8px 14px;border-radius:8px;cursor:pointer;font-size:.9em;transition:all .2s}
+  nav button:hover,nav button.active{background:var(--primary);border-color:var(--primary)}
+  main{max-width:1100px;margin:0 auto;padding:24px}
+  section{display:none;animation:fadeIn .4s}
+  section.active{display:block}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  h2{color:var(--primary2);border-bottom:2px solid var(--primary);padding-bottom:8px;margin-top:0}
+  h3{color:var(--accent);margin-top:24px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:16px 0;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+  .card.highlight{border-left:4px solid var(--primary)}
+  details{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:8px 0;cursor:pointer}
+  details[open]{border-color:var(--primary)}
+  summary{font-weight:600;color:var(--primary2);outline:none}
+  summary:hover{color:var(--accent)}
+  table{width:100%;border-collapse:collapse;margin:12px 0;background:var(--bg2);border-radius:8px;overflow:hidden}
+  th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--border)}
+  th{background:var(--primary);color:white}
+  tr:last-child td{border-bottom:none}
+  td.center,th.center{text-align:center}
+  .pill{display:inline-block;background:var(--primary);color:white;padding:2px 10px;border-radius:99px;font-size:.8em;margin-right:6px}
+  .pill.good{background:var(--good)} .pill.bad{background:var(--bad)} .pill.warn{background:var(--warn)}
+  .formula{background:linear-gradient(135deg,rgba(59,130,246,.15),rgba(34,211,238,.05));border:1px solid var(--primary);border-radius:8px;padding:14px 20px;margin:14px 0;font-family:'Cambria Math','Times New Roman',serif;font-size:1.3em;text-align:center}
+  .flash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+  .flash{background:var(--card);border:1px solid var(--border);border-radius:12px;height:180px;perspective:1000px;cursor:pointer}
+  .flash-inner{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+  .flash.flipped .flash-inner{transform:rotateY(180deg)}
+  .flash-front,.flash-back{position:absolute;inset:0;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;text-align:center;padding:16px;border-radius:12px}
+  .flash-front{background:linear-gradient(135deg,#1e40af,#3b82f6);font-weight:600;font-size:1.05em}
+  .flash-back{background:var(--bg2);transform:rotateY(180deg);font-size:.95em;color:var(--muted)}
+  .quiz-q{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:16px 0}
+  .quiz-q .q{font-weight:600;margin-bottom:12px}
+  .opts{display:flex;flex-direction:column;gap:8px}
+  .opt{background:var(--bg2);border:1px solid var(--border);padding:12px;border-radius:8px;cursor:pointer;transition:all .2s;text-align:left;color:var(--text);font-size:.95em}
+  .opt:hover:not(:disabled){border-color:var(--primary);background:#2a3a52}
+  .opt.correct{background:rgba(16,185,129,.2);border-color:var(--good);color:#a7f3d0}
+  .opt.wrong{background:rgba(239,68,68,.2);border-color:var(--bad);color:#fecaca}
+  .feedback{margin-top:12px;padding:10px 14px;border-radius:8px;font-size:.9em;display:none}
+  .feedback.show{display:block}
+  .feedback.ok{background:rgba(16,185,129,.15);border-left:3px solid var(--good)}
+  .feedback.no{background:rgba(239,68,68,.15);border-left:3px solid var(--bad)}
+  .progress{position:fixed;bottom:20px;right:20px;background:var(--card);border:1px solid var(--border);padding:12px 18px;border-radius:99px;font-size:.9em;box-shadow:0 4px 20px rgba(0,0,0,.4)}
+  .progress span{color:var(--accent);font-weight:700}
+  .tip{background:rgba(59,130,246,.1);border-left:3px solid var(--primary);padding:10px 14px;border-radius:6px;margin:10px 0;font-size:.92em}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:700px){.grid2{grid-template-columns:1fr}}
+  ul{padding-left:20px} li{margin:4px 0}
+  code{background:var(--bg2);padding:2px 6px;border-radius:4px;font-size:.9em;color:var(--accent)}
+  .ex{background:rgba(34,211,238,.08);border-left:3px solid var(--accent);padding:8px 12px;border-radius:6px;margin:6px 0;font-size:.93em}
+  .btn{background:var(--primary);color:white;border:none;padding:10px 18px;border-radius:8px;cursor:pointer;font-size:.95em;margin-top:10px}
+  .btn:hover{background:#2563eb}
+  .step{background:var(--bg2);border-left:4px solid var(--accent);padding:12px 16px;border-radius:6px;margin:10px 0}
+  .step-num{display:inline-flex;width:28px;height:28px;background:var(--accent);color:#0f172a;border-radius:50%;align-items:center;justify-content:center;font-weight:700;margin-right:8px}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📊 Distribuição de Frequência</h1>
+  <p>Revisão Interativa — Estatística Descritiva / FICR</p>
+</header>
+
+<nav>
+  <a href="index.html" style="background:var(--accent);color:#0f172a;border:1px solid var(--accent);padding:8px 14px;border-radius:8px;font-size:.9em;text-decoration:none;font-weight:600">🏠 Hub</a>
+  <button onclick="show('intro',this)" class="active">📖 Estatística Descritiva</button>
+  <button onclick="show('freq',this)">🔢 Frequências</button>
+  <button onclick="show('formulas',this)">🧮 Fórmulas</button>
+  <button onclick="show('classes',this)">📦 Intervalos de Classe</button>
+  <button onclick="show('exemplos',this)">💡 Exemplos</button>
+  <button onclick="show('flash',this)">🃏 Flashcards</button>
+  <button onclick="show('quiz',this)">✅ Quiz</button>
+</nav>
+
+<main>
+
+<!-- INTRO -->
+<section id="intro" class="active">
+  <h2>📖 Estatística Descritiva</h2>
+  <div class="card highlight">
+    <p><b>Estatística Descritiva</b> é uma área da estatística que se concentra em <b>resumir, organizar e apresentar</b> os dados de forma compreensível, <b>sem fazer inferências ou generalizações</b> sobre uma população maior.</p>
+    <p>As técnicas ajudam a simplificar grandes volumes de dados em informações fáceis de interpretar usando <b>medidas numéricas e gráficos</b>.</p>
+  </div>
+
+  <h3>Quando usar?</h3>
+  <div class="grid2">
+    <div class="card">🔍 <b>Antes de qualquer análise mais complexa</b><br><small>Para ter uma visão geral dos dados</small></div>
+    <div class="card">📢 <b>Comunicar resultados de uma pesquisa</b><br><small>Apresentar dados de forma clara e concisa</small></div>
+    <div class="card" style="grid-column:1/-1">🐛 <b>Identificar problemas nos dados</b><br><small>Detectar outliers ou erros de digitação</small></div>
+  </div>
+
+  <h3>Síntese Numérica</h3>
+  <div class="card">
+    Conjunto de medidas estatísticas para resumir e descrever dados <b>quantitativamente</b>. Ajudam a identificar <b>padrões, tendências e variações</b> sem precisar olhar valor por valor.
+  </div>
+
+  <h3>Tipos de Medidas (mapa mental)</h3>
+  <div class="grid2">
+    <div class="card">
+      <b>📍 Tendência Central</b>
+      <ul><li>Média</li><li>Mediana</li><li>Moda</li></ul>
+    </div>
+    <div class="card">
+      <b>📏 Dispersão / Variabilidade</b>
+      <ul><li>Amplitude</li><li>Variância</li><li>Desvio Padrão</li><li>Coeficiente de Variação</li></ul>
+    </div>
+    <div class="card" style="grid-column:1/-1">
+      <b>🎯 Posição / Localidade</b>
+      <ul><li>Quartis</li><li>Decis</li><li>Percentis</li></ul>
+    </div>
+  </div>
+
+  <h3>O que é ROL?</h3>
+  <div class="card highlight">
+    <b>ROL — "Regra de Ordem Lógica"</b>: conjunto de dados de uma amostra/população disposto em <b>ordem crescente ou decrescente</b>. É o <b>primeiro passo</b> na organização de dados para análises (cálculo de mediana, quartis, construção de tabelas de frequência etc.).
+  </div>
+  <div class="ex"><b>Ex:</b> dados {5, 2, 8, 1, 4} → ROL crescente: <code>{1, 2, 4, 5, 8}</code></div>
+</section>
+
+<!-- FREQUÊNCIAS -->
+<section id="freq">
+  <h2>🔢 Distribuição de Frequência</h2>
+  <div class="card highlight">
+    Técnica usada para <b>organizar e resumir</b> dados em tabelas/categorias, mostrando como os valores estão distribuídos. Não faz inferência — apenas descreve.
+  </div>
+
+  <p>Existem <b>4 tipos</b> de frequência:</p>
+
+  <details open>
+    <summary>1️⃣ Frequência Absoluta (𝑓ₖ)</summary>
+    <p><b>Definição:</b> número total de vezes que um valor/categoria <b>aparece</b> no conjunto. É a contagem direta de ocorrências. O <code>k</code> representa a <b>classe</b>.</p>
+    <div class="ex"><b>Ex:</b> em {1, 2, 2, 2, 2, 3, 3, 3, 4, 4} → o valor 2 aparece <b>4 vezes</b> → 𝑓₂ = 4</div>
+  </details>
+
+  <details>
+    <summary>2️⃣ Frequência Relativa (𝑓ᵣₑₗ)</summary>
+    <p><b>Definição:</b> proporção/percentual de vezes que um valor ocorre em relação ao <b>total</b> de dados.</p>
+    <div class="formula">𝑓ᵣₑₗ = 𝑓ₖ / n</div>
+    <p>Onde <code>n</code> é o total de observações.</p>
+    <div class="ex"><b>Ex:</b> Notas {6,6,6,7,7,7,7,8,8,9}, n=10:<br>
+      • Nota 6: 𝑓ᵣₑₗ = 3/10 = 0,30 ou 30%<br>
+      • Nota 7: 𝑓ᵣₑₗ = 4/10 = 0,40 ou 40%<br>
+      • Nota 8: 𝑓ᵣₑₗ = 2/10 = 0,20 ou 20%<br>
+      • Nota 9: 𝑓ᵣₑₗ = 1/10 = 0,10 ou 10%<br>
+      <b>Soma = 100%</b> ✅
+    </div>
+  </details>
+
+  <details>
+    <summary>3️⃣ Frequência Absoluta Acumulada (𝐹ₖ)</summary>
+    <p><b>Definição:</b> <b>soma progressiva</b> das frequências absolutas. Indica o número total de observações com valores ≤ a um valor específico.</p>
+    <div class="formula">𝐹ₖ = 𝑓ₖ + 𝐹ₖ₋₁</div>
+    <div class="tip">A última 𝐹ₖ é igual ao <b>total de observações (n)</b>.</div>
+  </details>
+
+  <details>
+    <summary>4️⃣ Frequência Relativa Acumulada (𝐹ᵣₑₗ)</summary>
+    <p><b>Definição:</b> soma progressiva das frequências relativas.</p>
+    <div class="formula">𝐹ᵣₑₗ = 𝑓ᵣₑₗ + 𝐹ᵣₑₗ₋₁</div>
+    <div class="tip">A última 𝐹ᵣₑₗ é sempre igual a <b>1,00 (100%)</b>.</div>
+  </details>
+
+  <h3>📋 Quadro-resumo dos símbolos</h3>
+  <table>
+    <tr><th>Símbolo</th><th>Nome</th><th>O que representa</th></tr>
+    <tr><td><code>𝑓ₖ</code></td><td>Freq. Absoluta</td><td>Contagem direta</td></tr>
+    <tr><td><code>𝑓ᵣₑₗ</code></td><td>Freq. Relativa</td><td>Proporção (𝑓ₖ/n)</td></tr>
+    <tr><td><code>𝐹ₖ</code></td><td>Freq. Absoluta Acumulada</td><td>Soma progressiva das 𝑓ₖ</td></tr>
+    <tr><td><code>𝐹ᵣₑₗ</code></td><td>Freq. Relativa Acumulada</td><td>Soma progressiva das 𝑓ᵣₑₗ</td></tr>
+    <tr><td><code>k</code></td><td>Classe</td><td>Identificador da categoria/intervalo</td></tr>
+    <tr><td><code>n</code></td><td>Tamanho amostral</td><td>Total de observações</td></tr>
+  </table>
+
+  <div class="tip">💡 <b>Dica:</b> minúsculo (<code>f</code>) = frequência simples; maiúsculo (<code>F</code>) = acumulada.</div>
+</section>
+
+<!-- FÓRMULAS -->
+<section id="formulas">
+  <h2>🧮 Fórmulas Essenciais</h2>
+
+  <div class="card">
+    <h3 style="margin-top:0">Frequência Relativa</h3>
+    <div class="formula">𝑓ᵣₑₗ = 𝑓ₖ / n</div>
+    <p>Divida a frequência absoluta pela quantidade total de dados.</p>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Frequência Absoluta Acumulada</h3>
+    <div class="formula">𝐹ₖ = 𝑓ₖ + 𝐹ₖ₋₁</div>
+    <p>Soma a frequência absoluta da classe atual com a frequência acumulada anterior.</p>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Frequência Relativa Acumulada</h3>
+    <div class="formula">𝐹ᵣₑₗ = 𝑓ᵣₑₗ + 𝐹ᵣₑₗ₋₁</div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Amplitude Total (𝐴ₜ) — para intervalos de classe</h3>
+    <div class="formula">𝐴ₜ = 𝑉ₘₐₓ − 𝑉ₘᵢₙ</div>
+    <p>Diferença entre o maior e o menor valor do conjunto.</p>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Tamanho da Classe (𝑇ₖ)</h3>
+    <div class="formula">𝑇ₖ = 𝐴ₜ / k</div>
+    <p>Onde <code>k</code> é o <b>número de classes</b> desejado. Arredonde para cima quando necessário.</p>
+  </div>
+</section>
+
+<!-- CLASSES -->
+<section id="classes">
+  <h2>📦 Intervalo de Classe</h2>
+  <div class="card highlight">
+    <b>Intervalo de classe</b> é a amplitude/extensão de cada classe em uma distribuição de frequência. Usado quando se trabalha com <b>dados quantitativos contínuos</b>.
+  </div>
+
+  <h3>Cada intervalo possui:</h3>
+  <div class="grid2">
+    <div class="card">📉 <b>Limite Inferior</b><br><small>Valor mínimo da classe</small></div>
+    <div class="card">📈 <b>Limite Superior</b><br><small>Valor máximo da classe</small></div>
+    <div class="card" style="grid-column:1/-1">📐 <b>Amplitude</b><br><small>Limite superior − Limite inferior</small></div>
+  </div>
+
+  <h3>⚠️ Notação importante: ⊢</h3>
+  <div class="card">
+    O símbolo <code>⊢</code> usado nas tabelas indica:
+    <ul>
+      <li><b>Lado fechado</b> (ex: <code>10 ⊢ 14</code>): inclui o limite inferior — <b>maior ou igual a</b> 10</li>
+      <li><b>Lado aberto</b> (ex: <code>10 ⊢ 14</code>): exclui o limite superior — <b>menor que</b> 14</li>
+    </ul>
+    Ou seja, <code>10 ⊢ 14</code> significa <b>[10, 14)</b> — pega valores de 10 (inclusive) até menor que 14.
+  </div>
+
+  <h3>🛠️ Como construir uma distribuição com intervalos</h3>
+  <div class="step"><span class="step-num">1</span> Ordenar os dados (ROL)</div>
+  <div class="step"><span class="step-num">2</span> Calcular a <b>Amplitude Total</b>: 𝐴ₜ = 𝑉ₘₐₓ − 𝑉ₘᵢₙ</div>
+  <div class="step"><span class="step-num">3</span> Definir o <b>número de classes</b> (k) — geralmente dado no exercício</div>
+  <div class="step"><span class="step-num">4</span> Calcular o <b>Tamanho da Classe</b>: 𝑇ₖ = 𝐴ₜ / k <small>(arredonde para cima)</small></div>
+  <div class="step"><span class="step-num">5</span> Construir a tabela: classe, 𝑓ₖ, 𝑓ᵣₑₗ, 𝐹ₖ, 𝐹ᵣₑₗ</div>
+</section>
+
+<!-- EXEMPLOS -->
+<section id="exemplos">
+  <h2>💡 Exemplos Resolvidos</h2>
+
+  <h3>Exemplo 1 — Frequência Absoluta (livros lidos)</h3>
+  <div class="card">
+    <p>Dados (10 pessoas): <code>1, 2, 2, 2, 2, 3, 3, 3, 4, 4</code></p>
+    <table>
+      <tr><th>Valor</th><th>𝑓ₖ</th></tr>
+      <tr><td>1</td><td>1</td></tr>
+      <tr><td>2</td><td>4</td></tr>
+      <tr><td>3</td><td>3</td></tr>
+      <tr><td>4</td><td>2</td></tr>
+      <tr><td><b>Total</b></td><td><b>10</b></td></tr>
+    </table>
+  </div>
+
+  <h3>Exemplo 2 — Tabela completa (idade dos filhos, n=50)</h3>
+  <div class="card">
+    <table>
+      <tr><th>k</th><th>Idade</th><th>𝑓ₖ</th><th>𝑓ᵣₑₗ</th><th>𝐹ₖ</th><th>𝐹ᵣₑₗ</th></tr>
+      <tr><td>1</td><td>0</td><td>8</td><td>16%</td><td>8</td><td>16%</td></tr>
+      <tr><td>2</td><td>1</td><td>13</td><td>26%</td><td>21</td><td>42%</td></tr>
+      <tr><td>3</td><td>2</td><td>8</td><td>16%</td><td>29</td><td>58%</td></tr>
+      <tr><td>4</td><td>3</td><td>5</td><td>10%</td><td>34</td><td>68%</td></tr>
+      <tr><td>5</td><td>4</td><td>11</td><td>22%</td><td>45</td><td>90%</td></tr>
+      <tr><td>6</td><td>5</td><td>5</td><td>10%</td><td>50</td><td>100%</td></tr>
+      <tr><td colspan="2"><b>Total</b></td><td><b>50</b></td><td><b>100%</b></td><td>—</td><td>—</td></tr>
+    </table>
+    <div class="tip">Observe: a última 𝐹ₖ = n = 50 e a última 𝐹ᵣₑₗ = 100%.</div>
+  </div>
+
+  <h3>Exemplo 3 — Construção com intervalos de classe</h3>
+  <div class="card">
+    <p>Dados: <code>10, 12, 14, 18, 21, 23, 25, 27, 28, 30</code> — organizar em <b>5 classes</b>.</p>
+    <div class="step"><span class="step-num">1</span> 𝐴ₜ = 30 − 10 = <b>20</b></div>
+    <div class="step"><span class="step-num">2</span> 𝑇ₖ = 20 / 5 = <b>4</b></div>
+    <table>
+      <tr><th>k</th><th>𝑓ₖ</th><th>𝑓ᵣₑₗ</th><th>𝐹ₖ</th><th>𝐹ᵣₑₗ</th></tr>
+      <tr><td>10 ⊢ 14</td><td>2</td><td>20%</td><td>2</td><td>20%</td></tr>
+      <tr><td>14 ⊢ 18</td><td>1</td><td>10%</td><td>3</td><td>30%</td></tr>
+      <tr><td>18 ⊢ 22</td><td>2</td><td>20%</td><td>5</td><td>50%</td></tr>
+      <tr><td>22 ⊢ 26</td><td>2</td><td>20%</td><td>7</td><td>70%</td></tr>
+      <tr><td>26 ⊢ 30</td><td>3</td><td>30%</td><td>10</td><td>100%</td></tr>
+      <tr><td><b>Total</b></td><td><b>10</b></td><td><b>100%</b></td><td>—</td><td>—</td></tr>
+    </table>
+  </div>
+
+  <h3>Exemplo 4 — Tonelagem de lixo (n=50, 5 classes)</h3>
+  <div class="card">
+    <div class="step"><span class="step-num">1</span> 𝐴ₜ = 97 − 50 = <b>47</b></div>
+    <div class="step"><span class="step-num">2</span> 𝑇ₖ = 47 / 5 = 9,4 ≈ <b>10</b> (arredondado para cima)</div>
+    <table>
+      <tr><th>k</th><th>Toneladas</th><th>𝑓ₖ</th><th>𝑓ᵣₑₗ</th><th>𝐹ₖ</th><th>𝐹ᵣₑₗ</th></tr>
+      <tr><td>1</td><td>50 ⊢ 60</td><td>14</td><td>28%</td><td>14</td><td>28%</td></tr>
+      <tr><td>2</td><td>60 ⊢ 70</td><td>13</td><td>26%</td><td>27</td><td>54%</td></tr>
+      <tr><td>3</td><td>70 ⊢ 80</td><td>7</td><td>14%</td><td>34</td><td>68%</td></tr>
+      <tr><td>4</td><td>80 ⊢ 90</td><td>8</td><td>16%</td><td>42</td><td>84%</td></tr>
+      <tr><td>5</td><td>90 ⊢ 100</td><td>8</td><td>16%</td><td>50</td><td>100%</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- FLASHCARDS -->
+<section id="flash">
+  <h2>🃏 Flashcards — clique para virar</h2>
+  <p>Memorize os conceitos-chave. Clique em cada card para ver a resposta.</p>
+  <div class="flash-grid" id="flashGrid"></div>
+</section>
+
+<!-- QUIZ -->
+<section id="quiz">
+  <h2>✅ Quiz Interativo — Escolha o tema</h2>
+  <p>Cada quiz embaralha as perguntas E as alternativas. Refaça quantas vezes quiser.</p>
+
+  <div class="card">
+    <h3 style="margin-top:0">🎯 Escolha o tema</h3>
+    <div id="themePicker" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px"></div>
+    <label style="display:flex;align-items:center;gap:10px;margin-top:10px">
+      Quantidade de questões:
+      <select id="qCount" style="background:var(--bg2);color:var(--text);border:1px solid var(--border);padding:6px 10px;border-radius:6px">
+        <option value="5">5</option>
+        <option value="10" selected>10</option>
+        <option value="15">15</option>
+        <option value="20">20</option>
+        <option value="999">Todas</option>
+      </select>
+    </label>
+    <label style="display:flex;align-items:center;gap:10px;margin-top:10px">
+      Dificuldade:
+      <select id="qDiff" style="background:var(--bg2);color:var(--text);border:1px solid var(--border);padding:6px 10px;border-radius:6px">
+        <option value="all" selected>Todas</option>
+        <option value="1">🟢 Fácil</option>
+        <option value="2">🟡 Médio</option>
+        <option value="3">🔴 Difícil</option>
+      </select>
+    </label>
+    <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn" onclick="startQuiz()">🎲 Iniciar / Embaralhar</button>
+      <button class="btn" style="background:var(--accent);color:#0f172a" onclick="weakSpotsQuiz()">🎯 Focar nos meus erros</button>
+    </div>
+    <div id="quizStats" style="margin-top:12px;color:var(--muted);font-size:.9em"></div>
+  </div>
+
+  <div id="quizContainer"></div>
+  <div id="quizResult"></div>
+</section>
+
+</main>
+
+<div class="progress">Acertos: <span id="score">0</span>/<span id="total">0</span></div>
+
+<script>
+function show(id, btn){
+  document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+const flashcards = [
+  ["Estatística Descritiva","Resumir, organizar e apresentar dados SEM fazer inferências sobre a população."],
+  ["ROL","Regra de Ordem Lógica — dados em ordem crescente ou decrescente. Primeiro passo da análise."],
+  ["Síntese Numérica","Conjunto de medidas para resumir dados quantitativamente: padrões, tendências, variações."],
+  ["Frequência Absoluta (𝑓ₖ)","Número de vezes que um valor aparece. Contagem direta."],
+  ["Frequência Relativa (𝑓ᵣₑₗ)","Proporção: 𝑓ₖ / n. Em decimal ou %."],
+  ["Frequência Absoluta Acumulada (𝐹ₖ)","Soma progressiva das 𝑓ₖ. Última 𝐹ₖ = n."],
+  ["Frequência Relativa Acumulada (𝐹ᵣₑₗ)","Soma progressiva das 𝑓ᵣₑₗ. Última = 100%."],
+  ["Fórmula 𝑓ᵣₑₗ","𝑓ᵣₑₗ = 𝑓ₖ / n"],
+  ["Fórmula 𝐹ₖ","𝐹ₖ = 𝑓ₖ + 𝐹ₖ₋₁"],
+  ["Amplitude Total (𝐴ₜ)","𝐴ₜ = 𝑉ₘₐₓ − 𝑉ₘᵢₙ. Maior valor menos o menor."],
+  ["Tamanho da Classe (𝑇ₖ)","𝑇ₖ = 𝐴ₜ / k, onde k = nº de classes."],
+  ["Intervalo de Classe","Amplitude/extensão de cada classe. Tem limite inferior, superior e amplitude."],
+  ["Símbolo ⊢","Lado fechado (≥) e lado aberto (<). Ex: 10⊢14 = [10, 14)."],
+  ["Quando usar Estatística Descritiva","Antes de análises complexas, comunicar resultados, detectar outliers/erros."],
+  ["Tipos de Medidas","Tendência Central, Dispersão e Posição."],
+  ["k (na fórmula)","Representa a CLASSE/categoria."],
+  ["n","Total de observações (soma de todas as 𝑓ₖ)."],
+  ["Limite Inferior","Valor MÍNIMO de uma classe."],
+  ["Limite Superior","Valor MÁXIMO de uma classe."],
+  ["Amplitude (de uma classe)","Limite superior − Limite inferior."],
+];
+const fg = document.getElementById('flashGrid');
+flashcards.forEach(([f,b])=>{
+  const el = document.createElement('div');
+  el.className='flash';
+  el.innerHTML=`<div class="flash-inner"><div class="flash-front">${f}</div><div class="flash-back">${b}</div></div>`;
+  el.onclick=()=>el.classList.toggle('flipped');
+  fg.appendChild(el);
+});
+
+const QUIZ_BANK = {
+  "Conceitos": [
+    {q:"O que faz a Estatística Descritiva?",o:["Faz inferências sobre a população","Resume e organiza dados SEM generalizar","Prevê o futuro","Calcula probabilidades"],a:1,d:1,e:"Descritiva apenas descreve — sem inferência."},
+    {q:"Qual NÃO é uma situação típica para usar Estatística Descritiva?",o:["Antes de análises complexas","Comunicar resultados de pesquisa","Identificar outliers","Generalizar para a população"],a:3,d:2,e:"Generalizar é tarefa da estatística inferencial."},
+    {q:"O que é ROL?",o:["Resumo Ordenado de Listas","Regra de Ordem Lógica — dados ordenados","Razão Original do Logaritmo","Limite de classes"],a:1,d:1,e:"Conjunto de dados em ordem crescente/decrescente."},
+    {q:"O ROL é o primeiro passo para:",o:["Calcular probabilidades","Cálculo de mediana, quartis, tabelas de frequência","Inferência estatística","Modelos preditivos"],a:1,d:2,e:"Antes de calcular, sempre ordena."},
+    {q:"Síntese Numérica é:",o:["Apenas a média","Conjunto de medidas que resumem dados quantitativamente","Lista de gráficos","Probabilidade total"],a:1,d:1,e:"Várias medidas que resumem dados."},
+    {q:"Quartis, decis e percentis são medidas de:",o:["Tendência central","Dispersão","Posição/localidade","Probabilidade"],a:2,d:1,e:"Indicam localização relativa de um dado."},
+  ],
+  "Frequências": [
+    {q:"Frequência absoluta (𝑓ₖ) é:",o:["Proporção","Número de vezes que um valor aparece","Soma acumulada","Média ponderada"],a:1,d:1,e:"Contagem direta de ocorrências."},
+    {q:"Como se calcula a frequência relativa?",o:["𝑓ₖ × n","𝑓ₖ + 𝐹ₖ₋₁","𝑓ₖ / n","n / 𝑓ₖ"],a:2,d:1,e:"Frequência absoluta dividida pelo total."},
+    {q:"A última frequência absoluta acumulada (𝐹ₖ) é igual a:",o:["100%","0","n (total de observações)","𝑓ₖ"],a:2,d:1,e:"A acumulada final equivale ao total amostral."},
+    {q:"A última frequência relativa acumulada é igual a:",o:["50%","100% (1,00)","n","𝑓ₖ"],a:1,d:1,e:"Soma de todas as proporções = 100%."},
+    {q:"Em {2,2,3,3,3,4,5,5,5,5}, qual a frequência absoluta de 5?",o:["3","4","5","2"],a:1,d:1,e:"O valor 5 aparece 4 vezes."},
+    {q:"Em {6,6,6,7,7,7,7,8,8,9} (n=10), 𝑓ᵣₑₗ da nota 7 é:",o:["30%","40%","20%","10%"],a:1,d:1,e:"4/10 = 40%."},
+    {q:"Se 𝑓₁=3, 𝑓₂=5, 𝑓₃=2, qual 𝐹₃ (acumulada)?",o:["5","8","10","2"],a:2,d:2,e:"3+5+2 = 10."},
+    {q:"O símbolo MAIÚSCULO 𝐹 representa:",o:["Frequência simples","Frequência acumulada","Total","Fator de classe"],a:1,d:2,e:"Maiúsculo = acumulada; minúsculo = simples."},
+    {q:"Qual fórmula expressa 𝐹ₖ corretamente?",o:["𝐹ₖ = 𝑓ₖ × 𝐹ₖ₋₁","𝐹ₖ = 𝑓ₖ − 𝐹ₖ₋₁","𝐹ₖ = 𝑓ₖ + 𝐹ₖ₋₁","𝐹ₖ = 𝑓ₖ / n"],a:2,d:2,e:"Soma da freq. atual com a acumulada anterior."},
+    {q:"O 'k' nas fórmulas representa:",o:["Tamanho amostral","A classe","Constante 1000","Quartil"],a:1,d:1,e:"k = identificador da classe."},
+    {q:"Em uma tabela com n=50, se 𝑓ₖ=20, então 𝑓ᵣₑₗ é:",o:["20%","30%","40%","50%"],a:2,d:2,e:"20/50 = 0,40 = 40%."},
+    {q:"Qual NÃO é um tipo de frequência citado?",o:["Absoluta","Relativa","Geométrica","Acumulada"],a:2,d:2,e:"Frequência geométrica não é um tipo padrão."},
+  ],
+  "Intervalos de Classe": [
+    {q:"Como se calcula a Amplitude Total (𝐴ₜ)?",o:["Média + desvio","Vmax − Vmin","Vmax / Vmin","Soma dos valores"],a:1,d:1,e:"Maior valor menos o menor valor."},
+    {q:"Como se calcula o Tamanho da Classe (𝑇ₖ)?",o:["k × 𝐴ₜ","𝐴ₜ + k","𝐴ₜ / k","𝐴ₜ − k"],a:2,d:1,e:"Amplitude total dividida pelo número de classes."},
+    {q:"O símbolo ⊢ em '10 ⊢ 14' significa:",o:["[10, 14] inclusive em ambos","(10, 14) exclusivo em ambos","[10, 14) — fechado em 10, aberto em 14","Apenas valores 10 e 14"],a:2,d:2,e:"Inclui o limite inferior e exclui o superior."},
+    {q:"Para dados {10,...,30} com 5 classes, qual o 𝐴ₜ e 𝑇ₖ?",o:["20 e 4","30 e 6","20 e 5","10 e 2"],a:0,d:2,e:"𝐴ₜ=30−10=20; 𝑇ₖ=20/5=4."},
+    {q:"Para Vmax=97, Vmin=50, k=5, qual 𝑇ₖ aproximado?",o:["8","9,4 (≈10)","12","20"],a:1,d:2,e:"47/5 = 9,4 — geralmente arredonda-se para 10."},
+    {q:"Cada intervalo de classe possui 3 elementos. Qual NÃO é?",o:["Limite Inferior","Limite Superior","Amplitude","Mediana"],a:3,d:1,e:"Mediana é uma medida; não compõe a definição do intervalo."},
+    {q:"Intervalo de classe é especialmente usado quando:",o:["Os dados são qualitativos","Os dados são quantitativos contínuos","Há poucos valores","Os dados são nominais"],a:1,d:2,e:"Para resumir dados contínuos em faixas."},
+    {q:"Em '50 ⊢ 60', um valor 60 entra nessa classe?",o:["Sim, sempre","Não, 60 só entra na próxima classe","Depende do contexto","Apenas se for inteiro"],a:1,d:3,e:"O lado direito é aberto: 60 entra em '60 ⊢ 70'."},
+    {q:"Se 𝑇ₖ deu 9,4, o usual é:",o:["Usar 9,4 mesmo","Truncar para 9","Arredondar para cima (10)","Recalcular tudo"],a:2,d:3,e:"Arredonda-se para cima para cobrir todos os dados."},
+    {q:"Amplitude de uma única classe é:",o:["Vmax do conjunto","Limite superior − Limite inferior","Frequência da classe","Média da classe"],a:1,d:2,e:"Diferença entre os limites da classe."},
+  ],
+  "Aplicação Prática": [
+    {q:"Tabela: 𝑓₁=14, 𝑓₂=13, 𝑓₃=7, 𝑓₄=8, 𝑓₅=8. Qual 𝐹₃?",o:["27","34","42","50"],a:1,d:2,e:"14+13+7 = 34."},
+    {q:"Mesma tabela (n=50). 𝐹ᵣₑₗ até a classe 3 é:",o:["54%","68%","84%","28%"],a:1,d:3,e:"34/50 = 68%."},
+    {q:"Para construir uma distribuição com intervalos, primeiro deve-se:",o:["Calcular 𝐹ᵣₑₗ","Ordenar os dados (ROL)","Calcular 𝑇ₖ","Definir 𝑓ᵣₑₗ"],a:1,d:2,e:"Ordenação é o passo inicial."},
+    {q:"Se você tem 100 dados e quer 5 classes, e 𝐴ₜ=80, qual 𝑇ₖ?",o:["20","16","10","5"],a:1,d:2,e:"80/5 = 16."},
+    {q:"Em distribuição de frequências, 𝑓ᵣₑₗ é útil para:",o:["Inferir sobre a população","Comparar conjuntos de tamanhos diferentes","Calcular o desvio padrão","Determinar outliers"],a:1,d:3,e:"Por ser proporcional, permite comparar conjuntos de tamanhos diferentes."},
+    {q:"𝐹ᵣₑₗ é mais útil que 𝐹ₖ quando se quer:",o:["Saber a contagem exata","Comparar percentuais acumulados","Calcular médias","Encontrar outliers"],a:1,d:3,e:"Acumulada relativa fornece os percentuais acumulados."},
+  ],
+};
+
+let currentTheme = "Todos";
+let currentQuiz = [];
+let score=0, answered=0;
+const stats = JSON.parse(localStorage.getItem('quizStats2')||'{}');
+
+const tp = document.getElementById('themePicker');
+const themes = ["Todos", ...Object.keys(QUIZ_BANK)];
+themes.forEach(t=>{
+  const b=document.createElement('button');
+  b.className='opt'; b.style.flex='0 0 auto'; b.style.padding='8px 14px';
+  b.textContent = t==="Todos" ? "🎲 Todos" : t;
+  b.onclick=()=>{currentTheme=t; document.querySelectorAll('#themePicker .opt').forEach(x=>x.classList.remove('correct')); b.classList.add('correct')};
+  if(t==="Todos") b.classList.add('correct');
+  tp.appendChild(b);
+});
+
+function getPool(){
+  const diff = document.getElementById('qDiff').value;
+  let pool = currentTheme==="Todos"
+    ? Object.entries(QUIZ_BANK).flatMap(([t,arr])=>arr.map(q=>({...q,theme:t})))
+    : QUIZ_BANK[currentTheme].map(q=>({...q,theme:currentTheme}));
+  if(diff!=="all") pool = pool.filter(q=>q.d===+diff);
+  return pool;
+}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+function startQuiz(){
+  const pool = getPool();
+  if(pool.length===0){ alert("Nenhuma questão para esses filtros."); return; }
+  const n = Math.min(+document.getElementById('qCount').value, pool.length);
+  currentQuiz = shuffle(pool).slice(0,n).map(q=>{
+    const idx = q.o.map((_,i)=>i);
+    const sh = shuffle(idx);
+    return {...q, o: sh.map(i=>q.o[i]), a: sh.indexOf(q.a)};
+  });
+  renderQuiz();
+}
+
+function weakSpotsQuiz(){
+  const all = Object.entries(QUIZ_BANK).flatMap(([t,arr])=>arr.map(q=>({...q,theme:t})));
+  const ranked = all.map(q=>{
+    const k = q.q;
+    const s = stats[k]||{ok:0,err:0};
+    const total = s.ok+s.err;
+    const errRate = total ? s.err/total : 0;
+    return {q, score: errRate*10 + (total===0?5:0)};
+  }).sort((a,b)=>b.score-a.score);
+  const n = Math.min(+document.getElementById('qCount').value, ranked.length);
+  currentQuiz = ranked.slice(0,n).map(r=>r.q).map(q=>{
+    const idx=q.o.map((_,i)=>i); const sh=shuffle(idx);
+    return {...q, o:sh.map(i=>q.o[i]), a:sh.indexOf(q.a)};
+  });
+  renderQuiz();
+}
+
+function renderQuiz(){
+  const qc = document.getElementById('quizContainer');
+  qc.innerHTML='';
+  document.getElementById('quizResult').innerHTML='';
+  score=0; answered=0;
+  document.getElementById('score').textContent=0;
+  document.getElementById('total').textContent=currentQuiz.length;
+  const diffEmoji = {1:"🟢",2:"🟡",3:"🔴"};
+  currentQuiz.forEach((it,i)=>{
+    const div=document.createElement('div');
+    div.className='quiz-q';
+    const themeTag = it.theme ? `<span class="pill">${it.theme}</span>` : '';
+    div.innerHTML=`<div class="q">${themeTag}<span class="pill warn">${diffEmoji[it.d]} ${it.d===1?'Fácil':it.d===2?'Médio':'Difícil'}</span><br>${i+1}. ${it.q}</div><div class="opts"></div><div class="feedback"></div>`;
+    const opts=div.querySelector('.opts');
+    it.o.forEach((opt,j)=>{
+      const b=document.createElement('button');
+      b.className='opt'; b.textContent=opt;
+      b.onclick=()=>answer(div,it,j,b);
+      opts.appendChild(b);
+    });
+    qc.appendChild(div);
+  });
+  updateStatsLabel();
+  qc.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function answer(div,it,j,btn){
+  const opts=div.querySelectorAll('.opt');
+  if([...opts].some(o=>o.disabled)) return;
+  opts.forEach((o,k)=>{o.disabled=true;if(k===it.a)o.classList.add('correct')});
+  const fb=div.querySelector('.feedback');
+  const key = it.q;
+  stats[key] = stats[key]||{ok:0,err:0};
+  if(j===it.a){
+    score++; stats[key].ok++;
+    fb.className='feedback show ok'; fb.innerHTML='✅ <b>Correto!</b> '+it.e;
+  } else {
+    stats[key].err++;
+    btn.classList.add('wrong'); fb.className='feedback show no';
+    fb.innerHTML='❌ <b>Não foi dessa vez.</b> '+it.e;
+  }
+  localStorage.setItem('quizStats2', JSON.stringify(stats));
+  answered++;
+  document.getElementById('score').textContent=score;
+  if(answered===currentQuiz.length) showResult();
+  updateStatsLabel();
+}
+
+function showResult(){
+  const pct = Math.round(100*score/currentQuiz.length);
+  let msg = pct===100 ? "🏆 Perfeito! Você dominou!" :
+            pct>=80 ? "🌟 Muito bem! Quase lá." :
+            pct>=60 ? "👍 Bom! Revise os pontos errados." :
+            pct>=40 ? "📚 Está pegando o jeito — refaça!" :
+                      "💪 Hora de revisar a teoria e tentar de novo!";
+  document.getElementById('quizResult').innerHTML =
+    `<div class="card highlight" style="text-align:center"><h3 style="margin-top:0">Resultado: ${score}/${currentQuiz.length} (${pct}%)</h3><p>${msg}</p>
+    <button class="btn" onclick="startQuiz()">🔄 Novo quiz embaralhado</button>
+    <button class="btn" style="background:var(--accent);color:#0f172a;margin-left:8px" onclick="weakSpotsQuiz()">🎯 Focar nos meus erros</button></div>`;
+}
+
+function updateStatsLabel(){
+  const total = Object.values(stats).reduce((s,x)=>s+x.ok+x.err,0);
+  const oks = Object.values(stats).reduce((s,x)=>s+x.ok,0);
+  const pct = total?Math.round(100*oks/total):0;
+  document.getElementById('quizStats').innerHTML =
+    `📊 Histórico geral: <b>${oks}/${total}</b> (${pct}%) — <a href="#" onclick="event.preventDefault();if(confirm('Apagar histórico?')){localStorage.removeItem('quizStats2');location.reload()}" style="color:var(--accent)">limpar histórico</a>`;
+}
+
+updateStatsLabel();
+startQuiz();
+</script>
+
+</body>
+</html>

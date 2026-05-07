@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aprenda — Distribuição de Frequência</title>
+<style>
+  :root{
+    --bg:#0b1120; --bg2:#1e293b; --card:#1a2540; --border:#2d3f63;
+    --primary:#6366f1; --primary2:#818cf8; --accent:#22d3ee;
+    --good:#10b981; --bad:#ef4444; --warn:#f59e0b; --pink:#ec4899;
+    --text:#e2e8f0; --muted:#94a3b8;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:Georgia,'Times New Roman',serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:17px}
+  .hero{min-height:60vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:60px 24px;background:radial-gradient(ellipse at top,#312e81 0%,#0b1120 70%);position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 20% 30%,rgba(99,102,241,.15) 0,transparent 50%),radial-gradient(circle at 80% 70%,rgba(34,211,238,.1) 0,transparent 50%)}
+  .hero-content{position:relative;z-index:1;max-width:800px}
+  .hero h1{font-size:3.5em;margin:0 0 12px;background:linear-gradient(135deg,#a5b4fc,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
+  .hero .subtitle{font-size:1.3em;color:var(--muted);font-style:italic;margin-bottom:30px}
+  .hero .meta{display:flex;justify-content:center;gap:30px;flex-wrap:wrap;color:var(--muted);font-size:.9em;font-family:sans-serif}
+  #progressBar{position:fixed;top:0;left:0;height:4px;background:linear-gradient(90deg,var(--primary),var(--accent));z-index:1000;transition:width .1s;width:0%}
+  .toc{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:30px;margin:40px auto;max-width:900px}
+  .toc h2{margin-top:0;color:var(--primary2);font-family:sans-serif}
+  .toc ol{padding-left:24px;font-family:sans-serif}
+  .toc li{margin:10px 0}
+  .toc a{color:var(--text);text-decoration:none;border-bottom:1px dashed transparent;transition:all .2s}
+  .toc a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+  main{max-width:820px;margin:0 auto;padding:40px 24px 80px}
+  .chapter{margin:80px 0;padding-top:40px;border-top:1px solid var(--border)}
+  .chapter:first-child{border-top:none}
+  .chapter-num{display:inline-block;font-family:sans-serif;color:var(--accent);font-size:.85em;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px}
+  .chapter h2{font-size:2.4em;margin:0 0 24px;color:var(--text);line-height:1.2;font-weight:700}
+  .chapter h3{font-size:1.5em;color:var(--primary2);margin:40px 0 12px;font-family:sans-serif}
+  .chapter h4{color:var(--accent);margin:24px 0 8px;font-family:sans-serif;font-size:1.1em}
+  .chapter p{margin:18px 0}
+  .lead{font-size:1.2em;color:var(--muted);font-style:italic;border-left:3px solid var(--primary);padding:8px 0 8px 20px;margin:24px 0}
+  .analogy,.example,.warning,.deep,.story,.def{margin:28px 0;padding:20px 24px;border-radius:12px;font-family:sans-serif;font-size:.95em;line-height:1.7}
+  .analogy{background:linear-gradient(135deg,rgba(236,72,153,.12),rgba(236,72,153,.04));border-left:4px solid var(--pink)}
+  .analogy::before{content:'🎭 Analogia';display:block;font-weight:700;color:var(--pink);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .example{background:linear-gradient(135deg,rgba(34,211,238,.1),rgba(34,211,238,.02));border-left:4px solid var(--accent)}
+  .example::before{content:'💡 Exemplo prático';display:block;font-weight:700;color:var(--accent);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .warning{background:linear-gradient(135deg,rgba(245,158,11,.12),rgba(245,158,11,.02));border-left:4px solid var(--warn)}
+  .warning::before{content:'⚠️ Cuidado';display:block;font-weight:700;color:var(--warn);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .deep{background:linear-gradient(135deg,rgba(99,102,241,.12),rgba(99,102,241,.02));border-left:4px solid var(--primary)}
+  .deep::before{content:'🔍 Aprofundando';display:block;font-weight:700;color:var(--primary2);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .story{background:linear-gradient(135deg,rgba(16,185,129,.1),rgba(16,185,129,.02));border-left:4px solid var(--good)}
+  .story::before{content:'📖 História/Contexto';display:block;font-weight:700;color:var(--good);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .def{background:var(--bg2);border:1px solid var(--border);border-radius:8px}
+  .def::before{content:'📌 Definição';display:block;font-weight:700;color:var(--primary2);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  table{width:100%;border-collapse:collapse;margin:24px 0;background:var(--card);border-radius:12px;overflow:hidden;font-family:sans-serif;font-size:.95em}
+  th,td{padding:14px 16px;text-align:left;border-bottom:1px solid var(--border)}
+  th{background:linear-gradient(135deg,var(--primary),#8b5cf6);color:white;font-weight:700}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:rgba(99,102,241,.05)}
+  td.center,th.center{text-align:center}
+  .key{background:rgba(99,102,241,.15);color:var(--primary2);padding:2px 8px;border-radius:4px;font-weight:600;font-family:sans-serif}
+  blockquote{border-left:4px solid var(--accent);padding:8px 24px;margin:24px 0;font-style:italic;color:var(--muted);background:rgba(34,211,238,.05);border-radius:0 8px 8px 0}
+  .selfcheck{background:var(--card);border:2px dashed var(--primary);border-radius:12px;padding:20px;margin:30px 0;font-family:sans-serif}
+  .selfcheck-q{font-weight:600;color:var(--primary2);margin-bottom:12px}
+  .selfcheck-q::before{content:'🤔 Pergunta para você: ';font-weight:700;color:var(--accent)}
+  details summary{cursor:pointer;color:var(--accent);font-weight:600;outline:none;list-style:none}
+  details summary::before{content:'👁️ Mostrar resposta ▼';font-size:.9em}
+  details[open] summary::before{content:'🙈 Esconder ▲'}
+  details[open] .answer{margin-top:12px;padding:14px;background:var(--bg2);border-radius:8px;border-left:3px solid var(--good);font-style:italic;color:var(--text);font-weight:normal}
+  .formula{background:linear-gradient(135deg,rgba(99,102,241,.15),rgba(34,211,238,.05));border:1px solid var(--primary);border-radius:12px;padding:20px;margin:20px 0;font-family:'Cambria Math','Times New Roman',serif;font-size:1.6em;text-align:center;font-style:italic}
+  .formula small{font-size:.55em;font-style:normal;color:var(--muted);font-family:sans-serif;display:block;margin-top:8px}
+  .floating{position:fixed;right:24px;bottom:24px;display:flex;flex-direction:column;gap:8px;z-index:50}
+  .floating button{background:var(--card);border:1px solid var(--border);color:var(--text);width:48px;height:48px;border-radius:50%;cursor:pointer;font-size:1.2em;transition:all .2s;box-shadow:0 4px 12px rgba(0,0,0,.4)}
+  .floating button:hover{background:var(--primary);transform:scale(1.1)}
+  .end{text-align:center;padding:60px 24px;background:radial-gradient(ellipse at center,rgba(99,102,241,.15),transparent);margin-top:80px;border-top:1px solid var(--border)}
+  .end h2{font-size:2em;color:var(--primary2)}
+  .cta{display:inline-block;margin-top:20px;padding:14px 28px;background:linear-gradient(135deg,var(--primary),var(--accent));color:white;border-radius:99px;text-decoration:none;font-family:sans-serif;font-weight:600;transition:transform .2s}
+  .cta:hover{transform:scale(1.05)}
+  .step{background:var(--bg2);border-left:4px solid var(--accent);padding:14px 20px;border-radius:8px;margin:12px 0;font-family:sans-serif}
+  .step-num{display:inline-flex;width:32px;height:32px;background:var(--accent);color:#0f172a;border-radius:50%;align-items:center;justify-content:center;font-weight:700;margin-right:12px;font-size:1em}
+  .symbol-card{display:inline-block;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 14px;margin:4px;font-family:'Cambria Math',serif;font-size:1.1em}
+  .symbol-card b{color:var(--accent)}
+  /* Bar chart */
+  .barchart{display:flex;align-items:flex-end;gap:8px;height:200px;background:var(--bg2);border-radius:12px;padding:16px;font-family:sans-serif;margin:20px 0}
+  .bar{flex:1;background:linear-gradient(to top,var(--primary),var(--accent));border-radius:6px 6px 0 0;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;color:white;font-size:.85em;font-weight:600;padding:6px;position:relative;transition:transform .2s}
+  .bar:hover{transform:scaleY(1.05)}
+  .bar::after{content:attr(data-label);position:absolute;bottom:-22px;font-size:.8em;color:var(--muted);font-weight:normal}
+</style>
+</head>
+<body>
+
+<div id="progressBar"></div>
+
+<div class="hero">
+  <div class="hero-content">
+    <h1>Distribuição de Frequência</h1>
+    <p class="subtitle">"Antes de calcular qualquer coisa sobre os dados, primeiro precisamos <em>vê-los</em>. E para vê-los, precisamos organizá-los."</p>
+    <div class="meta">
+      <span>📚 Guia imersivo</span>
+      <span>⏱️ ~20 minutos</span>
+      <span>🎓 Estatística Descritiva / FICR</span>
+    </div>
+  </div>
+</div>
+
+<div class="toc" id="top">
+  <h2>📑 Sumário</h2>
+  <ol>
+    <li><a href="#cap1">A pergunta que move tudo</a></li>
+    <li><a href="#cap2">Estatística Descritiva: o lugar onde tudo começa</a></li>
+    <li><a href="#cap3">ROL: o ato fundador</a></li>
+    <li><a href="#cap4">Frequência Absoluta: contar é entender</a></li>
+    <li><a href="#cap5">Frequência Relativa: a magia das proporções</a></li>
+    <li><a href="#cap6">Frequências acumuladas: somando narrativas</a></li>
+    <li><a href="#cap7">Intervalos de classe: agrupando o contínuo</a></li>
+    <li><a href="#cap8">Construindo uma distribuição passo a passo</a></li>
+    <li><a href="#cap9">Tudo junto: um caso completo</a></li>
+  </ol>
+</div>
+
+<main>
+
+<article class="chapter" id="cap1">
+  <div class="chapter-num">Capítulo 1</div>
+  <h2>A pergunta que move tudo</h2>
+
+  <p class="lead">Imagine que alguém te entrega uma planilha com 50.000 linhas de dados. Qual é a primeira coisa que você faz? Calcula a média? Roda um teste estatístico? Não. Você precisa, antes de tudo, <em>entender o que está olhando</em>.</p>
+
+  <p>Esse é o problema que a <span class="key">distribuição de frequência</span> resolve. Ela é, no fundo, uma resposta à pergunta mais básica que se pode fazer sobre um conjunto de dados:</p>
+
+  <blockquote>"Quantas vezes cada coisa aparece?"</blockquote>
+
+  <p>Parece bobo. Mas pense bem: se você sabe que numa turma de 50 alunos, 8 têm zero filhos, 13 têm um filho, 8 têm dois — você já não está mais olhando para uma lista crua. Você está vendo um <em>padrão</em>. E padrões são onde a estatística começa a falar com você.</p>
+
+  <div class="analogy">
+    Pense em uma estante de livros bagunçada. Antes de procurar um título específico, alguém precisa organizar — talvez por gênero, ou por autor. A distribuição de frequência é a "organização da estante": você não muda os dados, você muda a forma como eles estão arrumados, para que façam sentido ao olhar humano.
+  </div>
+</article>
+
+<article class="chapter" id="cap2">
+  <div class="chapter-num">Capítulo 2</div>
+  <h2>Estatística Descritiva: o lugar onde tudo começa</h2>
+
+  <div class="def">
+    <strong>Estatística Descritiva</strong> é a área da estatística que se concentra em <strong>resumir, organizar e apresentar</strong> os dados de forma compreensível, <strong>sem fazer inferências</strong> ou generalizações sobre uma população maior. Ela é usada para descrever as características principais de um conjunto de dados, simplificando grandes volumes em informações fáceis de interpretar.
+  </div>
+
+  <p>Repare na palavra "<em>sem inferências</em>". Esse é o detalhe que separa a estatística descritiva de tudo que vem depois. Aqui você não está tentando provar nada, generalizar nada, prever nada. Está apenas <em>descrevendo o que existe</em>.</p>
+
+  <h3>Quando usá-la?</h3>
+  <p>O PDF do professor Fred elenca três momentos:</p>
+  <ul>
+    <li><strong>Antes de qualquer análise mais complexa</strong>, para ter uma visão geral dos dados.</li>
+    <li><strong>Para comunicar resultados</strong> de uma pesquisa de forma clara e concisa.</li>
+    <li><strong>Para identificar problemas</strong> nos dados — outliers, erros de digitação, valores impossíveis.</li>
+  </ul>
+
+  <div class="story">
+    Em qualquer projeto de Ciência de Dados real, 60% a 80% do tempo é gasto em estatística descritiva e limpeza de dados — não em algoritmos sofisticados. É a fase mais subestimada e a mais importante. Quem pula etapas aqui paga caro depois.
+  </div>
+
+  <h3>Síntese Numérica</h3>
+  <p>Dentro da descritiva, a <strong>síntese numérica</strong> é o conjunto de medidas que resume os dados <em>quantitativamente</em>. Em vez de você olhar 50.000 valores, olha 3 ou 4 números que capturam a essência. Ela se divide em três famílias:</p>
+
+  <table>
+    <tr><th>Família</th><th>Pergunta</th><th>Medidas</th></tr>
+    <tr><td><strong>Tendência Central</strong></td><td>"Onde está o meio?"</td><td>Média, mediana, moda</td></tr>
+    <tr><td><strong>Dispersão</strong></td><td>"O quanto variam?"</td><td>Amplitude, variância, desvio padrão, CV</td></tr>
+    <tr><td><strong>Posição</strong></td><td>"Onde cada um está?"</td><td>Quartis, decis, percentis</td></tr>
+  </table>
+
+  <p>Mas, antes mesmo de calcular qualquer uma dessas medidas, você precisa preparar o terreno. E o primeiro tijolo é a <strong>distribuição de frequência</strong>.</p>
+</article>
+
+<article class="chapter" id="cap3">
+  <div class="chapter-num">Capítulo 3</div>
+  <h2>ROL: o ato fundador</h2>
+
+  <p class="lead">Antes de qualquer fórmula, qualquer tabela, qualquer gráfico — existe um gesto silencioso que precede tudo: ordenar os dados.</p>
+
+  <div class="def">
+    <strong>ROL ("Regra de Ordem Lógica")</strong> é o conjunto de dados de uma amostra ou população disposto em <strong>ordem crescente ou decrescente</strong>. É o primeiro passo na organização dos dados para diversas análises estatísticas — cálculo de medidas de posição (média, mediana, quartis) ou construção de tabelas de frequência.
+  </div>
+
+  <div class="example">
+    Dados crus: <code>{5, 2, 8, 1, 4, 3, 7}</code><br>
+    ROL crescente: <code>{1, 2, 3, 4, 5, 7, 8}</code><br>
+    ROL decrescente: <code>{8, 7, 5, 4, 3, 2, 1}</code>
+  </div>
+
+  <p>Por que isso importa tanto? Porque <em>quase todas</em> as análises seguintes assumem que os dados estão ordenados. A mediana, por exemplo, é "o valor do meio" — e "meio" só existe quando há ordem. Os quartis dividem os dados em quartos — quartos só fazem sentido em uma sequência. Construir intervalos de classe começa identificando o menor e o maior valor, o que exige ROL.</p>
+
+  <div class="analogy">
+    O ROL é como afinar o instrumento antes de tocar. Você não vai começar um show com o violão desafinado, mesmo que esteja com pressa. O ROL afina seus dados para que tudo o que vem depois soe certo.
+  </div>
+</article>
+
+<article class="chapter" id="cap4">
+  <div class="chapter-num">Capítulo 4</div>
+  <h2>Frequência Absoluta: contar é entender</h2>
+
+  <div class="def">
+    <strong>Frequência Absoluta (𝑓ₖ)</strong> é o número total de vezes que um determinado valor ou categoria aparece em um conjunto de dados. Indica a contagem direta de ocorrências, sem levar em conta proporções ou porcentagens. O <strong>k</strong> representa a classe.
+  </div>
+
+  <p>Aqui não tem segredo. Se a turma tem 10 pessoas e o número de livros que cada uma leu por mês é <code>{1, 2, 2, 2, 2, 3, 3, 3, 4, 4}</code>, então:</p>
+
+  <div class="example">
+    • 1 livro: aparece <strong>1</strong> vez → 𝑓₁ = 1<br>
+    • 2 livros: aparecem <strong>4</strong> vezes → 𝑓₂ = 4<br>
+    • 3 livros: aparecem <strong>3</strong> vezes → 𝑓₃ = 3<br>
+    • 4 livros: aparecem <strong>2</strong> vezes → 𝑓₄ = 2<br>
+    <strong>Total = 10 ✓</strong>
+  </div>
+
+  <p>Visualizando como gráfico de barras:</p>
+
+  <div class="barchart">
+    <div class="bar" data-label="1 livro" style="height:25%">1</div>
+    <div class="bar" data-label="2 livros" style="height:100%">4</div>
+    <div class="bar" data-label="3 livros" style="height:75%">3</div>
+    <div class="bar" data-label="4 livros" style="height:50%">2</div>
+  </div>
+
+  <p>Essa simples organização já te diz mais sobre a turma do que olhar a lista crua: o "típico" é ler 2 livros por mês; quase ninguém lê só 1; algumas pessoas leem 3 ou 4.</p>
+
+  <div class="warning">
+    <strong>Notação:</strong> o subscrito em 𝑓ₖ não é o valor, é a <em>classe</em>. Se a primeira classe tem o valor "1 livro", então 𝑓₁ refere-se à classe 1, não ao valor 1. Esse k é só um índice ordinal — a primeira classe, a segunda, a terceira... Confundir isso é um erro clássico em prova.
+  </div>
+</article>
+
+<article class="chapter" id="cap5">
+  <div class="chapter-num">Capítulo 5</div>
+  <h2>Frequência Relativa: a magia das proporções</h2>
+
+  <p class="lead">Saber que algo aconteceu 4 vezes é informação. Saber que algo aconteceu 4 vezes <em>em 10</em>, ou seja, 40% das vezes — isso é poder.</p>
+
+  <div class="def">
+    <strong>Frequência Relativa (𝑓ᵣₑₗ)</strong> é a proporção ou percentual de vezes que um valor ou categoria ocorre em relação ao total de dados. É obtida dividindo a frequência absoluta pelo total de observações.
+  </div>
+
+  <div class="formula">𝑓ᵣₑₗ = 𝑓ₖ / n <small>n = total de observações</small></div>
+
+  <p>O resultado pode ser expresso como decimal (0,40) ou percentual (40%) — são equivalentes.</p>
+
+  <h3>Exemplo do PDF</h3>
+  <p>Notas dos alunos de uma turma: <code>{6, 6, 6, 7, 7, 7, 7, 8, 8, 9}</code>, n = 10.</p>
+
+  <table>
+    <tr><th>Nota</th><th>𝑓ₖ (absoluta)</th><th>𝑓ᵣₑₗ (decimal)</th><th>𝑓ᵣₑₗ (%)</th></tr>
+    <tr><td>6</td><td>3</td><td>3/10 = 0,30</td><td>30%</td></tr>
+    <tr><td>7</td><td>4</td><td>4/10 = 0,40</td><td>40%</td></tr>
+    <tr><td>8</td><td>2</td><td>2/10 = 0,20</td><td>20%</td></tr>
+    <tr><td>9</td><td>1</td><td>1/10 = 0,10</td><td>10%</td></tr>
+    <tr><td><strong>Total</strong></td><td><strong>10</strong></td><td><strong>1,00</strong></td><td><strong>100%</strong></td></tr>
+  </table>
+
+  <div class="deep">
+    Por que a frequência relativa é tão poderosa? Porque ela <strong>permite comparar conjuntos de tamanhos diferentes</strong>. Imagine duas escolas: a Escola A tem 200 alunos e 60 tiraram nota máxima. A Escola B tem 5.000 alunos e 1.000 tiraram nota máxima. Quem foi melhor? Em frequência absoluta, a Escola B "ganha" (1000 vs 60). Mas em frequência relativa: A = 30%, B = 20%. A Escola A foi proporcionalmente melhor. Sem proporção, comparar conjuntos diferentes é impossível.
+  </div>
+
+  <div class="selfcheck">
+    <div class="selfcheck-q">Se eu te disser que 𝑓ᵣₑₗ de uma classe é 25% e n = 80, qual é 𝑓ₖ?</div>
+    <details><summary></summary>
+    <div class="answer"><strong>𝑓ₖ = 20.</strong> Como 𝑓ᵣₑₗ = 𝑓ₖ/n, temos 0,25 = 𝑓ₖ/80 → 𝑓ₖ = 0,25 × 80 = 20. A fórmula funciona nos dois sentidos.</div>
+    </details>
+  </div>
+</article>
+
+<article class="chapter" id="cap6">
+  <div class="chapter-num">Capítulo 6</div>
+  <h2>Frequências acumuladas: somando narrativas</h2>
+
+  <p class="lead">Até agora cada classe foi olhada isoladamente. As frequências acumuladas mudam o jogo: passam a contar a história "do começo até aqui".</p>
+
+  <h3>Frequência Absoluta Acumulada (𝐹ₖ)</h3>
+  <div class="def">
+    É a <strong>soma progressiva</strong> das frequências absolutas. Indica o número total de observações que possuem valores menores ou iguais a um valor específico.
+  </div>
+
+  <div class="formula">𝐹ₖ = 𝑓ₖ + 𝐹ₖ₋₁</div>
+
+  <p>Em outras palavras: a 𝐹 da classe atual é a 𝑓 da classe atual mais a 𝐹 da classe anterior. É como ir somando degraus de uma escada — cada degrau acumula tudo o que veio antes.</p>
+
+  <div class="example">
+    Considere os dados:<br><br>
+    <strong>Classe 1:</strong> 𝑓 = 3 → 𝐹₁ = 3<br>
+    <strong>Classe 2:</strong> 𝑓 = 5 → 𝐹₂ = 3 + 5 = 8<br>
+    <strong>Classe 3:</strong> 𝑓 = 2 → 𝐹₃ = 8 + 2 = 10<br><br>
+    A última 𝐹 é igual ao total de observações (n = 10). Isso é uma <strong>verificação</strong> automática de que sua tabela está correta.
+  </div>
+
+  <h3>Frequência Relativa Acumulada (𝐹ᵣₑₗ)</h3>
+  <p>O mesmo raciocínio, mas com proporções:</p>
+
+  <div class="formula">𝐹ᵣₑₗ = 𝑓ᵣₑₗ + 𝐹ᵣₑₗ₋₁</div>
+
+  <p>A última 𝐹ᵣₑₗ é sempre <strong>1,00 (100%)</strong> — outra verificação útil.</p>
+
+  <h3>Por que tudo isso importa?</h3>
+  <p>Porque a frequência acumulada responde perguntas <em>diferentes</em> da frequência simples:</p>
+
+  <ul>
+    <li><strong>Frequência simples:</strong> "Quantos alunos tiraram exatamente 7?"</li>
+    <li><strong>Frequência acumulada:</strong> "Quantos alunos tiraram <em>no máximo</em> 7?" (ou seja, 7 ou menos)</li>
+  </ul>
+
+  <div class="analogy">
+    Pense numa corrida de longa distância. A frequência simples é o tempo de cada quilômetro. A acumulada é o tempo total no relógio em cada ponto. As duas dizem coisas verdadeiras, mas respondem perguntas diferentes — e cada uma é útil em momentos distintos.
+  </div>
+
+  <div class="warning">
+    <strong>Convenção da notação:</strong> minúsculo (𝑓) = frequência simples; maiúsculo (𝐹) = frequência acumulada. É detalhe sutil mas decisivo em prova. Se aparecer 𝐹 em vez de 𝑓, significa "soma do começo até aqui".
+  </div>
+
+  <div class="selfcheck">
+    <div class="selfcheck-q">Em uma tabela com classes de notas, 𝐹ᵣₑₗ até a nota 7 é 70%. O que isso significa em palavras simples?</div>
+    <details><summary></summary>
+    <div class="answer">Significa que <strong>70% dos alunos tiraram nota 7 ou menos</strong>. Equivalentemente: apenas 30% tiraram nota maior que 7. A frequência acumulada relativa é uma forma elegante de expressar percentis acumulados.</div>
+    </details>
+  </div>
+</article>
+
+<article class="chapter" id="cap7">
+  <div class="chapter-num">Capítulo 7</div>
+  <h2>Intervalos de classe: agrupando o contínuo</h2>
+
+  <p class="lead">E quando os dados não são "quantos livros leu" (valores discretos), mas sim "qual é o seu peso" (valores contínuos)? Aí precisamos de <em>intervalos</em>.</p>
+
+  <p>Imagine que você medisse a altura exata de 100 pessoas. Você teria 100 valores praticamente todos diferentes: 1,723; 1,755; 1,801... Calcular a frequência absoluta de cada altura individual seria inútil — quase todas teriam frequência 1.</p>
+
+  <p>A solução: agrupar em <strong>intervalos</strong>. Em vez de "quantas pessoas medem 1,723", pergunte "quantas pessoas medem entre 1,70 e 1,75". Aí surgem padrões.</p>
+
+  <div class="def">
+    <strong>Intervalo de classe</strong> é a amplitude ou extensão de cada classe em uma distribuição de frequência, especialmente quando se trabalha com dados quantitativos contínuos.
+  </div>
+
+  <h3>Anatomia de um intervalo</h3>
+  <p>Cada intervalo de classe possui três elementos:</p>
+  <ul>
+    <li><strong>Limite Inferior:</strong> o valor mínimo que a classe pode assumir.</li>
+    <li><strong>Limite Superior:</strong> o valor máximo que a classe pode assumir.</li>
+    <li><strong>Amplitude:</strong> a diferença entre o limite superior e o inferior.</li>
+  </ul>
+
+  <h3>O símbolo ⊢ (e a armadilha do "60")</h3>
+  <p>No PDF, você vê notações como <code>10 ⊢ 14</code>. Esse símbolo ⊢ tem um significado preciso:</p>
+
+  <div class="symbol-card">⊢ &nbsp;<b>lado fechado:</b> inclui (≥)</div>
+  <div class="symbol-card">⊣ &nbsp;<b>lado aberto:</b> exclui (&lt;)</div>
+
+  <p>Então <code>10 ⊢ 14</code> quer dizer: <strong>maior ou igual a 10 e menor que 14</strong>, ou em notação matemática, [10, 14).</p>
+
+  <div class="warning">
+    <strong>Pegadinha clássica:</strong> se eu tenho intervalos <code>50 ⊢ 60</code> e <code>60 ⊢ 70</code>, em qual classe entra um valor exatamente igual a 60? Resposta: na <strong>segunda</strong>, porque o lado direito de <code>50 ⊢ 60</code> é aberto (exclui 60). Esse detalhe define se sua tabela está certa ou errada — não dá para deixar valor "duplo-contado" nem "ignorado".
+  </div>
+
+  <div class="analogy">
+    A notação ⊢ é como o teto de um andar de prédio: o piso pertence ao andar de baixo, mas o teto pertence ao andar de cima. Se você está no quinto andar e sobe a escada até o sexto, o último degrau (chão do sexto) já é "outro andar". Sem essa convenção, pessoas ficariam presas em estados ambíguos.
+  </div>
+</article>
+
+<article class="chapter" id="cap8">
+  <div class="chapter-num">Capítulo 8</div>
+  <h2>Construindo uma distribuição passo a passo</h2>
+
+  <p class="lead">Hora de juntar tudo. Vamos construir uma distribuição de frequência completa, da matéria-prima crua até a tabela polida.</p>
+
+  <h3>O algoritmo</h3>
+  <div class="step"><span class="step-num">1</span> <strong>Ordenar os dados (ROL)</strong> — em ordem crescente.</div>
+  <div class="step"><span class="step-num">2</span> <strong>Calcular a Amplitude Total:</strong> 𝐴ₜ = 𝑉ₘₐₓ − 𝑉ₘᵢₙ</div>
+  <div class="step"><span class="step-num">3</span> <strong>Definir o número de classes (k)</strong> — geralmente o exercício te diz; em problemas reais, há regras (Sturges, raiz quadrada de n etc.).</div>
+  <div class="step"><span class="step-num">4</span> <strong>Calcular o Tamanho de cada Classe:</strong> 𝑇ₖ = 𝐴ₜ / k <em>(arredonde para cima quando precisar)</em></div>
+  <div class="step"><span class="step-num">5</span> <strong>Construir os intervalos</strong> partindo do menor valor, somando 𝑇ₖ a cada classe.</div>
+  <div class="step"><span class="step-num">6</span> <strong>Contar as frequências</strong> 𝑓ₖ em cada classe.</div>
+  <div class="step"><span class="step-num">7</span> <strong>Calcular as frequências derivadas</strong>: 𝑓ᵣₑₗ, 𝐹ₖ, 𝐹ᵣₑₗ.</div>
+
+  <h3>Aplicando: dados <code>{10, 12, 14, 18, 21, 23, 25, 27, 28, 30}</code>, 5 classes</h3>
+
+  <div class="example">
+    <strong>Passo 2:</strong> 𝐴ₜ = 𝑉ₘₐₓ − 𝑉ₘᵢₙ = 30 − 10 = <strong>20</strong><br>
+    <strong>Passo 4:</strong> 𝑇ₖ = 𝐴ₜ / k = 20 / 5 = <strong>4</strong><br>
+    <strong>Passos 5-7:</strong> tabela final →
+  </div>
+
+  <table>
+    <tr><th>Classe</th><th class="center">𝑓ₖ</th><th class="center">𝑓ᵣₑₗ</th><th class="center">𝐹ₖ</th><th class="center">𝐹ᵣₑₗ</th></tr>
+    <tr><td>10 ⊢ 14</td><td class="center">2</td><td class="center">20%</td><td class="center">2</td><td class="center">20%</td></tr>
+    <tr><td>14 ⊢ 18</td><td class="center">1</td><td class="center">10%</td><td class="center">3</td><td class="center">30%</td></tr>
+    <tr><td>18 ⊢ 22</td><td class="center">2</td><td class="center">20%</td><td class="center">5</td><td class="center">50%</td></tr>
+    <tr><td>22 ⊢ 26</td><td class="center">2</td><td class="center">20%</td><td class="center">7</td><td class="center">70%</td></tr>
+    <tr><td>26 ⊢ 30</td><td class="center">3</td><td class="center">30%</td><td class="center">10</td><td class="center">100%</td></tr>
+    <tr><td><strong>Total</strong></td><td class="center"><strong>10</strong></td><td class="center"><strong>100%</strong></td><td class="center">—</td><td class="center">—</td></tr>
+  </table>
+
+  <p>Note como a última 𝐹ₖ = 10 (= n) e a última 𝐹ᵣₑₗ = 100%. Essa é a sua "verificação automática": se não bate, tem erro em algum lugar.</p>
+
+  <div class="warning">
+    <strong>Pegadinha do "26 ⊢ 30":</strong> note que essa classe inclui o valor 30, embora seja "lado aberto" do lado direito. Por convenção em exercícios, a <em>última classe</em> costuma ser fechada nos dois lados, para que o maior valor não fique de fora. Quando o problema não diz, use o bom senso: o último valor precisa entrar em alguma classe.
+  </div>
+</article>
+
+<article class="chapter" id="cap9">
+  <div class="chapter-num">Capítulo 9</div>
+  <h2>Tudo junto: um caso completo</h2>
+
+  <p class="lead">Para fechar, vamos resolver o exemplo "tonelagem de lixo" do PDF. Esse caso usa todos os conceitos juntos.</p>
+
+  <p><strong>Cenário:</strong> coletadas 50 medições diárias de toneladas de lixo. Vamos organizar em <strong>5 classes</strong>.</p>
+
+  <div class="example">
+    <strong>1.</strong> Os dados (já em ROL) variam de 50 a 97 toneladas, com n = 50.<br>
+    <strong>2.</strong> Amplitude Total: 𝐴ₜ = 97 − 50 = <strong>47</strong><br>
+    <strong>3.</strong> Tamanho da Classe: 𝑇ₖ = 47 / 5 = 9,4 → arredondamos para <strong>10</strong>.<br>
+    <strong>4.</strong> Construímos os intervalos partindo de 50 e somando 10:
+  </div>
+
+  <table>
+    <tr><th>k</th><th>Toneladas</th><th class="center">𝑓ₖ</th><th class="center">𝑓ᵣₑₗ</th><th class="center">𝐹ₖ</th><th class="center">𝐹ᵣₑₗ</th></tr>
+    <tr><td>1</td><td>50 ⊢ 60</td><td class="center">14</td><td class="center">28%</td><td class="center">14</td><td class="center">28%</td></tr>
+    <tr><td>2</td><td>60 ⊢ 70</td><td class="center">13</td><td class="center">26%</td><td class="center">27</td><td class="center">54%</td></tr>
+    <tr><td>3</td><td>70 ⊢ 80</td><td class="center">7</td><td class="center">14%</td><td class="center">34</td><td class="center">68%</td></tr>
+    <tr><td>4</td><td>80 ⊢ 90</td><td class="center">8</td><td class="center">16%</td><td class="center">42</td><td class="center">84%</td></tr>
+    <tr><td>5</td><td>90 ⊢ 100</td><td class="center">8</td><td class="center">16%</td><td class="center">50</td><td class="center">100%</td></tr>
+  </table>
+
+  <h3>O que essa tabela te conta?</h3>
+  <ul>
+    <li><strong>54% dos dias</strong> tiveram menos de 70 toneladas de lixo (𝐹ᵣₑₗ da classe 2).</li>
+    <li>A classe mais frequente (a <em>moda da classe</em>, ou "classe modal") é <code>50 ⊢ 60</code>, com 14 dias.</li>
+    <li>Apenas 32% dos dias tiveram mais de 80 toneladas (100% − 68%).</li>
+  </ul>
+
+  <p>Tudo isso a partir de uma simples tabela. Você passou de 50 números crus para uma narrativa estatística — sem fazer nenhuma inferência, sem assumir nenhuma distribuição. Apenas <em>descrevendo</em> o que está nos dados.</p>
+
+  <div class="story">
+    <strong>Esse é o poder da estatística descritiva.</strong> Ela não te dá certezas sobre o futuro nem prova hipóteses. Ela faz algo mais humilde e mais fundamental: te dá <em>olhos</em> para enxergar os dados como eles são. Toda análise sofisticada — machine learning, modelagem preditiva, inferência bayesiana — começa, sempre, com alguém olhando uma tabela de frequência e perguntando: "o que tem aqui?"
+  </div>
+
+  <div class="selfcheck">
+    <div class="selfcheck-q">Se uma sexta classe fosse necessária (ex: <code>100 ⊢ 110</code>) com 𝑓 = 0, o que aconteceria com a 𝐹ᵣₑₗ acumulada dessa classe?</div>
+    <details><summary></summary>
+    <div class="answer">Continuaria <strong>100%</strong>. Frequências acumuladas <em>nunca diminuem</em> — só sobem ou estabilizam. Como nessa classe não houve novas observações, o acumulado simplesmente se mantém no máximo. Esse comportamento "monotônico" é uma das propriedades mais úteis das acumuladas.</div>
+    </details>
+  </div>
+</article>
+
+</main>
+
+<div class="end">
+  <h2>🎓 Você chegou ao fim!</h2>
+  <p style="font-family:sans-serif;color:var(--muted);max-width:600px;margin:0 auto 20px">Agora você tem o panorama completo da distribuição de frequência. O próximo passo é praticar — fixe o conhecimento respondendo perguntas variadas.</p>
+  <a href="revisao2.html" class="cta">Ir para os quizzes →</a>
+</div>
+
+<div class="floating">
+  <a href="index.html" title="Voltar ao Hub" style="background:var(--accent);border:1px solid var(--accent);color:#0b1120;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2em;text-decoration:none;box-shadow:0 4px 12px rgba(0,0,0,.4);transition:transform .2s">🏠</a>
+  <button onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Voltar ao topo">⬆️</button>
+  <button onclick="document.getElementById('top').scrollIntoView({behavior:'smooth'})" title="Sumário">📑</button>
+</div>
+
+<script>
+  const bar = document.getElementById('progressBar');
+  window.addEventListener('scroll', ()=>{
+    const h = document.documentElement;
+    const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    bar.style.width = pct + '%';
+  });
+</script>
+
+</body>
+</html>
