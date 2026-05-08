@@ -97,8 +97,8 @@
 
   <h2>🛠️ Em breve</h2>
   <div class="tools">
-    <div class="tool"><span class="ic">📊</span>Medidas de Tendência Central</div>
     <div class="tool"><span class="ic">📈</span>Medidas de Dispersão</div>
+    <div class="tool"><span class="ic">🎯</span>Medidas de Posição</div>
     <div class="tool"><span class="ic">📉</span>Gráficos & Visualizações</div>
     <div class="tool"><span class="ic">🎲</span>Probabilidade Avançada</div>
   </div>
@@ -133,6 +133,15 @@
       tags: ["24 slides", "4 temas"],
       learn: "aprenda2.html",
       quiz: "revisao2.html",
+      status: ""
+    },
+    {
+      icon: "📐",
+      title: "Medidas de Tendência Central",
+      desc: "Média (aritmética e ponderada), mediana, moda, outliers e assimetria de distribuições.",
+      tags: ["27 slides", "5 temas"],
+      learn: "aprenda3.html",
+      quiz: "revisao3.html",
       status: "new"
     },
     // ====== Para adicionar um novo tema, copie o bloco acima ======
@@ -161,7 +170,7 @@
   // Stats — soma localStorage de todos os quizzes
   document.getElementById('topicCount').textContent = TOPICS.length;
   let totalQ = 0, totalOk = 0;
-  for(const k of ['quizStats','quizStats2']){
+  for(const k of ['quizStats','quizStats2','quizStats3']){
     const s = JSON.parse(localStorage.getItem(k)||'{}');
     Object.values(s).forEach(v=>{ totalQ += v.ok+v.err; totalOk += v.ok; });
   }

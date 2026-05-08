@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aprenda — Medidas de Tendência Central</title>
+<style>
+  :root{
+    --bg:#0b1120; --bg2:#1e293b; --card:#1a2540; --border:#2d3f63;
+    --primary:#6366f1; --primary2:#818cf8; --accent:#22d3ee;
+    --good:#10b981; --bad:#ef4444; --warn:#f59e0b; --pink:#ec4899;
+    --text:#e2e8f0; --muted:#94a3b8;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:Georgia,'Times New Roman',serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:17px}
+  .hero{min-height:60vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:60px 24px;background:radial-gradient(ellipse at top,#312e81 0%,#0b1120 70%);position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 20% 30%,rgba(99,102,241,.15) 0,transparent 50%),radial-gradient(circle at 80% 70%,rgba(34,211,238,.1) 0,transparent 50%)}
+  .hero-content{position:relative;z-index:1;max-width:800px}
+  .hero h1{font-size:3.2em;margin:0 0 12px;background:linear-gradient(135deg,#a5b4fc,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
+  .hero .subtitle{font-size:1.3em;color:var(--muted);font-style:italic;margin-bottom:30px}
+  .hero .meta{display:flex;justify-content:center;gap:30px;flex-wrap:wrap;color:var(--muted);font-size:.9em;font-family:sans-serif}
+  #progressBar{position:fixed;top:0;left:0;height:4px;background:linear-gradient(90deg,var(--primary),var(--accent));z-index:1000;transition:width .1s;width:0%}
+  .toc{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:30px;margin:40px auto;max-width:900px}
+  .toc h2{margin-top:0;color:var(--primary2);font-family:sans-serif}
+  .toc ol{padding-left:24px;font-family:sans-serif}
+  .toc li{margin:10px 0}
+  .toc a{color:var(--text);text-decoration:none;border-bottom:1px dashed transparent;transition:all .2s}
+  .toc a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+  main{max-width:820px;margin:0 auto;padding:40px 24px 80px}
+  .chapter{margin:80px 0;padding-top:40px;border-top:1px solid var(--border)}
+  .chapter:first-child{border-top:none}
+  .chapter-num{display:inline-block;font-family:sans-serif;color:var(--accent);font-size:.85em;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px}
+  .chapter h2{font-size:2.4em;margin:0 0 24px;color:var(--text);line-height:1.2;font-weight:700}
+  .chapter h3{font-size:1.5em;color:var(--primary2);margin:40px 0 12px;font-family:sans-serif}
+  .chapter h4{color:var(--accent);margin:24px 0 8px;font-family:sans-serif;font-size:1.1em}
+  .chapter p{margin:18px 0}
+  .lead{font-size:1.2em;color:var(--muted);font-style:italic;border-left:3px solid var(--primary);padding:8px 0 8px 20px;margin:24px 0}
+  .analogy,.example,.warning,.deep,.story,.def{margin:28px 0;padding:20px 24px;border-radius:12px;font-family:sans-serif;font-size:.95em;line-height:1.7}
+  .analogy{background:linear-gradient(135deg,rgba(236,72,153,.12),rgba(236,72,153,.04));border-left:4px solid var(--pink)}
+  .analogy::before{content:'🎭 Analogia';display:block;font-weight:700;color:var(--pink);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .example{background:linear-gradient(135deg,rgba(34,211,238,.1),rgba(34,211,238,.02));border-left:4px solid var(--accent)}
+  .example::before{content:'💡 Exemplo prático';display:block;font-weight:700;color:var(--accent);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .warning{background:linear-gradient(135deg,rgba(245,158,11,.12),rgba(245,158,11,.02));border-left:4px solid var(--warn)}
+  .warning::before{content:'⚠️ Cuidado';display:block;font-weight:700;color:var(--warn);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .deep{background:linear-gradient(135deg,rgba(99,102,241,.12),rgba(99,102,241,.02));border-left:4px solid var(--primary)}
+  .deep::before{content:'🔍 Aprofundando';display:block;font-weight:700;color:var(--primary2);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .story{background:linear-gradient(135deg,rgba(16,185,129,.1),rgba(16,185,129,.02));border-left:4px solid var(--good)}
+  .story::before{content:'📖 História/Contexto';display:block;font-weight:700;color:var(--good);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .def{background:var(--bg2);border:1px solid var(--border);border-radius:8px}
+  .def::before{content:'📌 Definição';display:block;font-weight:700;color:var(--primary2);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  table{width:100%;border-collapse:collapse;margin:24px 0;background:var(--card);border-radius:12px;overflow:hidden;font-family:sans-serif;font-size:.95em}
+  th,td{padding:14px 16px;text-align:left;border-bottom:1px solid var(--border)}
+  th{background:linear-gradient(135deg,var(--primary),#8b5cf6);color:white;font-weight:700}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:rgba(99,102,241,.05)}
+  td.center,th.center{text-align:center}
+  .key{background:rgba(99,102,241,.15);color:var(--primary2);padding:2px 8px;border-radius:4px;font-weight:600;font-family:sans-serif}
+  blockquote{border-left:4px solid var(--accent);padding:8px 24px;margin:24px 0;font-style:italic;color:var(--muted);background:rgba(34,211,238,.05);border-radius:0 8px 8px 0}
+  .selfcheck{background:var(--card);border:2px dashed var(--primary);border-radius:12px;padding:20px;margin:30px 0;font-family:sans-serif}
+  .selfcheck-q{font-weight:600;color:var(--primary2);margin-bottom:12px}
+  .selfcheck-q::before{content:'🤔 Pergunta para você: ';font-weight:700;color:var(--accent)}
+  details summary{cursor:pointer;color:var(--accent);font-weight:600;outline:none;list-style:none}
+  details summary::before{content:'👁️ Mostrar resposta ▼';font-size:.9em}
+  details[open] summary::before{content:'🙈 Esconder ▲'}
+  details[open] .answer{margin-top:12px;padding:14px;background:var(--bg2);border-radius:8px;border-left:3px solid var(--good);font-style:italic;color:var(--text);font-weight:normal}
+  .formula{background:linear-gradient(135deg,rgba(99,102,241,.15),rgba(34,211,238,.05));border:1px solid var(--primary);border-radius:12px;padding:20px;margin:20px 0;font-family:'Cambria Math','Times New Roman',serif;font-size:1.5em;text-align:center;font-style:italic}
+  .formula small{font-size:.55em;font-style:normal;color:var(--muted);font-family:sans-serif;display:block;margin-top:8px}
+  .floating{position:fixed;right:24px;bottom:24px;display:flex;flex-direction:column;gap:8px;z-index:50}
+  .floating button,.floating a{background:var(--card);border:1px solid var(--border);color:var(--text);width:48px;height:48px;border-radius:50%;cursor:pointer;font-size:1.2em;transition:all .2s;box-shadow:0 4px 12px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;text-decoration:none}
+  .floating button:hover,.floating a:hover{background:var(--primary);transform:scale(1.1)}
+  .end{text-align:center;padding:60px 24px;background:radial-gradient(ellipse at center,rgba(99,102,241,.15),transparent);margin-top:80px;border-top:1px solid var(--border)}
+  .end h2{font-size:2em;color:var(--primary2)}
+  .cta{display:inline-block;margin-top:20px;padding:14px 28px;background:linear-gradient(135deg,var(--primary),var(--accent));color:white;border-radius:99px;text-decoration:none;font-family:sans-serif;font-weight:600;transition:transform .2s}
+  .cta:hover{transform:scale(1.05)}
+  /* Number line viz */
+  .numline{position:relative;height:80px;background:var(--bg2);border-radius:12px;margin:30px 0;font-family:sans-serif}
+  .numline .axis{position:absolute;left:5%;right:5%;top:50%;height:2px;background:var(--border)}
+  .numline .point{position:absolute;top:50%;width:14px;height:14px;background:var(--accent);border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 8px rgba(34,211,238,.5)}
+  .numline .point.outlier{background:var(--bad);box-shadow:0 0 12px rgba(239,68,68,.7)}
+  .numline .label{position:absolute;top:calc(50% + 14px);transform:translateX(-50%);font-size:.8em;color:var(--muted)}
+  .numline .marker{position:absolute;top:0;width:2px;height:100%;background:var(--warn)}
+  .numline .marker span{position:absolute;top:-22px;left:50%;transform:translateX(-50%);background:var(--warn);color:#0f172a;padding:2px 8px;border-radius:4px;font-size:.75em;font-weight:700;white-space:nowrap}
+  /* Skew shapes */
+  .skew{display:flex;align-items:flex-end;gap:3px;height:120px;margin:20px 0;justify-content:center}
+  .skew div{width:20px;background:linear-gradient(to top,var(--primary),var(--accent));border-radius:4px 4px 0 0}
+</style>
+</head>
+<body>
+
+<div id="progressBar"></div>
+
+<div class="hero">
+  <div class="hero-content">
+    <h1>Medidas de Tendência Central</h1>
+    <p class="subtitle">"Onde está o coração dos seus dados? Média, Mediana e Moda — três respostas para uma mesma pergunta."</p>
+    <div class="meta">
+      <span>📚 Guia imersivo</span>
+      <span>⏱️ ~25 minutos</span>
+      <span>🎓 Estatística Descritiva / FICR</span>
+    </div>
+  </div>
+</div>
+
+<div class="toc" id="top">
+  <h2>📑 Sumário</h2>
+  <ol>
+    <li><a href="#cap1">A pergunta sobre o "centro"</a></li>
+    <li><a href="#cap2">Média Aritmética: o ponto de equilíbrio</a></li>
+    <li><a href="#cap3">Média Ponderada: quando os pesos importam</a></li>
+    <li><a href="#cap4">Mediana: o valor do meio</a></li>
+    <li><a href="#cap5">Outliers e a robustez da mediana</a></li>
+    <li><a href="#cap6">Assimetria: quando os dados pendem para um lado</a></li>
+    <li><a href="#cap7">Moda: o mais frequente</a></li>
+    <li><a href="#cap8">Tudo junto: as três sob a mesma lupa</a></li>
+  </ol>
+</div>
+
+<main>
+
+<!-- CAP 1 -->
+<article class="chapter" id="cap1">
+  <div class="chapter-num">Capítulo 1</div>
+  <h2>A pergunta sobre o "centro"</h2>
+
+  <p class="lead">"Em média, quanto custa um aluguel no Recife?" "Qual o salário típico de um engenheiro?" "Qual a nota média da turma?" Toda vez que você faz uma dessas perguntas, está procurando uma <em>medida de tendência central</em>.</p>
+
+  <p>O problema é: existem várias formas de responder à mesma pergunta. E elas <em>não dão sempre o mesmo número</em>. Saber qual usar — e quando — é metade da estatística descritiva.</p>
+
+  <div class="def">
+    <strong>Medidas de tendência central</strong> são ferramentas da estatística descritiva que indicam o <strong>ponto central ou a localização típica</strong> de um conjunto de dados. Ajudam a resumir um grande número de valores com um único número que representa o "centro" dos dados.
+  </div>
+
+  <p>São três principais:</p>
+  <ul>
+    <li><strong>Média</strong> — Aritmética e Ponderada</li>
+    <li><strong>Mediana</strong></li>
+    <li><strong>Moda</strong></li>
+  </ul>
+
+  <div class="analogy">
+    Imagine três pessoas tentando descrever onde fica o "centro" de uma cidade. Uma calcula a média geográfica de todas as casas (média). Outra escolhe o ponto onde metade das pessoas mora ao norte e metade ao sul (mediana). E uma terceira aponta o bairro onde mais gente vive (moda). Os três "centros" são respostas legítimas — mas dizem coisas diferentes sobre a cidade.
+  </div>
+</article>
+
+<!-- CAP 2 -->
+<article class="chapter" id="cap2">
+  <div class="chapter-num">Capítulo 2</div>
+  <h2>Média Aritmética: o ponto de equilíbrio</h2>
+
+  <div class="def">
+    <strong>Média aritmética (x̄)</strong>, ou apenas média, é um valor que representa o centro de um conjunto de dados. É como se fosse um <strong>ponto de equilíbrio</strong> — um valor que resume toda a informação num único número. Calculada a partir da soma de todos os valores dividida pelo número total de valores.
+  </div>
+
+  <div class="formula">x̄ = Σxᵢ / n</div>
+
+  <p>Em português: somo tudo e divido pela quantidade. Simples assim.</p>
+
+  <h3>Exemplo: as duas turmas</h3>
+  <p>Considere as notas de duas turmas (10 alunos cada):</p>
+
+  <table>
+    <tr><th>Aluno</th><th class="center">1</th><th class="center">2</th><th class="center">3</th><th class="center">4</th><th class="center">5</th><th class="center">6</th><th class="center">7</th><th class="center">8</th><th class="center">9</th><th class="center">10</th><th class="center">x̄</th></tr>
+    <tr><td>Turma A</td><td class="center">3</td><td class="center">5</td><td class="center">6</td><td class="center">6</td><td class="center">6</td><td class="center">7</td><td class="center">8</td><td class="center">9</td><td class="center">10</td><td class="center">10</td><td class="center"><strong>7,0</strong></td></tr>
+    <tr><td>Turma B</td><td class="center">5</td><td class="center">5</td><td class="center">7</td><td class="center">7</td><td class="center">7</td><td class="center">7</td><td class="center">7</td><td class="center">7</td><td class="center">8</td><td class="center">10</td><td class="center"><strong>7,0</strong></td></tr>
+  </table>
+
+  <p>Veja: as duas turmas têm <strong>exatamente a mesma média (7,0)</strong>. Mas olhe os dados — são turmas <em>completamente diferentes</em>. A Turma A tem notas espalhadas (de 3 a 10); a Turma B é mais homogênea (quase todo mundo entre 5 e 8).</p>
+
+  <div class="warning">
+    Esse é um dos <strong>maiores perigos da média</strong>: ela pode esconder distribuições muito diferentes por trás do mesmo número. Por isso você nunca deve confiar só na média — sempre olhe a dispersão (próximo capítulo da matéria!) e a forma da distribuição.
+  </div>
+
+  <div class="analogy">
+    A média é como uma gangorra perfeitamente equilibrada. Se você somar os "puxões" de cada lado e eles se anulam, ela está em equilíbrio. Mas dois conjuntos de pesos completamente diferentes podem produzir o mesmo equilíbrio: 5 kg de cada lado, ou um peso de 10 kg em um lado e dois de 5 kg no outro lado mais distante.
+  </div>
+
+  <h3>No Excel/Sheets</h3>
+  <p>A função é simplesmente <code>=MÉDIA(B2:K2)</code>.</p>
+</article>
+
+<!-- CAP 3 -->
+<article class="chapter" id="cap3">
+  <div class="chapter-num">Capítulo 3</div>
+  <h2>Média Ponderada: quando os pesos importam</h2>
+
+  <p class="lead">E se nem todos os valores tiverem a mesma importância? Aí entra a média ponderada.</p>
+
+  <div class="def">
+    <strong>Média ponderada (x̄ₚ)</strong> é uma medida em que cada valor é multiplicado por um <strong>peso</strong> que representa sua importância relativa. Diferente da aritmética, os valores não têm o mesmo impacto: os pesos definem a contribuição de cada um.
+  </div>
+
+  <div class="formula">x̄ₚ = Σ(xᵢ · pᵢ) / Σpᵢ</div>
+
+  <p>Em palavras: multiplique cada valor pelo seu peso, some tudo, e divida pela soma dos pesos.</p>
+
+  <h3>Exemplo: notas com peso</h3>
+  <p>Um aluno tirou 8 na prova (peso 3) e 7 no trabalho (peso 2). Qual a média final?</p>
+
+  <div class="example">
+    x̄ₚ = (8×3 + 7×2) / (3+2) = (24+14) / 5 = 38/5 = <strong>7,6</strong><br><br>
+    Note como a nota da prova "puxou" mais o resultado, porque ela vale mais (peso 3 contra peso 2).
+  </div>
+
+  <div class="deep">
+    <strong>Por que isso importa?</strong> A média ponderada está em todo lugar:
+    <ul>
+      <li><strong>Educação:</strong> notas com pesos diferentes (provas valem mais que trabalhos).</li>
+      <li><strong>Finanças:</strong> rentabilidade de uma carteira de investimentos é a média ponderada dos retornos pela alocação em cada ativo.</li>
+      <li><strong>Inflação:</strong> o IPCA é a média ponderada dos preços, com pesos baseados no quanto cada item representa do orçamento típico.</li>
+      <li><strong>Notas de avaliação:</strong> Google reviews às vezes ponderam por confiabilidade do avaliador.</li>
+    </ul>
+    Se você usar média aritmética simples nesses casos, vai dar uma resposta errada — porque trata como iguais coisas que não são.
+  </div>
+
+  <div class="selfcheck">
+    <div class="selfcheck-q">Se a prova vale peso 4 e o trabalho peso 1, e o aluno tirou 6 na prova e 9 no trabalho — qual a média?</div>
+    <details><summary></summary>
+    <div class="answer">x̄ₚ = (6×4 + 9×1) / (4+1) = (24+9) / 5 = 33/5 = <strong>6,6</strong>. A prova "dominou" o resultado, mesmo o aluno tendo tirado 9 no trabalho — porque ela vale 4 vezes mais.</div>
+    </details>
+  </div>
+</article>
+
+<!-- CAP 4 -->
+<article class="chapter" id="cap4">
+  <div class="chapter-num">Capítulo 4</div>
+  <h2>Mediana: o valor do meio</h2>
+
+  <div class="def">
+    <strong>Mediana (x̃)</strong> é uma medida de tendência central que representa o <strong>valor do meio</strong> de um conjunto de dados ordenados. Em outras palavras, ela divide os dados em duas partes iguais: <strong>metade dos valores está abaixo</strong> da mediana e <strong>metade está acima</strong>.
+  </div>
+
+  <p>O cálculo depende de quantos valores você tem:</p>
+
+  <h3>n ímpar — o do meio</h3>
+  <div class="formula">x̃ = x₍₍ₙ₊₁₎/₂₎</div>
+  <p>Quando n é ímpar, existe um valor "central" naturalmente. Para n=5, é o terceiro; para n=7, é o quarto.</p>
+
+  <div class="example">
+    Notas de um aluno: <code>{6, 7, 8, 9, 10}</code>, n=5.<br>
+    x̃ = x₍₍₅₊₁₎/₂₎ = x₍₃₎ = <strong>8</strong>.<br>
+    O 8 deixa metade (6, 7) abaixo e metade (9, 10) acima.
+  </div>
+
+  <h3>n par — média dos dois centrais</h3>
+  <div class="formula">x̃ = (x₍ₙ/₂₎ + x₍ₙ/₂₊₁₎) / 2</div>
+  <p>Quando n é par, não há um único "do meio". Pegamos os dois centrais e tiramos a média.</p>
+
+  <div class="example">
+    Notas: <code>{7, 8, 9, 10}</code>, n=4.<br>
+    x̃ = (x₍₂₎ + x₍₃₎) / 2 = (8+9)/2 = <strong>8,5</strong>
+  </div>
+
+  <h3>De volta às nossas turmas</h3>
+  <p>Aplicando à Turma A (n=10): <code>3, 5, 6, 6, 6, 7, 8, 9, 10, 10</code></p>
+  <div class="example">
+    x̃ = (x₍₅₎ + x₍₆₎) / 2 = (6+7)/2 = <strong>6,5</strong>
+  </div>
+
+  <p>E à Turma B (n=10): <code>5, 5, 7, 7, 7, 7, 7, 7, 8, 10</code></p>
+  <div class="example">
+    x̃ = (x₍₅₎ + x₍₆₎) / 2 = (7+7)/2 = <strong>7,0</strong>
+  </div>
+
+  <p>Repare: as turmas tinham <em>a mesma média (7,0)</em>, mas <strong>medianas diferentes</strong> (6,5 vs 7,0). Esse é o tipo de informação extra que vale ouro.</p>
+
+  <div class="warning">
+    <strong>Pré-requisito não-negociável:</strong> os dados precisam estar em <strong>ordem crescente (ROL)</strong> antes de calcular a mediana. Se você esquecer de ordenar, o "valor do meio" não significa nada.
+  </div>
+
+  <div class="analogy">
+    A mediana é como o jogador na 5ª posição de uma fila de 9, ordenada por altura. Ele tem 4 mais baixos atrás e 4 mais altos à frente — independentemente de quão altos os mais altos sejam ou quão baixos os mais baixos. Por isso a mediana <em>não se importa com extremos</em> — ela só se importa com a posição.
+  </div>
+</article>
+
+<!-- CAP 5 -->
+<article class="chapter" id="cap5">
+  <div class="chapter-num">Capítulo 5</div>
+  <h2>Outliers e a robustez da mediana</h2>
+
+  <p class="lead">Aqui é onde a mediana brilha. Em mundos perfeitos, média e mediana coincidem. Em mundos reais — cheios de extremos —, elas divergem dramaticamente.</p>
+
+  <div class="def">
+    <strong>Outliers</strong> são valores que se destacam significativamente do restante de um conjunto. São dados <strong>atípicos ou extremos</strong> que se afastam consideravelmente da tendência central. Podem ser muito maiores ou muito menores do que a maioria, e por isso podem distorcer análises estatísticas como médias, desvios padrão e modelos de previsão.
+  </div>
+
+  <h3>Visualizando o estrago</h3>
+  <p>Considere os dados: <code>1.500, 2.000, 2.500, 3.000, 50.000</code></p>
+
+  <div class="numline">
+    <div class="axis"></div>
+    <div class="point" style="left:8%"></div><div class="label" style="left:8%">1.5k</div>
+    <div class="point" style="left:10%"></div><div class="label" style="left:10%">2k</div>
+    <div class="point" style="left:13%"></div><div class="label" style="left:13%">2.5k</div>
+    <div class="point" style="left:15%"></div><div class="label" style="left:15%">3k</div>
+    <div class="point outlier" style="left:90%"></div><div class="label" style="left:90%">50k 🚨</div>
+  </div>
+
+  <p>A média desse conjunto é <strong>11.800</strong>. Mas a mediana é <strong>2.500</strong>. Qual representa melhor a "renda típica" desse grupo? Claramente, a mediana — porque a média foi <em>sequestrada</em> pelo outlier de 50.000.</p>
+
+  <div class="story">
+    <strong>O paradoxo de Bill Gates entrando no bar:</strong> existe uma piada estatística clássica. Imagine um bar onde a renda média dos clientes é R$ 5.000. Bill Gates entra. Agora a renda média do bar é... bilhões. Mas a renda <em>mediana</em> mal se mexe — continua perto de R$ 5.000. Esse exemplo simples mostra por que <strong>jornais sérios usam mediana</strong> ao falar de renda, riqueza, salários: porque a média é trivialmente manipulável por extremos.
+  </div>
+
+  <p>O PDF coloca isso bem: "A mediana é especialmente útil em situações onde os dados estão assimétricos ou têm outliers, pois <strong>ela não é influenciada por valores extremos</strong> de maneira tão significativa quanto a média aritmética."</p>
+
+  <h3>Mas... outliers são sempre vilões?</h3>
+  <p>Não. O PDF é honesto sobre isso: a decisão sobre o que fazer com outliers <strong>depende do contexto</strong>. Em alguns casos, eles devem ser removidos ou ajustados. Em outros, eles podem ser <em>úteis</em> — para entender variações extremas ou fenômenos raros.</p>
+
+  <div class="deep">
+    <strong>Quando outliers são valiosos:</strong>
+    <ul>
+      <li><strong>Detecção de fraude:</strong> uma transação de R$ 50.000 num cartão que normalmente gasta R$ 200/mês é um outlier — e provavelmente um alerta de fraude.</li>
+      <li><strong>Medicina:</strong> o paciente com 60 anos cuja doença regrediu sozinha é um outlier — e talvez tenha algo a nos ensinar sobre cura.</li>
+      <li><strong>Astronomia:</strong> a estrela "esquisita" no telescópio pode ser uma supernova nova, não um erro de medição.</li>
+    </ul>
+    Outliers não são lixo. Às vezes são <em>diamantes</em>.
+  </div>
+</article>
+
+<!-- CAP 6 -->
+<article class="chapter" id="cap6">
+  <div class="chapter-num">Capítulo 6</div>
+  <h2>Assimetria: quando os dados pendem para um lado</h2>
+
+  <p class="lead">Distribuições do mundo real raramente são perfeitamente simétricas. Aprender a "ler" essa assimetria é uma das habilidades mais úteis que a estatística descritiva oferece.</p>
+
+  <div class="def">
+    Uma <strong>sequência assimétrica</strong> é uma sequência de números em que os dados <strong>não estão distribuídos de maneira simétrica</strong>. A distribuição se concentra mais em um lado da média/mediana, enquanto o outro lado tem valores mais afastados, criando uma <strong>cauda</strong> mais longa.
+  </div>
+
+  <h3>📈 Assimétrica positiva (à direita)</h3>
+  <p>A cauda da distribuição se estende para os <strong>valores maiores</strong>. A maioria dos dados está concentrada à esquerda, com poucos extremos à direita.</p>
+
+  <div class="skew">
+    <div style="height:10%"></div><div style="height:30%"></div><div style="height:60%"></div>
+    <div style="height:90%"></div><div style="height:100%"></div><div style="height:80%"></div>
+    <div style="height:50%"></div><div style="height:30%"></div><div style="height:18%"></div>
+    <div style="height:12%"></div><div style="height:8%"></div><div style="height:6%"></div><div style="height:4%"></div>
+  </div>
+
+  <div class="example">
+    Sequência: <code>1, 2, 3, 4, 5, 6, 7, 8, <strong>18</strong></code><br>
+    Aqui x̄ &gt; x̃ — o 18 puxa a média para a direita, enquanto a mediana fica firme.
+  </div>
+
+  <h3>📉 Assimétrica negativa (à esquerda)</h3>
+  <p>A cauda se estende para os <strong>valores menores</strong>. A maioria dos dados está concentrada à direita, com poucos extremos à esquerda.</p>
+
+  <div class="skew">
+    <div style="height:4%"></div><div style="height:6%"></div><div style="height:8%"></div><div style="height:12%"></div>
+    <div style="height:18%"></div><div style="height:30%"></div><div style="height:50%"></div>
+    <div style="height:80%"></div><div style="height:100%"></div><div style="height:90%"></div>
+    <div style="height:60%"></div><div style="height:30%"></div><div style="height:10%"></div>
+  </div>
+
+  <div class="example">
+    Sequência: <code><strong>6</strong>, 12, 14, 16, 18, 20, 22</code><br>
+    Aqui x̄ &lt; x̃ — o 6 está afastado do grupo, criando cauda à esquerda.
+  </div>
+
+  <h3>A regra de ouro</h3>
+  <table>
+    <tr><th>Relação</th><th>Tipo de assimetria</th><th>Significado</th></tr>
+    <tr><td><strong>x̄ &gt; x̃</strong></td><td>Positiva (à direita)</td><td>Cauda longa para os altos</td></tr>
+    <tr><td><strong>x̄ &lt; x̃</strong></td><td>Negativa (à esquerda)</td><td>Cauda longa para os baixos</td></tr>
+    <tr><td><strong>x̄ = x̃</strong></td><td>Simétrica</td><td>Distribuição equilibrada</td></tr>
+  </table>
+
+  <div class="analogy">
+    <strong>Macete visual:</strong> imagine uma corda de balão presa do lado oposto à cauda. A média é o ponto onde o balão flutua. Se a cauda é à direita, o balão (média) é "puxado" para a direita pela corda. Por isso, em assimetria positiva, a média fica à direita da mediana. <em>A média segue a cauda, a mediana fica no meio dos dados.</em>
+  </div>
+
+  <div class="selfcheck">
+    <div class="selfcheck-q">Em uma pesquisa, a renda média da população brasileira é R$ 3.500 e a mediana é R$ 1.500. O que isso te diz sobre a distribuição de renda?</div>
+    <details><summary></summary>
+    <div class="answer">Que ela é fortemente <strong>assimétrica positiva</strong>: x̄ &gt; x̃. A maior parte das pessoas ganha em torno de R$ 1.500 (mediana), mas há uma cauda à direita — uma minoria que ganha muito mais — que puxa a média para R$ 3.500. Esse é um diagnóstico clássico de desigualdade.</div>
+    </details>
+  </div>
+</article>
+
+<!-- CAP 7 -->
+<article class="chapter" id="cap7">
+  <div class="chapter-num">Capítulo 7</div>
+  <h2>Moda: o mais frequente</h2>
+
+  <div class="def">
+    <strong>Moda (Mo)</strong> é a medida de tendência central que representa o valor (ou os valores) que ocorrem com <strong>maior frequência</strong> em um conjunto de dados.
+  </div>
+
+  <p>Ao contrário da média e da mediana, a moda não exige cálculos sofisticados — você só conta. Mas ela tem uma característica única: pode haver mais de uma, ou nenhuma.</p>
+
+  <h3>Os três cenários</h3>
+
+  <h4>🚫 Amodal — nenhuma moda</h4>
+  <p>Quando todos os valores aparecem com a <strong>mesma frequência</strong>. Não há "mais frequente" porque todos são igualmente frequentes.</p>
+  <div class="example">
+    Pesquisa de cor de cabelo: 3 pessoas com cabelo preto, 3 com castanho, 3 com loiro. <strong>Amodal.</strong>
+  </div>
+
+  <h4>1️⃣ Unimodal — uma moda</h4>
+  <p>Existe um único valor que se destaca por ser mais frequente.</p>
+  <div class="example">
+    Cor dos olhos: 1 azul, <strong>3 castanhos</strong>, 1 verde → Mo = castanho.
+  </div>
+
+  <h4>🔢 Multimodal — duas ou mais modas</h4>
+  <p>Quando há empate nos mais frequentes:</p>
+  <ul>
+    <li><strong>Bimodal</strong> (2 modas): <code>{1, 2, 2, 3, 3, 4, 5}</code> → Mo = {2, 3}</li>
+    <li><strong>Trimodal</strong> (3 modas): <code>{1, 2, 2, 3, 3, 4, 4, 5}</code> → Mo = {2, 3, 4}</li>
+  </ul>
+
+  <h3>De volta às turmas</h3>
+  <p><strong>Turma A</strong> (3, 5, 6, 6, 6, 7, 8, 9, 10, 10): o 6 aparece 3 vezes — mais que qualquer outro. <strong>Mo = 6</strong>.</p>
+  <p><strong>Turma B</strong> (5, 5, 7, 7, 7, 7, 7, 7, 8, 10): o 7 aparece 6 vezes. <strong>Mo = 7</strong>.</p>
+
+  <p>Resumindo as três medidas:</p>
+  <table>
+    <tr><th>Turma</th><th class="center">Média (x̄)</th><th class="center">Mediana (x̃)</th><th class="center">Moda (Mo)</th></tr>
+    <tr><td>A</td><td class="center">7,0</td><td class="center">6,5</td><td class="center">6</td></tr>
+    <tr><td>B</td><td class="center">7,0</td><td class="center">7,0</td><td class="center">7</td></tr>
+  </table>
+
+  <p>Repare como o trio de medidas conta uma história muito mais rica do que qualquer uma sozinha. Nas duas turmas a média é 7,0, mas a Turma A é "mais espalhada" (média &gt; mediana &gt; moda — assimétrica positiva!) enquanto a Turma B é mais homogênea (todas as medidas próximas).</p>
+
+  <div class="deep">
+    <strong>A moda tem um poder único:</strong> é a única medida de tendência central que funciona em <strong>dados qualitativos</strong>. Você não pode calcular a "média" de cores ou a "mediana" de marcas de carro. Mas pode dizer qual a cor mais frequente ou a marca mais vendida — essa é a moda.
+  </div>
+</article>
+
+<!-- CAP 8 -->
+<article class="chapter" id="cap8">
+  <div class="chapter-num">Capítulo 8</div>
+  <h2>Tudo junto: as três sob a mesma lupa</h2>
+
+  <p class="lead">Cada medida tem um momento de brilhar — e um momento de falhar. Saber escolher é o que separa quem usa estatística de quem é usado por ela.</p>
+
+  <h3>Comparativo final</h3>
+  <table>
+    <tr><th>Medida</th><th>Quando brilha</th><th>Onde falha</th></tr>
+    <tr><td><strong>Média</strong></td><td>Dados simétricos sem outliers; precisa usar todos os valores</td><td>Sensível a extremos; pode mentir sobre o "típico"</td></tr>
+    <tr><td><strong>Mediana</strong></td><td>Dados com outliers ou assimetria; renda, salários, tempos</td><td>Não usa todos os dados; menos manipulável matematicamente</td></tr>
+    <tr><td><strong>Moda</strong></td><td>Dados qualitativos; identificar o "mais comum"</td><td>Pode não existir, ou existir várias; instável em amostras pequenas</td></tr>
+  </table>
+
+  <h3>O fluxo de decisão</h3>
+  <ol>
+    <li>Os dados são <strong>qualitativos</strong> (categorias)? → <strong>Moda</strong>.</li>
+    <li>Os dados são quantitativos mas têm <strong>outliers fortes ou são assimétricos</strong>? → <strong>Mediana</strong>.</li>
+    <li>Os dados são quantitativos, simétricos e sem extremos? → <strong>Média</strong> (e provavelmente todas as três coincidem).</li>
+    <li><strong>Sempre que possível, calcule as três</strong> — porque comparar entre elas revela a forma da distribuição.</li>
+  </ol>
+
+  <div class="story">
+    <strong>Por que isso importa para Ciência de Dados:</strong> imagine que você está construindo um modelo preditivo para preço de aluguel. Se você usar a média como "preço típico", outliers de mansões vão envenenar suas previsões para o cidadão comum. Usar a mediana protege o modelo. Mas se você quiser entender o mercado de luxo, a média pode ser justamente o que você precisa. <em>A escolha da medida não é técnica — é estratégica.</em> E ela depende inteiramente da pergunta que você está respondendo.
+  </div>
+
+  <div class="selfcheck">
+    <div class="selfcheck-q">Você é jornalista escrevendo sobre o salário típico no Brasil. Que medida usa, e por quê?</div>
+    <details><summary></summary>
+    <div class="answer"><strong>Mediana.</strong> A distribuição de salários é fortemente assimétrica positiva (poucos ganham muito, a maioria ganha pouco). A média seria distorcida pelos extremos no topo e daria uma falsa impressão de que o brasileiro médio ganha mais do que realmente ganha. A mediana é o número honesto: representa o "do meio" — metade ganha mais, metade ganha menos. Por isso o IBGE e organismos sérios <em>sempre</em> reportam mediana ao falar de renda.</div>
+    </details>
+  </div>
+
+  <h3>Um conselho final</h3>
+  <p>As três medidas são <em>amigas</em>, não <em>concorrentes</em>. Calcule todas. Compare. Se elas concordam, sua distribuição é provavelmente bem-comportada. Se discordam fortemente, é sinal de que algo interessante está acontecendo nos dados — outliers, assimetria, talvez subgrupos misturados. Esse é o tipo de pista que separa uma análise medíocre de uma análise excelente.</p>
+</article>
+
+</main>
+
+<div class="end">
+  <h2>🎓 Você chegou ao fim!</h2>
+  <p style="font-family:sans-serif;color:var(--muted);max-width:600px;margin:0 auto 20px">Você agora domina o trio fundamental: média, mediana e moda. Hora de fixar com prática.</p>
+  <a href="revisao3.html" class="cta">Ir para os quizzes →</a>
+</div>
+
+<div class="floating">
+  <a href="index.html" title="Voltar ao Hub" style="background:var(--accent);border:1px solid var(--accent);color:#0b1120">🏠</a>
+  <button onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Voltar ao topo">⬆️</button>
+  <button onclick="document.getElementById('top').scrollIntoView({behavior:'smooth'})" title="Sumário">📑</button>
+</div>
+
+<script>
+  const bar = document.getElementById('progressBar');
+  window.addEventListener('scroll', ()=>{
+    const h = document.documentElement;
+    const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    bar.style.width = pct + '%';
+  });
+</script>
+
+</body>
+</html>
