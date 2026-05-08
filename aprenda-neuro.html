@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aprenda — Neuroanatomia</title>
+<style>
+  :root{
+    --bg:#0a0f1c; --bg2:#1a1f2e; --card:#1e2438; --border:#2d3650;
+    --primary:#ec4899; --primary2:#f472b6; --accent:#a78bfa;
+    --good:#10b981; --bad:#ef4444; --warn:#f59e0b; --pink:#ec4899;
+    --text:#e2e8f0; --muted:#94a3b8;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:Georgia,'Times New Roman',serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:17px}
+  .hero{min-height:60vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:60px 24px;background:radial-gradient(ellipse at top,#831843 0%,#0a0f1c 70%);position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 20% 30%,rgba(236,72,153,.18) 0,transparent 50%),radial-gradient(circle at 80% 70%,rgba(167,139,250,.12) 0,transparent 50%)}
+  .hero-content{position:relative;z-index:1;max-width:800px}
+  .hero h1{font-size:3.2em;margin:0 0 12px;background:linear-gradient(135deg,#f472b6,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
+  .hero .subtitle{font-size:1.3em;color:var(--muted);font-style:italic;margin-bottom:30px}
+  .hero .meta{display:flex;justify-content:center;gap:30px;flex-wrap:wrap;color:var(--muted);font-size:.9em;font-family:sans-serif}
+  #progressBar{position:fixed;top:0;left:0;height:4px;background:linear-gradient(90deg,var(--primary),var(--accent));z-index:1000;transition:width .1s;width:0%}
+  .toc{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:30px;margin:40px auto;max-width:900px}
+  .toc h2{margin-top:0;color:var(--primary2);font-family:sans-serif}
+  .toc ol{padding-left:24px;font-family:sans-serif}
+  .toc li{margin:10px 0}
+  .toc a{color:var(--text);text-decoration:none;border-bottom:1px dashed transparent;transition:all .2s}
+  .toc a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+  main{max-width:820px;margin:0 auto;padding:40px 24px 80px}
+  .chapter{margin:80px 0;padding-top:40px;border-top:1px solid var(--border)}
+  .chapter:first-child{border-top:none}
+  .chapter-num{display:inline-block;font-family:sans-serif;color:var(--accent);font-size:.85em;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px}
+  .chapter h2{font-size:2.4em;margin:0 0 24px;color:var(--text);line-height:1.2;font-weight:700}
+  .chapter h3{font-size:1.5em;color:var(--primary2);margin:40px 0 12px;font-family:sans-serif}
+  .chapter h4{color:var(--accent);margin:24px 0 8px;font-family:sans-serif;font-size:1.1em}
+  .chapter p{margin:18px 0}
+  .lead{font-size:1.2em;color:var(--muted);font-style:italic;border-left:3px solid var(--primary);padding:8px 0 8px 20px;margin:24px 0}
+  .analogy,.example,.warning,.deep,.story,.def{margin:28px 0;padding:20px 24px;border-radius:12px;font-family:sans-serif;font-size:.95em;line-height:1.7}
+  .analogy{background:linear-gradient(135deg,rgba(236,72,153,.12),rgba(236,72,153,.04));border-left:4px solid var(--pink)}
+  .analogy::before{content:'🎭 Analogia';display:block;font-weight:700;color:var(--pink);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .example{background:linear-gradient(135deg,rgba(167,139,250,.12),rgba(167,139,250,.02));border-left:4px solid var(--accent)}
+  .example::before{content:'💡 Exemplo';display:block;font-weight:700;color:var(--accent);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .warning{background:linear-gradient(135deg,rgba(245,158,11,.12),rgba(245,158,11,.02));border-left:4px solid var(--warn)}
+  .warning::before{content:'⚠️ Cuidado';display:block;font-weight:700;color:var(--warn);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .deep{background:linear-gradient(135deg,rgba(236,72,153,.12),rgba(236,72,153,.02));border-left:4px solid var(--primary)}
+  .deep::before{content:'🔍 Aprofundando';display:block;font-weight:700;color:var(--primary2);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .story{background:linear-gradient(135deg,rgba(16,185,129,.1),rgba(16,185,129,.02));border-left:4px solid var(--good)}
+  .story::before{content:'📖 Contexto';display:block;font-weight:700;color:var(--good);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .def{background:var(--bg2);border:1px solid var(--border);border-radius:8px}
+  .def::before{content:'📌 Definição';display:block;font-weight:700;color:var(--primary2);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  table{width:100%;border-collapse:collapse;margin:24px 0;background:var(--card);border-radius:12px;overflow:hidden;font-family:sans-serif;font-size:.95em}
+  th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+  th{background:linear-gradient(135deg,var(--primary),#9333ea);color:white;font-weight:700}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:rgba(236,72,153,.05)}
+  .key{background:rgba(236,72,153,.15);color:var(--primary2);padding:2px 8px;border-radius:4px;font-weight:600;font-family:sans-serif}
+  blockquote{border-left:4px solid var(--accent);padding:8px 24px;margin:24px 0;font-style:italic;color:var(--muted);background:rgba(167,139,250,.05);border-radius:0 8px 8px 0}
+  .selfcheck{background:var(--card);border:2px dashed var(--primary);border-radius:12px;padding:20px;margin:30px 0;font-family:sans-serif}
+  .selfcheck-q{font-weight:600;color:var(--primary2);margin-bottom:12px}
+  .selfcheck-q::before{content:'🤔 Pergunta para você: ';font-weight:700;color:var(--accent)}
+  details summary{cursor:pointer;color:var(--accent);font-weight:600;outline:none;list-style:none}
+  details summary::before{content:'👁️ Mostrar resposta ▼';font-size:.9em}
+  details[open] summary::before{content:'🙈 Esconder ▲'}
+  details[open] .answer{margin-top:12px;padding:14px;background:var(--bg2);border-radius:8px;border-left:3px solid var(--good);font-style:italic;color:var(--text);font-weight:normal}
+  .floating{position:fixed;right:24px;bottom:24px;display:flex;flex-direction:column;gap:8px;z-index:50}
+  .floating button,.floating a{background:var(--card);border:1px solid var(--border);color:var(--text);width:48px;height:48px;border-radius:50%;cursor:pointer;font-size:1.2em;transition:all .2s;box-shadow:0 4px 12px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;text-decoration:none}
+  .floating button:hover,.floating a:hover{background:var(--primary);transform:scale(1.1)}
+  .end{text-align:center;padding:60px 24px;background:radial-gradient(ellipse at center,rgba(236,72,153,.15),transparent);margin-top:80px;border-top:1px solid var(--border)}
+  .end h2{font-size:2em;color:var(--primary2)}
+  .cta{display:inline-block;margin-top:20px;padding:14px 28px;background:linear-gradient(135deg,var(--primary),var(--accent));color:white;border-radius:99px;text-decoration:none;font-family:sans-serif;font-weight:600;transition:transform .2s}
+  .cta:hover{transform:scale(1.05)}
+
+  /* Neuron schematic */
+  .neuron{display:flex;align-items:center;justify-content:center;gap:0;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:30px 20px;margin:24px 0;font-family:sans-serif;flex-wrap:wrap}
+  .neuron .part{text-align:center;padding:8px 12px;font-size:.85em}
+  .neuron .part b{display:block;color:var(--primary2);margin-bottom:4px}
+  .neuron .arrow{color:var(--accent);font-size:1.6em;font-weight:700}
+
+  /* Layer stack (meninges) */
+  .layers{margin:24px 0;font-family:sans-serif}
+  .layer{padding:14px 20px;margin:6px 0;border-radius:8px;display:flex;align-items:center;gap:14px;border-left:5px solid}
+  .layer.l1{background:rgba(236,72,153,.1);border-color:var(--pink)}
+  .layer.l2{background:rgba(167,139,250,.1);border-color:var(--accent)}
+  .layer.l3{background:rgba(34,211,238,.08);border-color:#22d3ee}
+  .layer .num{width:32px;height:32px;border-radius:50%;background:var(--bg);display:grid;place-items:center;font-weight:700;color:var(--text);flex-shrink:0;border:1px solid var(--border)}
+
+  /* ===== Mobile responsiveness ===== */
+  @media (max-width: 720px){
+    body{font-size:16px;line-height:1.7}
+    .hero{padding:48px 18px;min-height:auto}
+    .hero h1{font-size:clamp(1.8em,7vw,2.4em)}
+    .hero .subtitle{font-size:1em;margin-bottom:18px}
+    .hero .meta{gap:10px 14px;font-size:.82em}
+    .toc{padding:20px;margin:24px 14px;border-radius:12px}
+    .toc h2{font-size:1.3em}
+    main{padding:24px 16px 60px}
+    .chapter{margin:56px 0;padding-top:28px}
+    .chapter h2{font-size:1.7em}
+    .chapter h3{font-size:1.2em;margin:28px 0 10px}
+    .chapter h4{font-size:1.02em}
+    .analogy,.example,.warning,.deep,.story,.def{padding:14px 16px;font-size:.93em}
+    .lead{font-size:1.02em;padding:6px 0 6px 14px;margin:18px 0}
+    table{display:block;overflow-x:auto;white-space:nowrap;font-size:.86em}
+    th,td{padding:9px 11px}
+    .floating{right:14px;bottom:14px}
+    .floating button,.floating a{width:44px;height:44px;font-size:1.05em}
+    .neuron{padding:18px 12px;gap:4px}
+    .neuron .part{font-size:.78em;padding:6px 8px}
+    .neuron .arrow{font-size:1.2em}
+    .layer{padding:12px 14px;font-size:.92em}
+    .end{padding:40px 18px;margin-top:48px}
+    .end h2{font-size:1.5em}
+    .cta{padding:12px 22px;font-size:.95em}
+    blockquote{padding:8px 16px;margin:18px 0}
+    .selfcheck{padding:16px}
+  }
+  @media (max-width: 420px){
+    .hero h1{font-size:1.7em}
+    .chapter h2{font-size:1.45em}
+    .toc{margin:20px 12px;padding:16px}
+  }
+</style>
+</head>
+<body>
+
+<div id="progressBar"></div>
+
+<div class="hero">
+  <div class="hero-content">
+    <h1>Neuroanatomia</h1>
+    <p class="subtitle">"Bilhões de neurônios, trilhões de conexões — o tecido mais sofisticado que se conhece."</p>
+    <div class="meta">
+      <span>📚 Guia imersivo</span>
+      <span>⏱️ ~25 minutos</span>
+      <span>🧠 Anatomia / Neurofisiologia</span>
+    </div>
+  </div>
+</div>
+
+<div class="toc" id="top">
+  <h2>📑 Sumário</h2>
+  <ol>
+    <li><a href="#cap1">Neurônios — a célula que pensa</a></li>
+    <li><a href="#cap2">Células da Glia — o suporte invisível</a></li>
+    <li><a href="#cap3">Sinapses — onde a comunicação acontece</a></li>
+    <li><a href="#cap4">Potencial de Ação — o pulso elétrico</a></li>
+    <li><a href="#cap5">Ossos da Caixa Craniana</a></li>
+    <li><a href="#cap6">Meninges — as três proteções do encéfalo</a></li>
+  </ol>
+</div>
+
+<main>
+
+<article class="chapter" id="cap1">
+  <div class="chapter-num">Capítulo 1</div>
+  <h2>Neurônios — a célula que pensa</h2>
+
+  <p class="lead">Toda emoção, lembrança, decisão e movimento do seu corpo começa numa célula com aspecto de árvore queimada: o neurônio. São cerca de 86 bilhões deles, e quase tudo o que você é depende deles.</p>
+
+  <div class="def">
+    <b>Neurônio</b> é a unidade funcional do sistema nervoso. É a célula especializada em <b>receber, processar e transmitir</b> informação na forma de impulsos elétricos e químicos.
+  </div>
+
+  <h3>As partes do neurônio</h3>
+  <div class="neuron">
+    <div class="part"><b>Dendritos</b>recebem sinais</div>
+    <div class="arrow">→</div>
+    <div class="part"><b>Corpo celular</b>processa</div>
+    <div class="arrow">→</div>
+    <div class="part"><b>Axônio</b>conduz o impulso</div>
+    <div class="arrow">→</div>
+    <div class="part"><b>Terminações</b>liberam neurotransmissores</div>
+  </div>
+
+  <ul>
+    <li><b>Dendritos:</b> prolongamentos curtos e ramificados que <em>recebem</em> sinais de outros neurônios.</li>
+    <li><b>Corpo celular (soma):</b> contém o núcleo e as organelas. Integra os sinais recebidos.</li>
+    <li><b>Axônio:</b> prolongamento único, longo, que conduz o impulso nervoso até o terminal.</li>
+    <li><b>Bainha de mielina:</b> revestimento lipídico produzido por células da glia, que <em>acelera</em> a condução do impulso.</li>
+    <li><b>Nódulos de Ranvier:</b> intervalos sem mielina ao longo do axônio. O impulso "salta" de nódulo em nódulo (condução saltatória).</li>
+    <li><b>Terminais axônicos:</b> liberam neurotransmissores na sinapse.</li>
+  </ul>
+
+  <h3>Tipos de neurônios</h3>
+  <table>
+    <thead><tr><th>Tipo</th><th>Função</th></tr></thead>
+    <tbody>
+      <tr><td><b>Sensitivo (aferente)</b></td><td>Leva informação dos receptores sensoriais ao SNC.</td></tr>
+      <tr><td><b>Motor (eferente)</b></td><td>Leva ordens do SNC aos músculos e glândulas.</td></tr>
+      <tr><td><b>Interneurônio</b></td><td>Conecta neurônios entre si dentro do SNC. Maioria do total.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="analogy">
+    Imagine o neurônio como uma central telefônica. Os <em>dendritos</em> são os fios que recebem as chamadas, o <em>corpo celular</em> é a operadora que decide o que fazer, e o <em>axônio</em> é a linha que leva o recado adiante. A bainha de mielina é o isolamento que faz o sinal viajar mais rápido sem se perder.
+  </div>
+
+  <div class="selfcheck">
+    <div class="selfcheck-q">Qual a diferença funcional entre dendritos e axônio?</div>
+    <details><summary></summary><div class="answer">Dendritos <strong>recebem</strong> sinais de outros neurônios; o axônio <strong>conduz</strong> o impulso para fora do neurônio. Em geral, há muitos dendritos por célula, mas apenas um axônio (que pode se ramificar no final).</div></details>
+  </div>
+</article>
+
+<article class="chapter" id="cap2">
+  <div class="chapter-num">Capítulo 2</div>
+  <h2>Células da Glia — o suporte invisível</h2>
+
+  <p class="lead">Por muito tempo achou-se que apenas neurônios "faziam o trabalho". Hoje sabe-se que metade do cérebro é composta de células da glia — e elas não são meras coadjuvantes.</p>
+
+  <div class="def">
+    <b>Células da glia (neuroglia)</b> são células que <em>sustentam, nutrem, protegem e isolam</em> os neurônios. Sem elas, o tecido nervoso não funciona.
+  </div>
+
+  <h3>Os principais tipos</h3>
+  <table>
+    <thead><tr><th>Célula</th><th>Localização</th><th>Função</th></tr></thead>
+    <tbody>
+      <tr><td><b>Astrócitos</b></td><td>SNC</td><td>Sustentação, nutrição, formam a barreira hematoencefálica.</td></tr>
+      <tr><td><b>Oligodendrócitos</b></td><td>SNC</td><td>Produzem a bainha de mielina (cada um mieliniza vários axônios).</td></tr>
+      <tr><td><b>Células de Schwann</b></td><td>SNP</td><td>Equivalentes aos oligodendrócitos, mas no SNP. Cada uma mieliniza um único trecho de axônio.</td></tr>
+      <tr><td><b>Micróglias</b></td><td>SNC</td><td>Defesa imunológica — fagocitam restos celulares e patógenos.</td></tr>
+      <tr><td><b>Células ependimárias</b></td><td>Ventrículos cerebrais</td><td>Forram cavidades, produzem o líquido cefalorraquidiano (LCR).</td></tr>
+    </tbody>
+  </table>
+
+  <div class="example">
+    Quando você sofre uma lesão no SNC, são as <b>micróglias</b> que correm para o local removendo restos celulares — funcionam como os "macrófagos do cérebro".
+  </div>
+
+  <div class="warning">
+    Diferente do neurônio (geralmente não se divide depois de adulto), a maioria das células da glia <b>continua se multiplicando</b>. Por isso, a maior parte dos tumores cerebrais é de origem glial, não neuronal (ex: gliomas, astrocitomas).
+  </div>
+</article>
+
+<article class="chapter" id="cap3">
+  <div class="chapter-num">Capítulo 3</div>
+  <h2>Sinapses — onde a comunicação acontece</h2>
+
+  <p class="lead">Os neurônios não se tocam diretamente. Entre o terminal de um e o dendrito do próximo existe uma <em>fenda</em> microscópica. É nessa fenda — a sinapse — que o pensamento, o reflexo e a memória ganham forma.</p>
+
+  <div class="def">
+    <b>Sinapse</b> é a região de contato funcional entre dois neurônios (ou entre neurônio e outra célula, como muscular). Permite a transmissão do impulso nervoso.
+  </div>
+
+  <h3>Tipos de sinapse</h3>
+  <table>
+    <thead><tr><th>Tipo</th><th>Como funciona</th></tr></thead>
+    <tbody>
+      <tr><td><b>Sinapse química</b></td><td>O impulso libera neurotransmissores na fenda sináptica, que se ligam a receptores no neurônio seguinte. É o tipo predominante.</td></tr>
+      <tr><td><b>Sinapse elétrica</b></td><td>Os neurônios estão conectados por junções comunicantes (gap junctions), e o impulso passa diretamente. Mais rápida, menos modulável.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Os passos da sinapse química</h3>
+  <ol>
+    <li>O potencial de ação chega ao <b>terminal axônico</b>.</li>
+    <li>Canais de Ca²⁺ se abrem; o cálcio entra no terminal.</li>
+    <li>Vesículas com <b>neurotransmissores</b> se fundem à membrana e liberam seu conteúdo na <b>fenda sináptica</b>.</li>
+    <li>O neurotransmissor se liga a <b>receptores</b> no neurônio pós-sináptico.</li>
+    <li>Isso dispara um novo potencial elétrico (excitatório ou inibitório).</li>
+    <li>O neurotransmissor é <em>recaptado</em> ou <em>degradado</em>, encerrando o sinal.</li>
+  </ol>
+
+  <h3>Principais neurotransmissores</h3>
+  <ul>
+    <li><b>Acetilcolina</b> — junção neuromuscular, atenção, memória.</li>
+    <li><b>Dopamina</b> — recompensa, motivação, controle motor.</li>
+    <li><b>Serotonina</b> — humor, sono, apetite.</li>
+    <li><b>GABA</b> — principal inibitório do SNC.</li>
+    <li><b>Glutamato</b> — principal excitatório do SNC.</li>
+    <li><b>Noradrenalina</b> — alerta, resposta de "luta ou fuga".</li>
+  </ul>
+
+  <div class="analogy">
+    Pense nas sinapses como duas pessoas que não podem se tocar, mas se comunicam jogando bilhetes (neurotransmissores) de um lado para o outro. O receptor é a caixa de correio que só aceita certos formatos de bilhete.
+  </div>
+</article>
+
+<article class="chapter" id="cap4">
+  <div class="chapter-num">Capítulo 4</div>
+  <h2>Potencial de Ação — o pulso elétrico</h2>
+
+  <p class="lead">Tudo o que viaja num neurônio é, no fim, uma onda elétrica curtíssima — durando milésimos de segundo. Entender o potencial de ação é entender como o cérebro fala consigo mesmo.</p>
+
+  <div class="def">
+    <b>Potencial de ação</b> é a inversão rápida e transitória da carga elétrica da membrana do neurônio, que se propaga ao longo do axônio.
+  </div>
+
+  <h3>Potencial de repouso vs. potencial de ação</h3>
+  <table>
+    <thead><tr><th>Estado</th><th>Carga interna</th><th>O que está acontecendo</th></tr></thead>
+    <tbody>
+      <tr><td><b>Repouso</b></td><td>≈ −70 mV (negativa)</td><td>Mais Na⁺ fora, mais K⁺ dentro. Bomba Na⁺/K⁺ mantém o gradiente.</td></tr>
+      <tr><td><b>Despolarização</b></td><td>Sobe até +30 mV</td><td>Canais de Na⁺ se abrem; sódio entra rapidamente.</td></tr>
+      <tr><td><b>Repolarização</b></td><td>Volta para negativa</td><td>Canais de K⁺ se abrem; potássio sai.</td></tr>
+      <tr><td><b>Hiperpolarização</b></td><td>Cai abaixo de −70 mV</td><td>Excesso de saída de K⁺. A bomba restaura o repouso.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="deep">
+    A <b>diferença de potencial</b> da membrana existe porque há concentrações diferentes de íons dentro e fora da célula:<br>
+    • Fora: muito Na⁺ e Cl⁻<br>
+    • Dentro: muito K⁺ e proteínas com carga negativa<br>
+    A membrana é seletivamente permeável e mantém esse desequilíbrio às custas de energia (ATP), via <b>bomba sódio-potássio</b> (3 Na⁺ para fora, 2 K⁺ para dentro a cada ciclo).
+  </div>
+
+  <h3>Lei do tudo ou nada</h3>
+  <p>O potencial de ação só dispara se o estímulo atingir o <span class="key">limiar</span> (≈ −55 mV). Abaixo disso, nada acontece. Acima disso, dispara — e sempre com a <em>mesma intensidade</em>. O que muda em estímulos mais fortes é a <b>frequência</b> dos disparos, não a sua amplitude.</p>
+
+  <div class="analogy">
+    Pense numa privada. Você pode apertar a descarga com força ou levemente — se cruzar o limiar, ela vai descarregar com a mesma intensidade. Estímulo maior só faz você apertar mais vezes seguidas, não dispara uma "super descarga".
+  </div>
+
+  <h3>Condução saltatória</h3>
+  <p>Em axônios mielinizados, o impulso "pula" de um nódulo de Ranvier para o próximo, em vez de despolarizar toda a membrana ponto a ponto. Resultado: condução até <b>50× mais rápida</b> do que em axônios sem mielina.</p>
+
+  <div class="selfcheck">
+    <div class="selfcheck-q">Por que dizemos que o potencial de ação obedece à "lei do tudo ou nada"?</div>
+    <details><summary></summary><div class="answer">Porque ele só ocorre se o estímulo atingir o <strong>limiar de despolarização</strong> (≈ −55 mV). Abaixo do limiar, não há disparo. Acima dele, o disparo é sempre com a mesma amplitude — não há "potencial de ação fraco" ou "forte".</div></details>
+  </div>
+</article>
+
+<article class="chapter" id="cap5">
+  <div class="chapter-num">Capítulo 5</div>
+  <h2>Ossos da Caixa Craniana</h2>
+
+  <p class="lead">O cérebro é a estrutura mais delicada do corpo — e por isso vive numa caixa de ossos. A caixa craniana (neurocrânio) é formada por <b>8 ossos</b> articulados por suturas que praticamente não se movem.</p>
+
+  <div class="def">
+    A <b>caixa craniana</b> (neurocrânio) é o conjunto ósseo que abriga o encéfalo, formado por 8 ossos: <b>1 frontal, 2 parietais, 2 temporais, 1 occipital, 1 esfenoide e 1 etmoide</b>.
+  </div>
+
+  <h3>Os 8 ossos</h3>
+  <table>
+    <thead><tr><th>Osso</th><th>Quantidade</th><th>Localização</th></tr></thead>
+    <tbody>
+      <tr><td><b>Frontal</b></td><td>1</td><td>Testa e teto das órbitas.</td></tr>
+      <tr><td><b>Parietal</b></td><td>2</td><td>Laterais e teto do crânio.</td></tr>
+      <tr><td><b>Temporal</b></td><td>2</td><td>Lateral inferior, contém o ouvido interno.</td></tr>
+      <tr><td><b>Occipital</b></td><td>1</td><td>Parte posterior; tem o forame magno (passagem da medula).</td></tr>
+      <tr><td><b>Esfenoide</b></td><td>1</td><td>Forma a base do crânio (formato de borboleta).</td></tr>
+      <tr><td><b>Etmoide</b></td><td>1</td><td>Entre as órbitas, atrás do nariz; participa do teto da cavidade nasal.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Suturas (articulações fixas)</h3>
+  <ul>
+    <li><b>Coronal</b> — entre frontal e parietais.</li>
+    <li><b>Sagital</b> — entre os dois parietais.</li>
+    <li><b>Lambdoide</b> — entre parietais e occipital.</li>
+    <li><b>Escamosa</b> — entre temporal e parietal.</li>
+  </ul>
+
+  <div class="story">
+    Na criança recém-nascida, esses ossos ainda não estão totalmente fundidos. Os espaços flexíveis entre eles são as <b>fontanelas</b> ("moleiras"), que permitem o crescimento do cérebro nos primeiros anos.
+  </div>
+
+  <h3>Estrutura interna do osso</h3>
+  <p>Os ossos do crânio têm três camadas:</p>
+  <div class="layers">
+    <div class="layer l1"><div class="num">1</div><div><b>Lâmina externa</b><br><small>Osso compacto, mais resistente — primeiro contato com impactos.</small></div></div>
+    <div class="layer l2"><div class="num">2</div><div><b>Díploe</b><br><small>Camada intermediária de osso esponjoso, com medula óssea.</small></div></div>
+    <div class="layer l3"><div class="num">3</div><div><b>Lâmina interna</b><br><small>Osso compacto interno — em contato com as meninges.</small></div></div>
+  </div>
+</article>
+
+<article class="chapter" id="cap6">
+  <div class="chapter-num">Capítulo 6</div>
+  <h2>Meninges — as três proteções do encéfalo</h2>
+
+  <p class="lead">Entre o osso e o encéfalo existem três membranas concêntricas, como casquinhas de cebola — as meninges. Elas protegem mecanicamente, conduzem vasos e produzem o líquido que amortece o cérebro.</p>
+
+  <div class="def">
+    <b>Meninges</b> são três membranas (dura-máter, aracnoide e pia-máter) que envolvem o encéfalo e a medula espinhal, oferecendo proteção mecânica e suporte vascular.
+  </div>
+
+  <h3>As três camadas</h3>
+  <div class="layers">
+    <div class="layer l1"><div class="num">1</div><div><b>Dura-máter</b> (mais externa)<br><small>A mais espessa e resistente. Possui sistema próprio de vasos e nervos. Adere fortemente ao osso.</small></div></div>
+    <div class="layer l2"><div class="num">2</div><div><b>Aracnoide</b> (média)<br><small>Membrana muito delicada, sem vasos nem nervos. Tem aspecto de teia de aranha — daí o nome.</small></div></div>
+    <div class="layer l3"><div class="num">3</div><div><b>Pia-máter</b> (mais interna)<br><small>Adere intimamente ao tecido nervoso. É <em>ricamente vascularizada</em> — leva nutrientes diretamente ao cérebro.</small></div></div>
+  </div>
+
+  <h3>Espaços entre as meninges</h3>
+  <ul>
+    <li><b>Espaço epidural</b> — entre osso e dura-máter (mais virtual no encéfalo, real na medula).</li>
+    <li><b>Espaço subdural</b> — entre dura-máter e aracnoide.</li>
+    <li><b>Espaço subaracnoide</b> — entre aracnoide e pia-máter; <b>contém o líquido cefalorraquidiano (LCR)</b>.</li>
+  </ul>
+
+  <h3>Líquido Cefalorraquidiano (LCR)</h3>
+  <div class="example">
+    Produzido nos plexos coroides dos ventrículos cerebrais, o LCR circula no espaço subaracnoide e nos ventrículos. Em condições normais:<br>
+    • Produção/reabsorção: cerca de <b>500 ml/dia</b>.<br>
+    • Pressão intracraniana mantida em torno de <b>10 mmHg</b>.<br>
+    Funções: amortecer o cérebro, transportar nutrientes, remover resíduos.
+  </div>
+
+  <div class="warning">
+    <b>Hemorragias por localização</b>:<br>
+    • <b>Hematoma epidural</b> — sangramento entre osso e dura-máter (geralmente arterial, evolução rápida).<br>
+    • <b>Hematoma subdural</b> — entre dura e aracnoide (geralmente venoso, evolução mais lenta).<br>
+    • <b>Hemorragia subaracnoide</b> — entre aracnoide e pia (frequentemente por aneurisma).
+  </div>
+
+  <div class="story">
+    A inflamação das meninges é a <b>meningite</b> — uma das emergências médicas mais conhecidas. O sinal clássico é a rigidez de nuca, porque a inflamação no espaço subaracnoide irrita as raízes nervosas.
+  </div>
+
+  <div class="selfcheck">
+    <div class="selfcheck-q">Qual é a meninge mais interna e qual a sua função principal?</div>
+    <details><summary></summary><div class="answer">A <strong>pia-máter</strong>. Adere diretamente ao tecido nervoso e é <em>ricamente vascularizada</em>: por meio dela os vasos sanguíneos chegam até o cérebro, levando nutrientes e oxigênio.</div></details>
+  </div>
+</article>
+
+</main>
+
+<div class="end">
+  <h2>Pronto para o quiz?</h2>
+  <p style="color:var(--muted);font-family:sans-serif">10 questões: 8 fechadas + 2 abertas para você reforçar a base.</p>
+  <a class="cta" href="revisao-neuro.html">✅ Ir para o Quiz</a>
+</div>
+
+<div class="floating">
+  <a href="index.html" title="Hub">🏠</a>
+  <button onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Topo">↑</button>
+</div>
+
+<script>
+  const bar = document.getElementById('progressBar');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const scrolled = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    bar.style.width = scrolled + '%';
+  });
+</script>
+
+</body>
+</html>

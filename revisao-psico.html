@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Revisão — Introdução à Psicologia</title>
+<style>
+  :root{
+    --bg:#0e0a1f; --bg2:#1a1530; --card:#1f1a3a; --border:#3a2f5c;
+    --primary:#a855f7; --primary2:#c084fc; --accent:#fbbf24;
+    --good:#10b981; --bad:#ef4444; --warn:#f59e0b;
+    --text:#e9e5f7; --muted:#a8a0c2;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+  header{background:linear-gradient(135deg,#4c1d95,#a855f7);padding:32px 24px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.3)}
+  header h1{margin:0;font-size:2em}
+  header p{margin:8px 0 0;color:#ede9fe}
+  nav{position:sticky;top:0;background:rgba(14,10,31,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:12px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;z-index:100}
+  nav button{background:var(--card);color:var(--text);border:1px solid var(--border);padding:8px 14px;border-radius:8px;cursor:pointer;font-size:.9em;transition:all .2s}
+  nav button:hover,nav button.active{background:var(--primary);border-color:var(--primary)}
+  main{max-width:1100px;margin:0 auto;padding:24px}
+  section{display:none;animation:fadeIn .4s}
+  section.active{display:block}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  h2{color:var(--primary2);border-bottom:2px solid var(--primary);padding-bottom:8px;margin-top:0}
+  h3{color:var(--accent);margin-top:24px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:16px 0;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+  .card.highlight{border-left:4px solid var(--primary)}
+  details{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:8px 0;cursor:pointer}
+  details[open]{border-color:var(--primary)}
+  summary{font-weight:600;color:var(--primary2);outline:none}
+  summary:hover{color:var(--accent)}
+  table{width:100%;border-collapse:collapse;margin:12px 0;background:var(--bg2);border-radius:8px;overflow:hidden}
+  th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+  th{background:var(--primary);color:white}
+  tr:last-child td{border-bottom:none}
+  .pill{display:inline-block;background:var(--primary);color:white;padding:2px 10px;border-radius:99px;font-size:.8em;margin-right:6px}
+  .pill.good{background:var(--good)} .pill.bad{background:var(--bad)} .pill.warn{background:var(--warn)}
+  .flash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+  .flash{background:var(--card);border:1px solid var(--border);border-radius:12px;height:180px;perspective:1000px;cursor:pointer}
+  .flash-inner{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+  .flash.flipped .flash-inner{transform:rotateY(180deg)}
+  .flash-front,.flash-back{position:absolute;inset:0;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;text-align:center;padding:16px;border-radius:12px}
+  .flash-front{background:linear-gradient(135deg,#4c1d95,#a855f7);font-weight:600;font-size:1.05em}
+  .flash-back{background:var(--bg2);transform:rotateY(180deg);font-size:.95em;color:var(--muted)}
+  .quiz-q{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:16px 0}
+  .quiz-q .q{font-weight:600;margin-bottom:12px}
+  .quiz-q .qtype{font-size:.72em;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:700}
+  .quiz-q .qtype.open{color:var(--accent)}
+  .quiz-q .qtype.closed{color:var(--primary2)}
+  .opts{display:flex;flex-direction:column;gap:8px}
+  .opt{background:var(--bg2);border:1px solid var(--border);padding:12px;border-radius:8px;cursor:pointer;transition:all .2s;text-align:left;color:var(--text);font-size:.95em}
+  .opt:hover:not(:disabled){border-color:var(--primary);background:#2a2540}
+  .opt.correct{background:rgba(16,185,129,.2);border-color:var(--good);color:#a7f3d0}
+  .opt.wrong{background:rgba(239,68,68,.2);border-color:var(--bad);color:#fecaca}
+  .open-area{display:flex;flex-direction:column;gap:8px}
+  .open-area textarea{width:100%;min-height:90px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px;color:var(--text);font-family:inherit;font-size:.95em;resize:vertical;line-height:1.5}
+  .open-area textarea:focus{outline:none;border-color:var(--primary)}
+  .open-actions{display:flex;gap:8px;flex-wrap:wrap}
+  .btn-sm{background:var(--bg2);color:var(--text);border:1px solid var(--border);padding:8px 14px;border-radius:8px;cursor:pointer;font-size:.88em;transition:all .2s;font-family:inherit}
+  .btn-sm:hover{border-color:var(--primary);color:var(--primary2)}
+  .btn-sm.ok{background:var(--good);border-color:var(--good);color:white}
+  .btn-sm.ok:hover{filter:brightness(1.1);color:white}
+  .btn-sm.no{background:var(--bad);border-color:var(--bad);color:white}
+  .btn-sm.no:hover{filter:brightness(1.1);color:white}
+  .answer-key{margin-top:10px;padding:12px 14px;background:rgba(251,191,36,.08);border-left:3px solid var(--accent);border-radius:6px;font-size:.92em;display:none}
+  .answer-key.show{display:block}
+  .answer-key b{color:var(--accent)}
+  .feedback{margin-top:12px;padding:10px 14px;border-radius:8px;font-size:.9em;display:none}
+  .feedback.show{display:block}
+  .feedback.ok{background:rgba(16,185,129,.15);border-left:3px solid var(--good)}
+  .feedback.no{background:rgba(239,68,68,.15);border-left:3px solid var(--bad)}
+  .progress{position:fixed;bottom:20px;right:20px;background:var(--card);border:1px solid var(--border);padding:12px 18px;border-radius:99px;font-size:.9em;box-shadow:0 4px 20px rgba(0,0,0,.4)}
+  .progress span{color:var(--accent);font-weight:700}
+  .tip{background:rgba(168,85,247,.1);border-left:3px solid var(--primary);padding:10px 14px;border-radius:6px;margin:10px 0;font-size:.92em}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:700px){.grid2{grid-template-columns:1fr}}
+  ul{padding-left:20px} li{margin:4px 0}
+  code{background:var(--bg2);padding:2px 6px;border-radius:4px;font-size:.9em;color:var(--accent)}
+  .btn{background:var(--primary);color:white;border:none;padding:10px 18px;border-radius:8px;cursor:pointer;font-size:.95em;margin-top:10px}
+  .btn:hover{filter:brightness(1.1)}
+
+  /* ===== Mobile responsiveness ===== */
+  @media (max-width: 720px){
+    body{font-size:15.5px;overflow-x:hidden}
+    header{padding:22px 16px}
+    header h1{font-size:1.35em}
+    header p{font-size:.88em}
+    nav{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;padding:10px 12px;gap:6px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+    nav::-webkit-scrollbar{display:none}
+    nav button, nav a{flex:0 0 auto;font-size:.82em;padding:8px 12px;white-space:nowrap;min-height:38px}
+    main{padding:16px 14px 100px}
+    h2{font-size:1.3em;padding-bottom:6px}
+    h3{font-size:1.1em;margin-top:20px}
+    .card{padding:14px;border-radius:10px;margin:12px 0}
+    table{display:block;overflow-x:auto;font-size:.9em}
+    th,td{padding:9px 11px}
+    .flash-grid{grid-template-columns:1fr;gap:12px}
+    .flash{height:160px}
+    .quiz-q{padding:14px}
+    .opt{padding:12px;font-size:.92em;min-height:44px;line-height:1.45}
+    .open-area textarea{min-height:110px;font-size:.95em}
+    .progress{bottom:14px;right:14px;left:14px;text-align:center;padding:10px 14px;font-size:.85em;border-radius:14px}
+    .btn{padding:11px 16px;font-size:.92em;min-height:42px}
+  }
+  @media (max-width: 420px){
+    header h1{font-size:1.2em}
+    nav button, nav a{font-size:.78em;padding:7px 10px}
+    .card{padding:12px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🧠 Introdução à Psicologia</h1>
+  <p>Revisão Interativa — Ciência, Brasil, Reforma, Nise, Áreas, Sistema e Ética</p>
+</header>
+
+<nav>
+  <a href="index.html" style="background:var(--accent);color:#0e0a1f;border:1px solid var(--accent);padding:8px 14px;border-radius:8px;font-size:.9em;text-decoration:none;font-weight:600">🏠 Hub</a>
+  <button onclick="show('intro',this)" class="active">📖 Intro</button>
+  <button onclick="show('ciencia',this)">🔬 Ciência</button>
+  <button onclick="show('brasil',this)">🇧🇷 Brasil</button>
+  <button onclick="show('reforma',this)">🏛️ Reforma</button>
+  <button onclick="show('nise',this)">🎬 Nise</button>
+  <button onclick="show('areas',this)">🧩 Áreas</button>
+  <button onclick="show('sistema',this)">🏢 Sistema</button>
+  <button onclick="show('etica',this)">⚖️ Ética</button>
+  <button onclick="show('flash',this)">🃏 Flashcards</button>
+  <button onclick="show('quiz',this)">✅ Quiz</button>
+</nav>
+
+<main>
+
+<section id="intro" class="active">
+  <h2>📖 Visão Geral</h2>
+  <div class="card highlight">
+    <p>A psicologia é a ciência do <b>comportamento e dos processos mentais</b>. No Brasil, foi regulamentada em <b>1962</b> e teve papel central na <b>Reforma Psiquiátrica</b>. É regulada pelo <b>Sistema Conselhos (CFP/CRP)</b> e tem um <b>Código de Ética</b> próprio.</p>
+  </div>
+  <div class="grid2">
+    <div class="card">🔬 <b>Ciência</b><br><small>Wundt, 1879 — primeiro laboratório.</small></div>
+    <div class="card">🇧🇷 <b>Brasil</b><br><small>Lei 4.119/1962 — regulamentação.</small></div>
+    <div class="card">🏛️ <b>Reforma Psiquiátrica</b><br><small>Lei 10.216/2001 — modelo psicossocial.</small></div>
+    <div class="card">🎬 <b>Nise da Silveira</b><br><small>Pioneira do tratamento humanizado.</small></div>
+    <div class="card">🧩 <b>Áreas</b><br><small>Clínica, escolar, organizacional, social...</small></div>
+    <div class="card">⚖️ <b>Ética</b><br><small>Sigilo, competência, dignidade humana.</small></div>
+  </div>
+</section>
+
+<section id="ciencia">
+  <h2>🔬 Psicologia como Ciência</h2>
+  <div class="card highlight">
+    <p>Estuda <b>comportamento</b> e <b>processos mentais</b> com método científico (observação, experimentação, mensuração).</p>
+  </div>
+  <h3>Marco fundador</h3>
+  <div class="tip">📍 <b>1879 — Wilhelm Wundt</b> funda em <b>Leipzig (Alemanha)</b> o primeiro laboratório de psicologia experimental. É a separação entre psicologia e filosofia.</div>
+
+  <h3>Principais escolas/abordagens</h3>
+  <table>
+    <thead><tr><th>Escola</th><th>Autor</th><th>Foco</th></tr></thead>
+    <tbody>
+      <tr><td>Estruturalismo</td><td>Wundt</td><td>Decompor a consciência em elementos.</td></tr>
+      <tr><td>Funcionalismo</td><td>William James</td><td>Para que serve a mente? Adaptação.</td></tr>
+      <tr><td>Psicanálise</td><td>Freud</td><td>Inconsciente e pulsões.</td></tr>
+      <tr><td>Behaviorismo</td><td>Watson, Skinner</td><td>Comportamento observável.</td></tr>
+      <tr><td>Gestalt</td><td>Wertheimer e cols.</td><td>O todo é diferente da soma das partes.</td></tr>
+      <tr><td>Humanismo</td><td>Rogers, Maslow</td><td>Pessoa, autorrealização.</td></tr>
+      <tr><td>Cognitivismo</td><td>Vários</td><td>Mente como processadora de informação.</td></tr>
+    </tbody>
+  </table>
+  <div class="tip">⚠️ <b>Psicologia ≠ Psicanálise.</b> A psicanálise é UMA das abordagens dentro da psicologia.</div>
+</section>
+
+<section id="brasil">
+  <h2>🇧🇷 Psicologia no Brasil</h2>
+  <div class="card highlight">
+    <p>Trajetória peculiar — práticas em hospitais e escolas existiram <em>antes</em> da regulamentação profissional.</p>
+  </div>
+  <h3>Marcos</h3>
+  <table>
+    <thead><tr><th>Ano</th><th>Marco</th></tr></thead>
+    <tbody>
+      <tr><td>1923</td><td>Liga Brasileira de Higiene Mental.</td></tr>
+      <tr><td>1944</td><td>Nise da Silveira no Centro Psiquiátrico Nacional.</td></tr>
+      <tr><td>1953</td><td>Primeiros cursos universitários (PUC-RJ, USP).</td></tr>
+      <tr><td><b>1962</b></td><td><b>Lei nº 4.119</b> — regulamentação da profissão. ⭐</td></tr>
+      <tr><td>1971</td><td>Lei 5.766 — cria CFP e CRPs.</td></tr>
+      <tr><td>2001</td><td>Lei 10.216 — Reforma Psiquiátrica.</td></tr>
+    </tbody>
+  </table>
+  <div class="tip">🎉 <b>27 de agosto</b> = Dia do Psicólogo (data da Lei 4.119/1962).</div>
+</section>
+
+<section id="reforma">
+  <h2>🏛️ Reforma Psiquiátrica</h2>
+  <div class="card highlight">
+    <p>Movimento que substituiu o modelo <b>manicomial</b> por uma <b>rede de cuidado territorial e comunitário</b>.</p>
+  </div>
+  <h3>Influências</h3>
+  <ul>
+    <li><b>Franco Basaglia</b> — Psiquiatria Democrática Italiana.</li>
+    <li><b>Movimento Antimanicomial</b> brasileiro (a partir de 1987).</li>
+    <li>Lema: <em>"Por uma sociedade sem manicômios"</em>.</li>
+  </ul>
+
+  <h3>Lei 10.216/2001 (Lei Paulo Delgado)</h3>
+  <ul>
+    <li>Garante os direitos da pessoa com transtorno mental.</li>
+    <li>Privilegia tratamento em serviços comunitários.</li>
+    <li>Regula internações (devem ser breves, justificadas, em hospitais gerais).</li>
+  </ul>
+
+  <h3>Antes × depois</h3>
+  <table>
+    <thead><tr><th>Manicomial</th><th>Psicossocial</th></tr></thead>
+    <tbody>
+      <tr><td>Internação prolongada</td><td>Cuidado territorial (CAPS)</td></tr>
+      <tr><td>Isolamento</td><td>Vínculos preservados</td></tr>
+      <tr><td>Só medicação</td><td>Equipe multiprofissional</td></tr>
+      <tr><td>Hospital psiquiátrico</td><td>CAPS, NASF, residências</td></tr>
+    </tbody>
+  </table>
+  <div class="tip">📍 <b>CAPS</b> = Centros de Atenção Psicossocial — espinha dorsal da rede atual.</div>
+</section>
+
+<section id="nise">
+  <h2>🎬 Nise — O Coração da Loucura</h2>
+  <div class="card highlight">
+    <p>Filme de <b>Roberto Berliner (2015)</b>, baseado na vida de <b>Nise da Silveira</b> (1905–1999), pioneira do tratamento humanizado.</p>
+  </div>
+  <h3>Contexto</h3>
+  <ul>
+    <li>Anos 1940 — Centro Psiquiátrico Nacional, Engenho de Dentro (RJ).</li>
+    <li>Nise se recusou a usar <b>lobotomia</b> e <b>eletrochoque</b>.</li>
+    <li>Introduziu a <b>terapia ocupacional</b> através da arte.</li>
+    <li>Influenciada por <b>Carl Jung</b> (inconsciente coletivo, leitura simbólica).</li>
+  </ul>
+
+  <h3>Conceitos do filme</h3>
+  <table>
+    <thead><tr><th>Conceito</th><th>O que é</th></tr></thead>
+    <tbody>
+      <tr><td>Lobotomia</td><td>Cirurgia cerebral usada para "acalmar" — hoje considerada brutal.</td></tr>
+      <tr><td>Eletrochoque</td><td>Era usado de forma punitiva. Hoje (ECT) tem indicações restritas.</td></tr>
+      <tr><td>Terapia ocupacional</td><td>Atividades expressivas com função terapêutica.</td></tr>
+      <tr><td>Inconsciente coletivo</td><td>Conceito de Jung — conteúdos compartilhados pela humanidade.</td></tr>
+      <tr><td>Museu de Imagens do Inconsciente</td><td>Acervo criado por Nise — patrimônio nacional.</td></tr>
+    </tbody>
+  </table>
+  <div class="tip">💡 O filme antecipa princípios da Reforma Psiquiátrica em décadas: vínculo, escuta, arte, sujeito como pessoa.</div>
+</section>
+
+<section id="areas">
+  <h2>🧩 Áreas da Psicologia</h2>
+  <div class="card highlight">
+    <p><b>Áreas</b> = onde o psicólogo trabalha. <b>Abordagens</b> = como ele intervém. Não confunda!</p>
+  </div>
+  <table>
+    <thead><tr><th>Área</th><th>Campo</th></tr></thead>
+    <tbody>
+      <tr><td><b>Clínica</b></td><td>Atendimento — consultório, hospitais, CAPS</td></tr>
+      <tr><td><b>Escolar/Educacional</b></td><td>Escolas, processos de aprendizagem</td></tr>
+      <tr><td><b>Organizacional/Trabalho</b></td><td>Empresas, RH, saúde do trabalhador</td></tr>
+      <tr><td><b>Social/Comunitária</b></td><td>CRAS, CREAS, projetos sociais</td></tr>
+      <tr><td><b>Hospitalar/Saúde</b></td><td>Hospitais, UTI, doenças crônicas</td></tr>
+      <tr><td><b>Jurídica/Forense</b></td><td>Varas judiciais, perícias, laudos</td></tr>
+      <tr><td><b>Esporte</b></td><td>Atletas — performance, motivação</td></tr>
+      <tr><td><b>Trânsito</b></td><td>Avaliação para CNH</td></tr>
+      <tr><td><b>Neuropsicologia</b></td><td>Avaliação e reabilitação cognitiva</td></tr>
+      <tr><td><b>Pesquisa/Acadêmica</b></td><td>Universidades, ciência</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="sistema">
+  <h2>🏢 Sistema, Conselhos e Entidades</h2>
+  <h3>Sistema Conselhos</h3>
+  <table>
+    <thead><tr><th>Sigla</th><th>Nome</th><th>Função</th></tr></thead>
+    <tbody>
+      <tr><td><b>CFP</b></td><td>Conselho Federal de Psicologia</td><td>Órgão máximo — define resoluções nacionais e código de ética.</td></tr>
+      <tr><td><b>CRP</b></td><td>Conselho Regional de Psicologia</td><td>Atua nos estados — registra, fiscaliza, julga em 1ª instância.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Entidades representativas</h3>
+  <table>
+    <thead><tr><th>Sigla</th><th>O que faz</th></tr></thead>
+    <tbody>
+      <tr><td><b>ABEP</b></td><td>Associação Brasileira de Ensino de Psicologia — formação acadêmica.</td></tr>
+      <tr><td><b>ABRAPSO</b></td><td>Associação Brasileira de Psicologia Social.</td></tr>
+      <tr><td><b>FENAPSI</b></td><td>Federação Nacional dos Psicólogos — sindical.</td></tr>
+      <tr><td><b>SBP</b></td><td>Sociedade Brasileira de Psicologia — ciência.</td></tr>
+    </tbody>
+  </table>
+  <div class="tip">⚖️ <b>Conselho ≠ Sindicato</b>. Conselho regula a profissão (interesse público). Sindicato (FENAPSI) defende a categoria (interesse profissional).</div>
+</section>
+
+<section id="etica">
+  <h2>⚖️ Código de Ética</h2>
+  <div class="card highlight">
+    <p>Resolução CFP nº 010/2005 — define princípios, direitos e deveres do psicólogo.</p>
+  </div>
+  <h3>Princípios fundamentais</h3>
+  <ol>
+    <li>Respeito à <b>liberdade, dignidade, igualdade e integridade</b> humana.</li>
+    <li>Promoção da <b>saúde e qualidade de vida</b>.</li>
+    <li>Eliminação de <b>qualquer forma de discriminação</b>.</li>
+    <li>Promoção dos <b>Direitos Humanos</b>.</li>
+    <li><b>Consciência crítica</b> sobre os limites e efeitos sociais da atuação.</li>
+  </ol>
+
+  <h3>Pilares práticos</h3>
+  <table>
+    <thead><tr><th>Pilar</th><th>Ideia</th></tr></thead>
+    <tbody>
+      <tr><td><b>Sigilo</b></td><td>Confidencial — quebrado só em risco grave ou ordem judicial.</td></tr>
+      <tr><td><b>Competência técnica</b></td><td>Atuar só onde tem formação. Atualização contínua.</td></tr>
+      <tr><td><b>Não discriminação</b></td><td>Não recusar atendimento por preconceito.</td></tr>
+      <tr><td><b>Documentos</b></td><td>Laudos técnicos, fundamentados e arquivados.</td></tr>
+      <tr><td><b>Sem duplo vínculo</b></td><td>Não atender quem tenha relação prévia comprometedora.</td></tr>
+      <tr><td><b>Honorários</b></td><td>Combinados com clareza, sem sensacionalismo.</td></tr>
+    </tbody>
+  </table>
+  <div class="tip">🛑 Quebra de sigilo = uma das infrações mais graves. Permanece mesmo após a morte do cliente.</div>
+</section>
+
+<section id="flash">
+  <h2>🃏 Flashcards</h2>
+  <p>Clique para virar.</p>
+  <div class="flash-grid" id="flashGrid"></div>
+</section>
+
+<section id="quiz">
+  <h2>✅ Quiz</h2>
+  <p style="color:var(--muted)">Mistura de questões fechadas e abertas. Nas abertas, escreva sua resposta, veja o gabarito e marque honestamente. Tudo é salvo localmente.</p>
+  <div id="quizArea"></div>
+  <button class="btn" onclick="resetQuiz()">🔄 Resetar progresso</button>
+</section>
+
+</main>
+
+<div class="progress">📊 Acertos: <span id="score">0</span>/<span id="total">0</span></div>
+
+<script>
+  function show(id, btn){
+    document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  // Flashcards
+  const FLASH = [
+    ['1879','Wundt funda o primeiro laboratório de psicologia em Leipzig — nascimento da psicologia como ciência.'],
+    ['Wilhelm Wundt','Considerado o "pai" da psicologia experimental.'],
+    ['Behaviorismo','Estuda só o comportamento observável (Watson, Skinner).'],
+    ['Gestalt','"O todo é diferente da soma das partes."'],
+    ['Lei 4.119/1962','Regulamentou a profissão de psicólogo no Brasil.'],
+    ['27 de agosto','Dia do Psicólogo — sanção da Lei 4.119/1962.'],
+    ['Lei 10.216/2001','Lei da Reforma Psiquiátrica brasileira (Lei Paulo Delgado).'],
+    ['CAPS','Centros de Atenção Psicossocial — núcleo da rede pós-Reforma.'],
+    ['Franco Basaglia','Psiquiatra italiano — Psiquiatria Democrática, base da Reforma.'],
+    ['Nise da Silveira','Pioneira do tratamento humanizado; recusou lobotomia/eletrochoque.'],
+    ['Museu de Imagens do Inconsciente','Acervo criado por Nise com obras de pacientes.'],
+    ['CFP × CRP','CFP = nacional. CRP = regional, registra e fiscaliza.'],
+    ['Conselho × Sindicato','Conselho regula a profissão; FENAPSI representa a categoria.'],
+    ['Sigilo profissional','Confidencial. Quebra só em risco grave ou ordem judicial.'],
+    ['Áreas × Abordagens','Áreas = onde atua. Abordagens = como atua.'],
+  ];
+  const fg = document.getElementById('flashGrid');
+  FLASH.forEach(([f,b]) => {
+    const c = document.createElement('div');
+    c.className = 'flash';
+    c.innerHTML = `<div class="flash-inner"><div class="flash-front">${f}</div><div class="flash-back">${b}</div></div>`;
+    c.onclick = () => c.classList.toggle('flipped');
+    fg.appendChild(c);
+  });
+
+  // Quiz
+  const QUIZ = [
+    {type:'closed',
+     q:'Em que ano e por quem foi fundado o primeiro laboratório de psicologia experimental, marcando o "nascimento" da psicologia como ciência?',
+     opts:['1850 — William James','1879 — Wilhelm Wundt','1900 — Sigmund Freud','1913 — John Watson'], ok:1,
+     exp:'Em 1879, Wundt fundou o laboratório em Leipzig, Alemanha. Marca a separação entre psicologia e filosofia.'},
+    {type:'closed',
+     q:'Qual lei regulamentou a profissão de psicólogo no Brasil?',
+     opts:['Lei 5.766/1971','Lei 4.119/1962','Lei 10.216/2001','Lei 8.080/1990'], ok:1,
+     exp:'Lei 4.119/1962. A Lei 5.766/1971 criou os Conselhos; a 10.216/2001 é da Reforma Psiquiátrica.'},
+    {type:'closed',
+     q:'A Lei 10.216/2001 (Reforma Psiquiátrica) tem como principal característica:',
+     opts:[
+       'Proibir totalmente todo e qualquer tipo de internação psiquiátrica',
+       'Substituir o modelo manicomial por cuidado territorial em rede, garantindo direitos',
+       'Determinar que apenas psiquiatras podem tratar transtornos mentais',
+       'Criar o Sistema Conselhos da Psicologia'
+     ], ok:1,
+     exp:'A lei mantém a possibilidade de internação, mas a regula e prioriza o cuidado territorial (CAPS, residências terapêuticas etc.).'},
+    {type:'closed',
+     q:'Quem foi Nise da Silveira?',
+     opts:[
+       'Filósofa que fundou a fenomenologia',
+       'Psiquiatra brasileira pioneira no tratamento humanizado, que usou a arte como terapia',
+       'Primeira mulher a presidir o CFP',
+       'Autora do Código de Ética do Psicólogo'
+     ], ok:1,
+     exp:'Nise se recusou a usar lobotomia/eletrochoque e introduziu a terapia ocupacional pela arte. Criou o Museu de Imagens do Inconsciente.'},
+    {type:'closed',
+     q:'Qual a diferença entre CFP e CRP?',
+     opts:[
+       'O CFP atua nos estados; o CRP é nacional',
+       'O CFP é sindical; o CRP é fiscalizatório',
+       'O CFP é o conselho federal (nacional); o CRP é regional, atuando nos estados',
+       'O CFP é privado; o CRP é estatal'
+     ], ok:2,
+     exp:'CFP = Conselho Federal (nacional). CRP = Conselho Regional (estadual). Ambos são autarquias federais.'},
+    {type:'closed',
+     q:'Sobre o sigilo profissional, é correto afirmar que:',
+     opts:[
+       'Pode ser quebrado livremente pelo psicólogo se ele achar necessário',
+       'É absoluto — não pode ser quebrado em hipótese alguma',
+       'Pode ser quebrado em situações excepcionais (risco grave, ordem judicial), revelando apenas o necessário',
+       'Vale apenas durante a vida do cliente, depois desaparece'
+     ], ok:2,
+     exp:'O sigilo é regra; a quebra é exceção, em situações graves previstas no código, e mesmo aí, revelando o mínimo necessário. Permanece mesmo após a morte.'},
+    {type:'closed',
+     q:'A psicanálise está para a psicologia assim como…',
+     opts:[
+       'Uma área de atuação está para um campo profissional',
+       'Uma abordagem está para uma ciência',
+       'Um conselho está para um sindicato',
+       'Uma lei está para uma resolução'
+     ], ok:1,
+     exp:'Psicanálise é UMA das abordagens dentro da psicologia, que é a ciência. Há várias outras (TCC, humanista, sistêmica etc.).'},
+    {type:'closed',
+     q:'Sobre as áreas e abordagens da Psicologia:',
+     opts:[
+       'Áreas e abordagens são sinônimos',
+       'Áreas indicam ONDE o psicólogo atua; abordagens indicam COMO ele intervém',
+       'Cada área permite apenas uma abordagem',
+       'As abordagens só existem na clínica'
+     ], ok:1,
+     exp:'A área é o campo (clínica, escolar, organizacional...); a abordagem é o referencial teórico (psicanálise, TCC, humanista...). Em qualquer área, várias abordagens são possíveis.'},
+    {type:'open',
+     q:'Explique, com suas palavras, o que mudou na assistência em saúde mental no Brasil com a Reforma Psiquiátrica (Lei 10.216/2001).',
+     gabarito:'A Reforma substituiu o modelo <b>manicomial</b> (centrado em internações longas em hospitais psiquiátricos) por um modelo <b>psicossocial</b> (cuidado territorial, em rede, com a comunidade). Os principais pontos: garantia de direitos da pessoa com transtorno mental; priorização de serviços comunitários como os <b>CAPS</b>, residências terapêuticas e o programa "De Volta para Casa"; regulação rigorosa das internações (devem ser breves, justificadas, em hospitais gerais); e a passagem do paciente como "objeto de tratamento" para <b>sujeito de direitos</b>. Inspirada por Franco Basaglia e pela luta antimanicomial brasileira (a partir de 1987).'},
+    {type:'open',
+     q:'Por que o filme "Nise — O Coração da Loucura" é relevante para a formação em Psicologia? Cite ao menos 3 elementos.',
+     gabarito:'<b>1.</b> Documenta o cenário da psiquiatria <b>antes da Reforma</b>, mostrando práticas violentas (lobotomia, eletrochoque punitivo) e justificando por que a Reforma foi necessária.<br><b>2.</b> Apresenta a <b>terapia ocupacional pela arte</b> como prática humanizadora e expressiva, antecipando princípios da clínica ampliada.<br><b>3.</b> Mostra a importância do <b>vínculo terapêutico, da escuta e do afeto</b> — o paciente é tratado como pessoa, não como diagnóstico.<br><b>4.</b> Dialoga com a teoria de <b>Jung</b> (inconsciente coletivo, leitura simbólica das obras dos pacientes).<br><b>5.</b> Apresenta o <b>Museu de Imagens do Inconsciente</b>, patrimônio histórico da psicologia brasileira.<br>(Bastam três pontos bem articulados para a resposta ser considerada satisfatória.)'},
+  ];
+
+  const STATS_KEY = 'quizStatsPsico';
+  let stats = JSON.parse(localStorage.getItem(STATS_KEY) || '{}');
+  const qa = document.getElementById('quizArea');
+
+  QUIZ.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'quiz-q';
+    if(item.type === 'closed'){
+      div.innerHTML = `
+        <div class="qtype closed">Questão fechada</div>
+        <div class="q">${i+1}. ${item.q}</div>
+        <div class="opts">${item.opts.map((o,j) => `<button class="opt" data-i="${i}" data-j="${j}">${o}</button>`).join('')}</div>
+        <div class="feedback" id="fb${i}"></div>`;
+    } else {
+      div.innerHTML = `
+        <div class="qtype open">Questão aberta</div>
+        <div class="q">${i+1}. ${item.q}</div>
+        <div class="open-area">
+          <textarea id="ans${i}" placeholder="Escreva sua resposta aqui..."></textarea>
+          <div class="open-actions">
+            <button class="btn-sm" onclick="showGabarito(${i})">👁️ Ver gabarito</button>
+            <button class="btn-sm ok" onclick="markOpen(${i}, true)">✅ Acertei</button>
+            <button class="btn-sm no" onclick="markOpen(${i}, false)">❌ Errei</button>
+          </div>
+          <div class="answer-key" id="gab${i}"><b>Gabarito:</b><br>${item.gabarito}</div>
+          <div class="feedback" id="fb${i}"></div>
+        </div>`;
+    }
+    qa.appendChild(div);
+  });
+
+  qa.addEventListener('click', e => {
+    if(!e.target.classList.contains('opt')) return;
+    const i = +e.target.dataset.i, j = +e.target.dataset.j;
+    const item = QUIZ[i];
+    const buttons = qa.querySelectorAll(`.opt[data-i="${i}"]`);
+    if(buttons[0].disabled) return;
+    buttons.forEach(b => b.disabled = true);
+    if(j === item.ok){
+      e.target.classList.add('correct');
+      stats[i] = stats[i] || {ok:0,err:0}; stats[i].ok++;
+    } else {
+      e.target.classList.add('wrong');
+      buttons[item.ok].classList.add('correct');
+      stats[i] = stats[i] || {ok:0,err:0}; stats[i].err++;
+    }
+    const fb = document.getElementById('fb'+i);
+    fb.classList.add('show', j === item.ok ? 'ok' : 'no');
+    fb.textContent = (j === item.ok ? '✅ Correto! ' : '❌ Resposta certa em verde. ') + item.exp;
+    localStorage.setItem(STATS_KEY, JSON.stringify(stats));
+    updateScore();
+  });
+
+  function showGabarito(i){
+    document.getElementById('gab'+i).classList.add('show');
+  }
+  function markOpen(i, correct){
+    if(stats[i] && (stats[i].ok + stats[i].err) > 0) return;
+    stats[i] = {ok: correct ? 1 : 0, err: correct ? 0 : 1};
+    const fb = document.getElementById('fb'+i);
+    fb.classList.add('show');
+    fb.classList.add(correct ? 'ok' : 'no');
+    fb.textContent = correct ? '✅ Marcada como acerto.' : '❌ Marcada como erro. Reveja o gabarito.';
+    localStorage.setItem(STATS_KEY, JSON.stringify(stats));
+    updateScore();
+  }
+  function updateScore(){
+    let ok=0, total=0;
+    Object.values(stats).forEach(s => { ok += s.ok; total += s.ok+s.err; });
+    document.getElementById('score').textContent = ok;
+    document.getElementById('total').textContent = total;
+  }
+  function resetQuiz(){
+    if(!confirm('Apagar progresso do quiz?')) return;
+    stats = {}; localStorage.removeItem(STATS_KEY);
+    document.querySelectorAll('.opt').forEach(o => { o.disabled = false; o.className = 'opt'; });
+    document.querySelectorAll('.feedback').forEach(f => { f.className = 'feedback'; f.textContent = ''; });
+    document.querySelectorAll('.answer-key').forEach(g => g.classList.remove('show'));
+    document.querySelectorAll('.open-area textarea').forEach(t => t.value = '');
+    updateScore();
+  }
+  updateScore();
+</script>
+
+</body>
+</html>
