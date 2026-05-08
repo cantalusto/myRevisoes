@@ -335,7 +335,7 @@
 
 <section id="quiz">
   <h2>✅ Quiz</h2>
-  <p style="color:var(--muted)">Mistura de questões fechadas e abertas. Nas abertas, escreva sua resposta, veja o gabarito e marque honestamente. Tudo é salvo localmente.</p>
+  <p>Marque a alternativa correta. Seu desempenho é salvo localmente.</p>
   <div id="quizArea"></div>
   <button class="btn" onclick="resetQuiz()">🔄 Resetar progresso</button>
 </section>
@@ -382,16 +382,13 @@
 
   // Quiz
   const QUIZ = [
-    {type:'closed',
-     q:'Em que ano e por quem foi fundado o primeiro laboratório de psicologia experimental, marcando o "nascimento" da psicologia como ciência?',
+    {q:'Em que ano e por quem foi fundado o primeiro laboratório de psicologia experimental, marcando o "nascimento" da psicologia como ciência?',
      opts:['1850 — William James','1879 — Wilhelm Wundt','1900 — Sigmund Freud','1913 — John Watson'], ok:1,
      exp:'Em 1879, Wundt fundou o laboratório em Leipzig, Alemanha. Marca a separação entre psicologia e filosofia.'},
-    {type:'closed',
-     q:'Qual lei regulamentou a profissão de psicólogo no Brasil?',
+    {q:'Qual lei regulamentou a profissão de psicólogo no Brasil?',
      opts:['Lei 5.766/1971','Lei 4.119/1962','Lei 10.216/2001','Lei 8.080/1990'], ok:1,
      exp:'Lei 4.119/1962. A Lei 5.766/1971 criou os Conselhos; a 10.216/2001 é da Reforma Psiquiátrica.'},
-    {type:'closed',
-     q:'A Lei 10.216/2001 (Reforma Psiquiátrica) tem como principal característica:',
+    {q:'A Lei 10.216/2001 (Reforma Psiquiátrica) tem como principal característica:',
      opts:[
        'Proibir totalmente todo e qualquer tipo de internação psiquiátrica',
        'Substituir o modelo manicomial por cuidado territorial em rede, garantindo direitos',
@@ -399,8 +396,7 @@
        'Criar o Sistema Conselhos da Psicologia'
      ], ok:1,
      exp:'A lei mantém a possibilidade de internação, mas a regula e prioriza o cuidado territorial (CAPS, residências terapêuticas etc.).'},
-    {type:'closed',
-     q:'Quem foi Nise da Silveira?',
+    {q:'Quem foi Nise da Silveira?',
      opts:[
        'Filósofa que fundou a fenomenologia',
        'Psiquiatra brasileira pioneira no tratamento humanizado, que usou a arte como terapia',
@@ -408,8 +404,7 @@
        'Autora do Código de Ética do Psicólogo'
      ], ok:1,
      exp:'Nise se recusou a usar lobotomia/eletrochoque e introduziu a terapia ocupacional pela arte. Criou o Museu de Imagens do Inconsciente.'},
-    {type:'closed',
-     q:'Qual a diferença entre CFP e CRP?',
+    {q:'Qual a diferença entre CFP e CRP?',
      opts:[
        'O CFP atua nos estados; o CRP é nacional',
        'O CFP é sindical; o CRP é fiscalizatório',
@@ -417,8 +412,7 @@
        'O CFP é privado; o CRP é estatal'
      ], ok:2,
      exp:'CFP = Conselho Federal (nacional). CRP = Conselho Regional (estadual). Ambos são autarquias federais.'},
-    {type:'closed',
-     q:'Sobre o sigilo profissional, é correto afirmar que:',
+    {q:'Sobre o sigilo profissional, é correto afirmar que:',
      opts:[
        'Pode ser quebrado livremente pelo psicólogo se ele achar necessário',
        'É absoluto — não pode ser quebrado em hipótese alguma',
@@ -426,8 +420,7 @@
        'Vale apenas durante a vida do cliente, depois desaparece'
      ], ok:2,
      exp:'O sigilo é regra; a quebra é exceção, em situações graves previstas no código, e mesmo aí, revelando o mínimo necessário. Permanece mesmo após a morte.'},
-    {type:'closed',
-     q:'A psicanálise está para a psicologia assim como…',
+    {q:'A psicanálise está para a psicologia assim como…',
      opts:[
        'Uma área de atuação está para um campo profissional',
        'Uma abordagem está para uma ciência',
@@ -435,8 +428,7 @@
        'Uma lei está para uma resolução'
      ], ok:1,
      exp:'Psicanálise é UMA das abordagens dentro da psicologia, que é a ciência. Há várias outras (TCC, humanista, sistêmica etc.).'},
-    {type:'closed',
-     q:'Sobre as áreas e abordagens da Psicologia:',
+    {q:'Sobre as áreas e abordagens da Psicologia:',
      opts:[
        'Áreas e abordagens são sinônimos',
        'Áreas indicam ONDE o psicólogo atua; abordagens indicam COMO ele intervém',
@@ -444,12 +436,22 @@
        'As abordagens só existem na clínica'
      ], ok:1,
      exp:'A área é o campo (clínica, escolar, organizacional...); a abordagem é o referencial teórico (psicanálise, TCC, humanista...). Em qualquer área, várias abordagens são possíveis.'},
-    {type:'open',
-     q:'Explique, com suas palavras, o que mudou na assistência em saúde mental no Brasil com a Reforma Psiquiátrica (Lei 10.216/2001).',
-     gabarito:'A Reforma substituiu o modelo <b>manicomial</b> (centrado em internações longas em hospitais psiquiátricos) por um modelo <b>psicossocial</b> (cuidado territorial, em rede, com a comunidade). Os principais pontos: garantia de direitos da pessoa com transtorno mental; priorização de serviços comunitários como os <b>CAPS</b>, residências terapêuticas e o programa "De Volta para Casa"; regulação rigorosa das internações (devem ser breves, justificadas, em hospitais gerais); e a passagem do paciente como "objeto de tratamento" para <b>sujeito de direitos</b>. Inspirada por Franco Basaglia e pela luta antimanicomial brasileira (a partir de 1987).'},
-    {type:'open',
-     q:'Por que o filme "Nise — O Coração da Loucura" é relevante para a formação em Psicologia? Cite ao menos 3 elementos.',
-     gabarito:'<b>1.</b> Documenta o cenário da psiquiatria <b>antes da Reforma</b>, mostrando práticas violentas (lobotomia, eletrochoque punitivo) e justificando por que a Reforma foi necessária.<br><b>2.</b> Apresenta a <b>terapia ocupacional pela arte</b> como prática humanizadora e expressiva, antecipando princípios da clínica ampliada.<br><b>3.</b> Mostra a importância do <b>vínculo terapêutico, da escuta e do afeto</b> — o paciente é tratado como pessoa, não como diagnóstico.<br><b>4.</b> Dialoga com a teoria de <b>Jung</b> (inconsciente coletivo, leitura simbólica das obras dos pacientes).<br><b>5.</b> Apresenta o <b>Museu de Imagens do Inconsciente</b>, patrimônio histórico da psicologia brasileira.<br>(Bastam três pontos bem articulados para a resposta ser considerada satisfatória.)'},
+    {q:'Qual das alternativas descreve corretamente a principal mudança trazida pela Reforma Psiquiátrica brasileira?',
+     opts:[
+       'A criação dos primeiros hospitais psiquiátricos do país',
+       'A substituição do modelo manicomial por uma rede psicossocial (CAPS, residências terapêuticas, cuidado territorial)',
+       'A obrigatoriedade da lobotomia em casos graves',
+       'A privatização integral dos serviços de saúde mental'
+     ], ok:1,
+     exp:'A Reforma trocou o foco em internação prolongada por um modelo de cuidado em rede, com CAPS como dispositivo central, residências terapêuticas e programa "De Volta para Casa".'},
+    {q:'Sobre o filme "Nise — O Coração da Loucura" e a prática de Nise da Silveira, qual afirmação é CORRETA?',
+     opts:[
+       'Nise defendia o uso intensivo de lobotomia e eletrochoque como técnicas humanizadas',
+       'Nise rejeitou métodos invasivos e introduziu a terapia ocupacional pela arte, influenciada por Jung; criou o Museu de Imagens do Inconsciente',
+       'O filme mostra Nise fundando o primeiro CAPS do Brasil',
+       'Nise foi a autora do Código de Ética do Psicólogo'
+     ], ok:1,
+     exp:'Nise se opôs à lobotomia/eletrochoque, propondo arte e vínculo como caminho terapêutico. Foi influenciada por Jung e criou o Museu de Imagens do Inconsciente — antecipou em décadas princípios da Reforma.'},
   ];
 
   const STATS_KEY = 'quizStatsPsico';
@@ -459,27 +461,9 @@
   QUIZ.forEach((item, i) => {
     const div = document.createElement('div');
     div.className = 'quiz-q';
-    if(item.type === 'closed'){
-      div.innerHTML = `
-        <div class="qtype closed">Questão fechada</div>
-        <div class="q">${i+1}. ${item.q}</div>
-        <div class="opts">${item.opts.map((o,j) => `<button class="opt" data-i="${i}" data-j="${j}">${o}</button>`).join('')}</div>
-        <div class="feedback" id="fb${i}"></div>`;
-    } else {
-      div.innerHTML = `
-        <div class="qtype open">Questão aberta</div>
-        <div class="q">${i+1}. ${item.q}</div>
-        <div class="open-area">
-          <textarea id="ans${i}" placeholder="Escreva sua resposta aqui..."></textarea>
-          <div class="open-actions">
-            <button class="btn-sm" onclick="showGabarito(${i})">👁️ Ver gabarito</button>
-            <button class="btn-sm ok" onclick="markOpen(${i}, true)">✅ Acertei</button>
-            <button class="btn-sm no" onclick="markOpen(${i}, false)">❌ Errei</button>
-          </div>
-          <div class="answer-key" id="gab${i}"><b>Gabarito:</b><br>${item.gabarito}</div>
-          <div class="feedback" id="fb${i}"></div>
-        </div>`;
-    }
+    div.innerHTML = `<div class="q">${i+1}. ${item.q}</div>
+      <div class="opts">${item.opts.map((o,j) => `<button class="opt" data-i="${i}" data-j="${j}">${o}</button>`).join('')}</div>
+      <div class="feedback" id="fb${i}"></div>`;
     qa.appendChild(div);
   });
 
@@ -505,19 +489,6 @@
     updateScore();
   });
 
-  function showGabarito(i){
-    document.getElementById('gab'+i).classList.add('show');
-  }
-  function markOpen(i, correct){
-    if(stats[i] && (stats[i].ok + stats[i].err) > 0) return;
-    stats[i] = {ok: correct ? 1 : 0, err: correct ? 0 : 1};
-    const fb = document.getElementById('fb'+i);
-    fb.classList.add('show');
-    fb.classList.add(correct ? 'ok' : 'no');
-    fb.textContent = correct ? '✅ Marcada como acerto.' : '❌ Marcada como erro. Reveja o gabarito.';
-    localStorage.setItem(STATS_KEY, JSON.stringify(stats));
-    updateScore();
-  }
   function updateScore(){
     let ok=0, total=0;
     Object.values(stats).forEach(s => { ok += s.ok; total += s.ok+s.err; });
@@ -529,8 +500,6 @@
     stats = {}; localStorage.removeItem(STATS_KEY);
     document.querySelectorAll('.opt').forEach(o => { o.disabled = false; o.className = 'opt'; });
     document.querySelectorAll('.feedback').forEach(f => { f.className = 'feedback'; f.textContent = ''; });
-    document.querySelectorAll('.answer-key').forEach(g => g.classList.remove('show'));
-    document.querySelectorAll('.open-area textarea').forEach(t => t.value = '');
     updateScore();
   }
   updateScore();
