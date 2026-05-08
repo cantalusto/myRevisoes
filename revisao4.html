@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Revisão — Medidas de Dispersão</title>
+<style>
+  :root{
+    --bg:#0f172a; --bg2:#1e293b; --card:#1e293b; --border:#334155;
+    --primary:#3b82f6; --primary2:#60a5fa; --accent:#22d3ee;
+    --good:#10b981; --bad:#ef4444; --warn:#f59e0b;
+    --text:#e2e8f0; --muted:#94a3b8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+  header{background:linear-gradient(135deg,#1e3a8a,#3b82f6);padding:32px 24px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.3)}
+  header h1{margin:0;font-size:2em}
+  header p{margin:8px 0 0;color:#dbeafe}
+  nav{position:sticky;top:0;background:rgba(15,23,42,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:12px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;z-index:100}
+  nav button{background:var(--card);color:var(--text);border:1px solid var(--border);padding:8px 14px;border-radius:8px;cursor:pointer;font-size:.9em;transition:all .2s}
+  nav button:hover,nav button.active{background:var(--primary);border-color:var(--primary)}
+  main{max-width:1100px;margin:0 auto;padding:24px}
+  section{display:none;animation:fadeIn .4s}
+  section.active{display:block}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  h2{color:var(--primary2);border-bottom:2px solid var(--primary);padding-bottom:8px;margin-top:0}
+  h3{color:var(--accent);margin-top:24px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:16px 0;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+  .card.highlight{border-left:4px solid var(--primary)}
+  details{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:8px 0;cursor:pointer}
+  details[open]{border-color:var(--primary)}
+  summary{font-weight:600;color:var(--primary2);outline:none}
+  summary:hover{color:var(--accent)}
+  table{width:100%;border-collapse:collapse;margin:12px 0;background:var(--bg2);border-radius:8px;overflow:hidden}
+  th,td{padding:10px 14px;text-align:center;border-bottom:1px solid var(--border)}
+  th{background:var(--primary);color:white}
+  tr:last-child td{border-bottom:none}
+  .pill{display:inline-block;background:var(--primary);color:white;padding:2px 10px;border-radius:99px;font-size:.8em;margin-right:6px}
+  .pill.good{background:var(--good)} .pill.bad{background:var(--bad)} .pill.warn{background:var(--warn)}
+  .formula{background:linear-gradient(135deg,rgba(59,130,246,.15),rgba(34,211,238,.05));border:1px solid var(--primary);border-radius:8px;padding:14px 20px;margin:14px 0;font-family:'Cambria Math','Times New Roman',serif;font-size:1.3em;text-align:center}
+  .flash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+  .flash{background:var(--card);border:1px solid var(--border);border-radius:12px;height:180px;perspective:1000px;cursor:pointer}
+  .flash-inner{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+  .flash.flipped .flash-inner{transform:rotateY(180deg)}
+  .flash-front,.flash-back{position:absolute;inset:0;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;text-align:center;padding:16px;border-radius:12px}
+  .flash-front{background:linear-gradient(135deg,#1e40af,#3b82f6);font-weight:600;font-size:1.05em}
+  .flash-back{background:var(--bg2);transform:rotateY(180deg);font-size:.95em;color:var(--muted)}
+  .quiz-q{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:16px 0}
+  .quiz-q .q{font-weight:600;margin-bottom:12px}
+  .opts{display:flex;flex-direction:column;gap:8px}
+  .opt{background:var(--bg2);border:1px solid var(--border);padding:12px;border-radius:8px;cursor:pointer;transition:all .2s;text-align:left;color:var(--text);font-size:.95em}
+  .opt:hover:not(:disabled){border-color:var(--primary);background:#2a3a52}
+  .opt.correct{background:rgba(16,185,129,.2);border-color:var(--good);color:#a7f3d0}
+  .opt.wrong{background:rgba(239,68,68,.2);border-color:var(--bad);color:#fecaca}
+  .feedback{margin-top:12px;padding:10px 14px;border-radius:8px;font-size:.9em;display:none}
+  .feedback.show{display:block}
+  .feedback.ok{background:rgba(16,185,129,.15);border-left:3px solid var(--good)}
+  .feedback.no{background:rgba(239,68,68,.15);border-left:3px solid var(--bad)}
+  .progress{position:fixed;bottom:20px;right:20px;background:var(--card);border:1px solid var(--border);padding:12px 18px;border-radius:99px;font-size:.9em;box-shadow:0 4px 20px rgba(0,0,0,.4)}
+  .progress span{color:var(--accent);font-weight:700}
+  .tip{background:rgba(59,130,246,.1);border-left:3px solid var(--primary);padding:10px 14px;border-radius:6px;margin:10px 0;font-size:.92em}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:700px){.grid2{grid-template-columns:1fr}}
+  ul{padding-left:20px} li{margin:4px 0}
+  code{background:var(--bg2);padding:2px 6px;border-radius:4px;font-size:.9em;color:var(--accent)}
+  .ex{background:rgba(34,211,238,.08);border-left:3px solid var(--accent);padding:8px 12px;border-radius:6px;margin:6px 0;font-size:.93em}
+  .btn{background:var(--primary);color:white;border:none;padding:10px 18px;border-radius:8px;cursor:pointer;font-size:.95em;margin-top:10px}
+  .btn:hover{background:#2563eb}
+  .step{background:var(--bg2);border-left:4px solid var(--accent);padding:12px 16px;border-radius:6px;margin:10px 0}
+  .step-num{display:inline-flex;width:28px;height:28px;background:var(--accent);color:#0f172a;border-radius:50%;align-items:center;justify-content:center;font-weight:700;margin-right:8px}
+
+  /* ===== Mobile responsiveness ===== */
+  @media (max-width: 720px){
+    body{font-size:15.5px;overflow-x:hidden}
+    header{padding:22px 16px}
+    header h1{font-size:1.35em}
+    header p{font-size:.88em}
+    nav{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;padding:10px 12px;gap:6px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+    nav::-webkit-scrollbar{display:none}
+    nav button, nav a{flex:0 0 auto;font-size:.82em;padding:8px 12px;white-space:nowrap;min-height:38px}
+    main{padding:16px 14px 100px}
+    h2{font-size:1.3em;padding-bottom:6px}
+    h3{font-size:1.1em;margin-top:20px}
+    .card{padding:14px;border-radius:10px;margin:12px 0}
+    table{display:block;overflow-x:auto;white-space:nowrap;font-size:.86em}
+    th,td{padding:9px 11px}
+    .formula{font-size:1.05em;padding:12px 14px}
+    .flash-grid{grid-template-columns:1fr;gap:12px}
+    .flash{height:160px}
+    .quiz-q{padding:14px}
+    .opt{padding:12px;font-size:.92em;min-height:44px;line-height:1.45}
+    .progress{bottom:14px;right:14px;left:14px;text-align:center;padding:10px 14px;font-size:.85em;border-radius:14px}
+    .btn{padding:11px 16px;font-size:.92em;min-height:42px}
+  }
+  @media (max-width: 420px){
+    header h1{font-size:1.2em}
+    nav button, nav a{font-size:.78em;padding:7px 10px}
+    .card{padding:12px}
+    .formula{font-size:.95em}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📈 Medidas de Dispersão</h1>
+  <p>Revisão Interativa — Amplitude, Variância, Desvio Padrão e Cv / FICR</p>
+</header>
+
+<nav>
+  <a href="index.html" style="background:var(--accent);color:#0f172a;border:1px solid var(--accent);padding:8px 14px;border-radius:8px;font-size:.9em;text-decoration:none;font-weight:600">🏠 Hub</a>
+  <button onclick="show('intro',this)" class="active">📖 Intro</button>
+  <button onclick="show('amplitude',this)">📏 Amplitude</button>
+  <button onclick="show('variancia',this)">σ² Variância</button>
+  <button onclick="show('desvio',this)">σ Desvio Padrão</button>
+  <button onclick="show('cv',this)">Cv Coeficiente</button>
+  <button onclick="show('compara',this)">⚖️ Comparação</button>
+  <button onclick="show('flash',this)">🃏 Flashcards</button>
+  <button onclick="show('quiz',this)">✅ Quiz</button>
+</nav>
+
+<main>
+
+<section id="intro" class="active">
+  <h2>📖 Por que medir dispersão?</h2>
+  <div class="card highlight">
+    <p>Duas turmas com a mesma média podem ter comportamentos opostos. As <b>medidas de dispersão</b> revelam o quanto os dados estão espalhados em torno da medida central.</p>
+  </div>
+  <h3>As 4 medidas</h3>
+  <div class="grid2">
+    <div class="card">📏 <b>Amplitude (A)</b><br><small>Maior − menor. Simples, mas refém dos extremos.</small></div>
+    <div class="card">σ² <b>Variância</b><br><small>Média dos desvios ao quadrado.</small></div>
+    <div class="card">σ <b>Desvio Padrão</b><br><small>Raiz da variância — volta à unidade original.</small></div>
+    <div class="card">% <b>Coeficiente de Variação</b><br><small>Desvio relativo à média, em %.</small></div>
+  </div>
+  <h3>Para que servem?</h3>
+  <ul>
+    <li><b>Comparar conjuntos</b> — qual é mais homogêneo?</li>
+    <li><b>Avaliar a média</b> — o quão representativa ela é?</li>
+    <li><b>Identificar outliers</b> — valores que destoam.</li>
+  </ul>
+  <div class="tip">💡 Quanto <b>menor</b> a dispersão, mais confiável é a média como representação do grupo.</div>
+</section>
+
+<section id="amplitude">
+  <h2>📏 Amplitude (A)</h2>
+  <div class="card">
+    <p>Diferença entre o maior e o menor valor.</p>
+    <div class="formula">A = x<sub>máx</sub> − x<sub>mín</sub></div>
+    <p>Excel: <code>=MÁXIMO(intervalo) − MÍNIMO(intervalo)</code></p>
+  </div>
+  <h3>Exemplo</h3>
+  <div class="card">
+    Conjunto: <code>1, 2, 3, 4, 1000</code> → A = 1000 − 1 = <b>999</b>
+    <div class="ex">⚠️ Apenas dois valores definem a medida. O outlier (1000) distorce tudo.</div>
+  </div>
+  <h3>Comparando turmas</h3>
+  <table>
+    <thead><tr><th>Turma</th><th>Notas</th><th>A</th></tr></thead>
+    <tbody>
+      <tr><td>A</td><td>3, 5, 6, 6, 6, 7, 8, 9, 10, 10</td><td><b>7</b></td></tr>
+      <tr><td>B</td><td>5, 5, 7, 7, 7, 7, 7, 7, 8, 10</td><td><b>5</b></td></tr>
+    </tbody>
+  </table>
+  <div class="tip">🎯 A turma A é mais espalhada — e a amplitude já capta isso.</div>
+</section>
+
+<section id="variancia">
+  <h2>σ² Variância</h2>
+  <div class="card">
+    <p>Mede a dispersão em relação à média, elevando os desvios ao quadrado.</p>
+  </div>
+  <h3>Populacional (σ²) — toda a população</h3>
+  <div class="formula">σ² = Σ(xᵢ − μ)² / N</div>
+  <p>Excel: <code>=VAR.P(intervalo)</code></p>
+
+  <h3>Amostral (S²) — uma amostra</h3>
+  <div class="formula">S² = Σ(xᵢ − x̄)² / (n − 1)</div>
+  <p>Excel: <code>=VAR.A(intervalo)</code></p>
+  <div class="tip">💡 O <b>(n − 1)</b> é a <b>correção de Bessel</b>: compensa o viés de subestimar a variância da população quando se usa apenas amostra.</div>
+
+  <h3>Cálculo passo a passo (Turma A, μ=7)</h3>
+  <div class="step"><span class="step-num">1</span>Calcule a média (μ = 7).</div>
+  <div class="step"><span class="step-num">2</span>Para cada xᵢ: (xᵢ − 7)². Soma: 16+4+1+1+1+0+1+4+9+9 = <b>46</b>.</div>
+  <div class="step"><span class="step-num">3</span>Divida: σ² = 46/10 = <b>4,6</b> &nbsp;|&nbsp; S² = 46/9 ≈ <b>5,1</b>.</div>
+
+  <table>
+    <thead><tr><th>Turma</th><th>σ²</th><th>S²</th></tr></thead>
+    <tbody>
+      <tr><td>A</td><td>4,6</td><td>5,1</td></tr>
+      <tr><td>B</td><td>1,8</td><td>2,0</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="desvio">
+  <h2>σ Desvio Padrão</h2>
+  <div class="card">
+    <p>Raiz quadrada da variância. Volta à <b>mesma unidade</b> dos dados — muito mais fácil de interpretar.</p>
+  </div>
+  <h3>Populacional (σ)</h3>
+  <div class="formula">σ = √( Σ(xᵢ − μ)² / N )</div>
+  <p>Excel: <code>=DESVPAD.P(intervalo)</code></p>
+
+  <h3>Amostral (S)</h3>
+  <div class="formula">S = √( Σ(xᵢ − x̄)² / (n − 1) )</div>
+  <p>Excel: <code>=DESVPAD.A(intervalo)</code></p>
+
+  <table>
+    <thead><tr><th>Turma</th><th>σ</th><th>S</th></tr></thead>
+    <tbody>
+      <tr><td>A</td><td>2,1</td><td>2,3</td></tr>
+      <tr><td>B</td><td>1,3</td><td>1,4</td></tr>
+    </tbody>
+  </table>
+  <div class="tip">🔑 σ pequeno → dados <b>concentrados</b> em torno da média. σ grande → dados <b>espalhados</b>.</div>
+</section>
+
+<section id="cv">
+  <h2>% Coeficiente de Variação (Cv)</h2>
+  <div class="card">
+    <p>Indica a dispersão <b>relativa</b> à média, em <b>percentual</b>. Permite comparar conjuntos com escalas diferentes.</p>
+    <div class="formula">Cv = (S / x̄) × 100%</div>
+  </div>
+
+  <h3>Classificação prática</h3>
+  <table>
+    <thead><tr><th>Cv</th><th>Dispersão</th></tr></thead>
+    <tbody>
+      <tr><td>≤ 15%</td><td><span class="pill good">Baixa</span> Homogêneo</td></tr>
+      <tr><td>15% – 30%</td><td><span class="pill warn">Moderada</span></td></tr>
+      <tr><td>&gt; 30%</td><td><span class="pill bad">Alta</span> Heterogêneo</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Aplicação</h3>
+  <table>
+    <thead><tr><th>Turma</th><th>x̄</th><th>S</th><th>Cv</th></tr></thead>
+    <tbody>
+      <tr><td>A</td><td>7,0</td><td>2,1</td><td><b>30,6%</b></td></tr>
+      <tr><td>B</td><td>7,0</td><td>1,3</td><td><b>19,2%</b></td></tr>
+    </tbody>
+  </table>
+  <div class="tip">💡 Mesma média, mesmas notas <em>na média</em> — mas A é mais heterogênea (Cv maior).</div>
+</section>
+
+<section id="compara">
+  <h2>⚖️ Caso completo: Turma A vs B</h2>
+  <table>
+    <thead><tr><th>Medida</th><th>Turma A</th><th>Turma B</th></tr></thead>
+    <tbody>
+      <tr><td>Média</td><td>7,0</td><td>7,0</td></tr>
+      <tr><td>Mediana</td><td>6,5</td><td>7,0</td></tr>
+      <tr><td>Moda</td><td>6,0</td><td>7,0</td></tr>
+      <tr><td>Amplitude</td><td>7,0</td><td>5,0</td></tr>
+      <tr><td>Variância (σ²)</td><td>4,6</td><td>1,8</td></tr>
+      <tr><td>Desvio Padrão (σ)</td><td>2,1</td><td>1,3</td></tr>
+      <tr><td>Coef. Variação</td><td>30,6%</td><td>19,2%</td></tr>
+    </tbody>
+  </table>
+  <div class="card highlight">
+    <p>📌 Mesma média, dispersões muito diferentes:</p>
+    <ul>
+      <li><b>Turma A:</b> heterogênea — alunos muito desiguais.</li>
+      <li><b>Turma B:</b> homogênea — turma consistente.</li>
+    </ul>
+  </div>
+  <div class="tip">🎯 A média sozinha <em>mentiria</em> dizendo "turmas iguais". A dispersão revela a verdade.</div>
+</section>
+
+<section id="flash">
+  <h2>🃏 Flashcards</h2>
+  <p>Clique para virar.</p>
+  <div class="flash-grid" id="flashGrid"></div>
+</section>
+
+<section id="quiz">
+  <h2>✅ Quiz</h2>
+  <p>Marque a alternativa correta. Seu desempenho é salvo localmente.</p>
+  <div id="quizArea"></div>
+  <button class="btn" onclick="resetQuiz()">🔄 Resetar progresso</button>
+</section>
+
+</main>
+
+<div class="progress">📊 Acertos: <span id="score">0</span>/<span id="total">0</span></div>
+
+<script>
+  function show(id, btn){
+    document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  // Flashcards
+  const FLASH = [
+    ['Amplitude','x_máx − x_mín. Simples, mas distorcida por outliers.'],
+    ['Variância populacional (σ²)','Σ(xᵢ − μ)² / N — todos os elementos da população.'],
+    ['Variância amostral (S²)','Σ(xᵢ − x̄)² / (n − 1) — correção de Bessel.'],
+    ['Por que (n − 1)?','Compensa a tendência de a amostra subestimar a dispersão da população.'],
+    ['Desvio padrão','Raiz quadrada da variância — volta à unidade dos dados.'],
+    ['Coef. de Variação (Cv)','(S / x̄) × 100% — dispersão relativa à média.'],
+    ['Cv ≤ 15%','Dispersão baixa → conjunto homogêneo.'],
+    ['Cv > 30%','Dispersão alta → conjunto heterogêneo.'],
+    ['Por que elevar ao quadrado?','Para eliminar sinais e penalizar mais os desvios grandes.'],
+    ['Função do Excel: VAR.P','Variância populacional (divide por N).'],
+    ['Função do Excel: VAR.A','Variância amostral (divide por n − 1).'],
+    ['σ pequeno significa…','Dados concentrados em torno da média.']
+  ];
+  const fg = document.getElementById('flashGrid');
+  FLASH.forEach(([f,b]) => {
+    const c = document.createElement('div');
+    c.className = 'flash';
+    c.innerHTML = `<div class="flash-inner"><div class="flash-front">${f}</div><div class="flash-back">${b}</div></div>`;
+    c.onclick = () => c.classList.toggle('flipped');
+    fg.appendChild(c);
+  });
+
+  // Quiz
+  const QUIZ = [
+    {q:'Duas turmas têm média 7,0. A turma A tem σ = 2,1; a B tem σ = 1,3. O que isso significa?',
+     opts:['A turma A é mais homogênea','A turma B é mais homogênea','As duas têm o mesmo desempenho','A média não importa'],
+     ok:1, exp:'Menor desvio padrão indica menor dispersão — turma B é mais homogênea.'},
+    {q:'Conjunto: 4, 6, 6, 8, 10. Qual a amplitude?',
+     opts:['4','6','8','10'], ok:1,
+     exp:'A = 10 − 4 = 6.'},
+    {q:'Por que a variância amostral usa (n − 1) no denominador?',
+     opts:['Por engano histórico','Para deixar o cálculo mais rápido','Para corrigir o viés (correção de Bessel)','Para deixar o resultado menor'],
+     ok:2, exp:'A amostra subestima a variabilidade da população. Dividir por n − 1 corrige esse viés.'},
+    {q:'Desvio padrão é definido como…',
+     opts:['Soma dos desvios','Média dos desvios absolutos','Raiz quadrada da variância','Diferença entre máximo e mínimo'],
+     ok:2, exp:'σ = √(variância). Volta à unidade original dos dados.'},
+    {q:'Em qual situação o coeficiente de variação é especialmente útil?',
+     opts:['Quando se quer somar dois conjuntos','Quando se compara conjuntos com escalas/unidades diferentes','Quando há apenas um único valor','Quando os dados são todos iguais'],
+     ok:1, exp:'O Cv é adimensional (em %), por isso permite comparar grupos com escalas diferentes.'},
+    {q:'Salário médio de R$ 5.000 com S = R$ 1.000. Qual o Cv?',
+     opts:['10%','20%','50%','100%'], ok:1,
+     exp:'Cv = (1000 / 5000) × 100% = 20%.'},
+    {q:'Um conjunto com Cv = 8% é classificado como…',
+     opts:['Homogêneo (baixa dispersão)','Moderado','Heterogêneo','Indeterminado'],
+     ok:0, exp:'Cv ≤ 15% → baixa dispersão, conjunto homogêneo.'},
+    {q:'Por que elevar os desvios ao quadrado no cálculo da variância?',
+     opts:['Para deixar mais fácil','Para eliminar sinais negativos e penalizar desvios grandes','Para que dê sempre zero','Por convenção arbitrária'],
+     ok:1, exp:'O quadrado elimina o sinal e dá mais peso aos desvios maiores.'},
+    {q:'Qual fórmula do Excel calcula desvio padrão amostral?',
+     opts:['DESVPAD.P','DESVPAD.A','MÉDIA','VAR.P'],
+     ok:1, exp:'DESVPAD.A = amostral. DESVPAD.P = populacional.'},
+    {q:'A amplitude tem qual desvantagem principal?',
+     opts:['É difícil de calcular','Considera apenas os extremos, ignorando o restante','Não tem unidade','Sempre dá zero'],
+     ok:1, exp:'Apenas o maior e o menor entram no cálculo — o restante é ignorado.'},
+    {q:'Variância da turma A: σ² = 4,6. Qual o desvio padrão populacional?',
+     opts:['1,3','2,1','4,6','21,2'], ok:1,
+     exp:'σ = √4,6 ≈ 2,1.'},
+    {q:'Se Cv da empresa X é 12% e da Y é 35%, qual conclusão é correta?',
+     opts:['X é mais heterogênea','Y é mais homogênea','X é mais homogênea','Não dá para comparar'],
+     ok:2, exp:'Menor Cv → mais homogêneo. X tem Cv menor que Y.'},
+  ];
+  const STATS_KEY = 'quizStats4';
+  let stats = JSON.parse(localStorage.getItem(STATS_KEY) || '{}');
+  const qa = document.getElementById('quizArea');
+  QUIZ.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'quiz-q';
+    div.innerHTML = `<div class="q">${i+1}. ${item.q}</div>
+      <div class="opts">${item.opts.map((o,j) => `<button class="opt" data-i="${i}" data-j="${j}">${o}</button>`).join('')}</div>
+      <div class="feedback" id="fb${i}"></div>`;
+    qa.appendChild(div);
+  });
+  qa.addEventListener('click', e => {
+    if(!e.target.classList.contains('opt')) return;
+    const i = +e.target.dataset.i, j = +e.target.dataset.j;
+    const item = QUIZ[i];
+    const buttons = qa.querySelectorAll(`.opt[data-i="${i}"]`);
+    if(buttons[0].disabled) return;
+    buttons.forEach(b => b.disabled = true);
+    if(j === item.ok){
+      e.target.classList.add('correct');
+      stats[i] = stats[i] || {ok:0,err:0}; stats[i].ok++;
+    } else {
+      e.target.classList.add('wrong');
+      buttons[item.ok].classList.add('correct');
+      stats[i] = stats[i] || {ok:0,err:0}; stats[i].err++;
+    }
+    const fb = document.getElementById('fb'+i);
+    fb.classList.add('show', j === item.ok ? 'ok' : 'no');
+    fb.textContent = (j === item.ok ? '✅ Correto! ' : '❌ Resposta certa em verde. ') + item.exp;
+    localStorage.setItem(STATS_KEY, JSON.stringify(stats));
+    updateScore();
+  });
+  function updateScore(){
+    let ok=0, total=0;
+    Object.values(stats).forEach(s => { ok += s.ok; total += s.ok+s.err; });
+    document.getElementById('score').textContent = ok;
+    document.getElementById('total').textContent = total;
+  }
+  function resetQuiz(){
+    if(!confirm('Apagar progresso do quiz?')) return;
+    stats = {}; localStorage.removeItem(STATS_KEY);
+    document.querySelectorAll('.opt').forEach(o => { o.disabled = false; o.className = 'opt'; });
+    document.querySelectorAll('.feedback').forEach(f => { f.className = 'feedback'; f.textContent = ''; });
+    updateScore();
+  }
+  updateScore();
+</script>
+
+</body>
+</html>

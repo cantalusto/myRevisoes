@@ -3,109 +3,325 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-<meta name="theme-color" content="#0b1120">
-<meta name="description" content="Hub de revisões de Estatística — FICR">
-<title>📚 Minhas Revisões</title>
+<meta name="theme-color" content="#05060f">
+<meta name="description" content="Hub pessoal de revisões — múltiplas disciplinas">
+<title>Minhas Revisões · Hub</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E📚%3C/text%3E%3C/svg%3E">
 <style>
   :root{
-    --bg:#0b1120; --bg2:#1e293b; --card:#1a2540; --border:#2d3f63;
-    --primary:#6366f1; --primary2:#818cf8; --accent:#22d3ee;
-    --good:#10b981; --warn:#f59e0b; --pink:#ec4899;
-    --text:#e2e8f0; --muted:#94a3b8;
+    --bg:#05060f;
+    --bg-soft:#0c0e1f;
+    --surface:rgba(20,22,40,.55);
+    --surface-2:rgba(30,33,60,.6);
+    --border:rgba(255,255,255,.08);
+    --border-strong:rgba(255,255,255,.18);
+    --text:#e7ecff;
+    --muted:#8a93b8;
+    --primary:#7c5cff;
+    --primary-2:#a78bfa;
+    --accent:#22d3ee;
+    --pink:#ec4899;
+    --good:#10b981;
+    --warn:#f59e0b;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html{scroll-behavior:smooth}
-  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;-webkit-font-smoothing:antialiased}
-
-  /* Hero */
-  .hero{padding:48px 20px 32px;text-align:center;background:radial-gradient(ellipse at top,rgba(99,102,241,.25) 0%,transparent 60%)}
-  .hero h1{font-size:clamp(1.8em,7vw,2.8em);margin:0 0 8px;background:linear-gradient(135deg,#a5b4fc,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:800;letter-spacing:-.02em}
-  .hero p{color:var(--muted);font-size:clamp(.95em,3.5vw,1.1em);margin:0 auto;max-width:520px}
-  .badge{display:inline-flex;align-items:center;gap:6px;background:rgba(99,102,241,.15);color:var(--primary2);padding:6px 14px;border-radius:99px;font-size:.85em;margin-bottom:14px;border:1px solid rgba(99,102,241,.3)}
-
-  /* Stats */
-  .stats{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin:24px 0 0;padding:0 20px}
-  .stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 18px;min-width:100px;text-align:center}
-  .stat .num{font-size:1.5em;font-weight:700;color:var(--accent);display:block;line-height:1.2}
-  .stat .lbl{font-size:.75em;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
-
-  /* Container */
-  main{max-width:1100px;margin:0 auto;padding:32px 16px 48px}
-  h2{font-size:1.3em;margin:32px 0 16px;color:var(--text);display:flex;align-items:center;gap:10px}
-  h2::before{content:'';width:4px;height:22px;background:linear-gradient(180deg,var(--primary),var(--accent));border-radius:2px}
-
-  /* Topic cards */
-  .topics{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
-  .topic{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:14px;position:relative;overflow:hidden;transition:transform .2s,border-color .2s}
-  .topic:hover{transform:translateY(-2px);border-color:var(--primary)}
-  .topic .icon{font-size:2.4em;line-height:1}
-  .topic .title{font-size:1.15em;font-weight:700;color:var(--text);margin:0}
-  .topic .desc{font-size:.9em;color:var(--muted);margin:0;flex:1;min-height:40px}
-  .topic .meta{display:flex;gap:8px;flex-wrap:wrap;font-size:.75em;color:var(--muted)}
-  .topic .meta span{background:var(--bg2);padding:3px 10px;border-radius:99px;border:1px solid var(--border)}
-  .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
-  .btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:11px 14px;border-radius:10px;text-decoration:none;font-weight:600;font-size:.92em;transition:all .15s;cursor:pointer;border:none;font-family:inherit}
-  .btn-learn{background:linear-gradient(135deg,var(--primary),#8b5cf6);color:white}
-  .btn-learn:hover{filter:brightness(1.15)}
-  .btn-quiz{background:var(--bg2);color:var(--accent);border:1px solid var(--border)}
-  .btn-quiz:hover{border-color:var(--accent);background:rgba(34,211,238,.08)}
-
-  /* Status ribbon */
-  .ribbon{position:absolute;top:14px;right:-32px;background:var(--good);color:white;font-size:.7em;font-weight:700;padding:3px 36px;transform:rotate(35deg);letter-spacing:.5px}
-  .ribbon.new{background:var(--warn)}
-
-  /* Tools/Soon */
-  .tools{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
-  .tool{background:var(--card);border:1px dashed var(--border);border-radius:12px;padding:18px;text-align:center;color:var(--muted);font-size:.9em}
-  .tool .ic{font-size:1.6em;display:block;margin-bottom:6px}
-
-  /* Footer */
-  footer{text-align:center;padding:32px 16px;color:var(--muted);font-size:.85em;border-top:1px solid var(--border);margin-top:32px}
-  footer a{color:var(--accent);text-decoration:none}
-
-  /* Responsive tweaks */
-  @media(max-width:480px){
-    .topics{grid-template-columns:1fr}
-    .topic{padding:18px}
-    .stats{gap:8px}
-    .stat{padding:10px 14px;min-width:0;flex:1}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',Roboto,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.6;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+    position:relative;
   }
 
-  /* Install hint */
-  .install{position:fixed;bottom:16px;left:16px;right:16px;background:var(--card);border:1px solid var(--primary);border-radius:12px;padding:12px 16px;display:none;align-items:center;gap:12px;font-size:.88em;box-shadow:0 8px 24px rgba(0,0,0,.4);z-index:100}
-  .install.show{display:flex}
+  /* ===== Animated background ===== */
+  .bg-mesh{
+    position:fixed;inset:0;z-index:-2;
+    background:
+      radial-gradient(ellipse 80% 60% at 15% 10%, rgba(124,92,255,.35), transparent 60%),
+      radial-gradient(ellipse 70% 60% at 85% 20%, rgba(34,211,238,.22), transparent 65%),
+      radial-gradient(ellipse 60% 70% at 50% 100%, rgba(236,72,153,.18), transparent 60%),
+      var(--bg);
+    animation:meshShift 22s ease-in-out infinite alternate;
+  }
+  @keyframes meshShift{
+    0%  {filter:hue-rotate(0deg) saturate(1)}
+    50% {filter:hue-rotate(20deg) saturate(1.15)}
+    100%{filter:hue-rotate(-15deg) saturate(1.05)}
+  }
+  .bg-grid{
+    position:fixed;inset:0;z-index:-1;pointer-events:none;
+    background-image:
+      linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+    background-size:48px 48px;
+    mask-image:radial-gradient(ellipse 80% 60% at 50% 30%, #000 40%, transparent 80%);
+    -webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 30%, #000 40%, transparent 80%);
+  }
+  .orb{
+    position:fixed;border-radius:50%;filter:blur(80px);opacity:.5;z-index:-1;pointer-events:none;
+    animation:float 18s ease-in-out infinite;
+  }
+  .orb.o1{width:380px;height:380px;background:#7c5cff;top:-80px;left:-80px;animation-delay:0s}
+  .orb.o2{width:320px;height:320px;background:#22d3ee;top:30%;right:-100px;animation-delay:-6s}
+  .orb.o3{width:300px;height:300px;background:#ec4899;bottom:-100px;left:30%;animation-delay:-12s}
+  @keyframes float{
+    0%,100%{transform:translate(0,0) scale(1)}
+    33%    {transform:translate(40px,-30px) scale(1.08)}
+    66%    {transform:translate(-30px,30px) scale(.95)}
+  }
+
+  /* ===== Top bar ===== */
+  .nav{
+    position:sticky;top:0;z-index:50;
+    backdrop-filter:blur(18px) saturate(140%);
+    -webkit-backdrop-filter:blur(18px) saturate(140%);
+    background:rgba(5,6,15,.55);
+    border-bottom:1px solid var(--border);
+  }
+  .nav-inner{max-width:1200px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;gap:16px}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.01em}
+  .logo .dot{width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--accent));box-shadow:0 0 20px var(--primary)}
+  .nav-spacer{flex:1}
+  .search{
+    display:flex;align-items:center;gap:8px;
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:99px;padding:8px 14px;min-width:240px;
+    transition:border-color .2s, background .2s;
+  }
+  .search:focus-within{border-color:var(--primary);background:var(--surface-2)}
+  .search input{
+    background:none;border:none;outline:none;color:var(--text);
+    font-family:inherit;font-size:.92em;flex:1;min-width:0;
+  }
+  .search input::placeholder{color:var(--muted)}
+  .kbd{font-size:.7em;color:var(--muted);border:1px solid var(--border);padding:2px 6px;border-radius:5px;background:rgba(0,0,0,.3)}
+
+  /* ===== Hero ===== */
+  .hero{padding:72px 20px 32px;text-align:center;position:relative}
+  .hero .badge{
+    display:inline-flex;align-items:center;gap:8px;
+    background:rgba(124,92,255,.12);color:var(--primary-2);
+    padding:7px 16px;border-radius:99px;font-size:.82em;
+    margin-bottom:18px;border:1px solid rgba(124,92,255,.3);
+    animation:fadeUp .8s ease both;
+  }
+  .hero .badge .pulse{width:7px;height:7px;border-radius:50%;background:var(--good);box-shadow:0 0 0 0 rgba(16,185,129,.6);animation:pulse 2s infinite}
+  @keyframes pulse{
+    0%  {box-shadow:0 0 0 0 rgba(16,185,129,.6)}
+    70% {box-shadow:0 0 0 10px rgba(16,185,129,0)}
+    100%{box-shadow:0 0 0 0 rgba(16,185,129,0)}
+  }
+  .hero h1{
+    font-size:clamp(2.2em,7vw,4em);margin:0 0 14px;
+    background:linear-gradient(135deg,#e7ecff 0%,#a78bfa 40%,#22d3ee 75%,#e7ecff 100%);
+    background-size:200% auto;
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    background-clip:text;color:transparent;
+    font-weight:800;letter-spacing:-.03em;line-height:1.05;
+    animation:shine 8s linear infinite, fadeUp .9s .1s ease both;
+  }
+  @keyframes shine{ to{background-position:200% center} }
+  .hero p{color:var(--muted);font-size:clamp(1em,3.4vw,1.18em);margin:0 auto;max-width:600px;animation:fadeUp 1s .2s ease both}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+  /* Stats */
+  .stats{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin:32px 0 0;animation:fadeUp 1s .35s ease both}
+  .stat{
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:14px;padding:14px 22px;min-width:120px;text-align:center;
+    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    transition:transform .2s, border-color .2s;
+  }
+  .stat:hover{transform:translateY(-2px);border-color:var(--border-strong)}
+  .stat .num{font-size:1.7em;font-weight:800;background:linear-gradient(135deg,var(--primary-2),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent;display:block;line-height:1.1}
+  .stat .lbl{font-size:.72em;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+
+  /* ===== Main ===== */
+  main{max-width:1200px;margin:0 auto;padding:32px 20px 80px;position:relative}
+  .section-head{display:flex;align-items:center;gap:14px;margin:48px 0 20px}
+  .section-head h2{font-size:1.4em;margin:0;font-weight:700;letter-spacing:-.01em;display:flex;align-items:center;gap:12px}
+  .section-head h2 .ico{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;font-size:1em;background:var(--surface);border:1px solid var(--border)}
+  .section-head .count{font-size:.78em;color:var(--muted);background:var(--surface);border:1px solid var(--border);padding:3px 10px;border-radius:99px}
+  .section-head .line{flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
+
+  /* ===== Filter chips ===== */
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 24px;animation:fadeUp .9s .4s ease both}
+  .chip{
+    background:var(--surface);border:1px solid var(--border);
+    color:var(--muted);padding:8px 16px;border-radius:99px;font-size:.88em;
+    cursor:pointer;transition:all .2s;font-family:inherit;font-weight:500;
+    display:inline-flex;align-items:center;gap:8px;
+  }
+  .chip:hover{color:var(--text);border-color:var(--border-strong)}
+  .chip.active{background:linear-gradient(135deg,var(--primary),#9333ea);color:white;border-color:transparent;box-shadow:0 8px 24px rgba(124,92,255,.35)}
+  .chip .dot{width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.6}
+
+  /* ===== Topic cards ===== */
+  .topics{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:18px}
+  .topic{
+    position:relative;border-radius:20px;padding:24px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    display:flex;flex-direction:column;gap:14px;
+    overflow:hidden;
+    transition:transform .35s cubic-bezier(.2,.8,.2,1), border-color .25s;
+    animation:fadeUp .7s ease both;
+    will-change:transform;
+  }
+  .topic::before{
+    content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;
+    background:linear-gradient(135deg, var(--c1,transparent), transparent 40%, var(--c2,transparent));
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;mask-composite:exclude;
+    opacity:0;transition:opacity .3s;pointer-events:none;
+  }
+  .topic:hover{transform:translateY(-6px);border-color:var(--border-strong)}
+  .topic:hover::before{opacity:1}
+  .topic::after{
+    content:'';position:absolute;inset:-1px;border-radius:inherit;
+    background:radial-gradient(400px circle at var(--mx,50%) var(--my,50%), rgba(124,92,255,.18), transparent 40%);
+    opacity:0;transition:opacity .3s;pointer-events:none;
+  }
+  .topic:hover::after{opacity:1}
+
+  .topic .head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+  .topic .icon-wrap{
+    width:54px;height:54px;border-radius:14px;display:grid;place-items:center;font-size:1.7em;
+    background:linear-gradient(135deg, var(--c1,#7c5cff), var(--c2,#22d3ee));
+    box-shadow:0 8px 24px -8px var(--c1,#7c5cff);
+    flex-shrink:0;
+  }
+  .topic .ribbon{
+    font-size:.66em;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+    padding:5px 10px;border-radius:99px;
+  }
+  .topic .ribbon.new{background:rgba(245,158,11,.15);color:var(--warn);border:1px solid rgba(245,158,11,.3)}
+  .topic .ribbon.done{background:rgba(16,185,129,.12);color:var(--good);border:1px solid rgba(16,185,129,.3)}
+  .topic .ribbon.wip{background:rgba(34,211,238,.12);color:var(--accent);border:1px solid rgba(34,211,238,.3)}
+
+  .topic .title{font-size:1.18em;font-weight:700;margin:0;letter-spacing:-.01em}
+  .topic .desc{font-size:.92em;color:var(--muted);margin:0;flex:1;min-height:42px}
+  .topic .meta{display:flex;gap:6px;flex-wrap:wrap;font-size:.74em}
+  .topic .meta span{background:rgba(255,255,255,.04);padding:4px 10px;border-radius:99px;border:1px solid var(--border);color:var(--muted)}
+
+  /* progress bar */
+  .progress{height:5px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden;margin-top:2px}
+  .progress > div{height:100%;background:linear-gradient(90deg,var(--c1,#7c5cff),var(--c2,#22d3ee));border-radius:99px;transition:width .8s cubic-bezier(.2,.8,.2,1);width:0}
+  .progress-info{display:flex;justify-content:space-between;font-size:.72em;color:var(--muted);margin-top:6px}
+
+  .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+  .btn{
+    display:flex;align-items:center;justify-content:center;gap:6px;
+    padding:11px 14px;border-radius:11px;text-decoration:none;
+    font-weight:600;font-size:.9em;font-family:inherit;cursor:pointer;border:none;
+    transition:transform .15s, filter .15s;
+  }
+  .btn-learn{background:linear-gradient(135deg,var(--c1,#7c5cff),var(--c2,#9333ea));color:white;box-shadow:0 6px 18px -6px var(--c1,#7c5cff)}
+  .btn-learn:hover{filter:brightness(1.15);transform:translateY(-1px)}
+  .btn-quiz{background:rgba(255,255,255,.04);color:var(--text);border:1px solid var(--border)}
+  .btn-quiz:hover{border-color:var(--accent);color:var(--accent);background:rgba(34,211,238,.06)}
+  .btn[disabled],.btn.disabled{opacity:.4;pointer-events:none;cursor:not-allowed}
+
+  /* ===== Empty state ===== */
+  .empty{
+    grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--muted);
+    border:1px dashed var(--border);border-radius:20px;background:var(--surface);
+  }
+  .empty .ic{font-size:3em;margin-bottom:10px;opacity:.6}
+
+  /* ===== Soon tools ===== */
+  .tools{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+  .tool{
+    background:var(--surface);border:1px dashed var(--border);border-radius:14px;padding:20px;
+    text-align:center;color:var(--muted);font-size:.92em;
+    backdrop-filter:blur(8px);transition:border-color .2s,color .2s;
+  }
+  .tool:hover{border-color:var(--border-strong);color:var(--text)}
+  .tool .ic{font-size:1.7em;display:block;margin-bottom:6px}
+
+  /* ===== Footer ===== */
+  footer{text-align:center;padding:40px 20px;color:var(--muted);font-size:.85em;border-top:1px solid var(--border);margin-top:40px;backdrop-filter:blur(8px)}
+  footer code{color:var(--accent);background:var(--surface);padding:2px 8px;border-radius:6px;border:1px solid var(--border)}
+
+  /* ===== Install hint ===== */
+  .install{position:fixed;bottom:16px;left:16px;right:16px;background:var(--surface-2);border:1px solid var(--primary);border-radius:14px;padding:12px 16px;display:none;align-items:center;gap:12px;font-size:.88em;box-shadow:0 12px 32px rgba(0,0,0,.5);z-index:60;backdrop-filter:blur(14px)}
+  .install.show{display:flex;animation:fadeUp .4s ease}
   .install .x{margin-left:auto;background:none;border:none;color:var(--muted);font-size:1.4em;cursor:pointer;padding:4px 8px}
+
+  /* ===== Mobile ===== */
+  @media(max-width:640px){
+    .nav-inner{padding:12px 14px}
+    .search{min-width:0;flex:1}
+    .hero{padding:48px 18px 24px}
+    .topics{grid-template-columns:1fr}
+    .stats{gap:10px}
+    .stat{padding:12px 16px;min-width:0;flex:1}
+    .orb{filter:blur(60px);opacity:.35}
+  }
+
+  /* reduced motion */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{animation:none !important;transition:none !important}
+  }
 </style>
 </head>
 <body>
 
-<div class="hero">
-  <span class="badge">🎓 FICR · Estatística</span>
-  <h1>Minhas Revisões</h1>
-  <p>Hub de estudos para Estatística — escolha um tema e mergulhe no conteúdo ou pratique direto nos quizzes.</p>
-  <div class="stats">
-    <div class="stat"><span class="num" id="topicCount">2</span><span class="lbl">temas</span></div>
-    <div class="stat"><span class="num" id="quizCount">0</span><span class="lbl">questões</span></div>
-    <div class="stat"><span class="num" id="lastScore">—</span><span class="lbl">último acerto</span></div>
+<div class="bg-mesh"></div>
+<div class="bg-grid"></div>
+<div class="orb o1"></div>
+<div class="orb o2"></div>
+<div class="orb o3"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="logo"><span class="dot"></span><span>Minhas Revisões</span></div>
+    <div class="nav-spacer"></div>
+    <label class="search">
+      <span style="opacity:.6">🔎</span>
+      <input id="search" type="search" placeholder="Buscar tema…" autocomplete="off">
+      <span class="kbd">/</span>
+    </label>
   </div>
-</div>
+</nav>
+
+<header class="hero">
+  <span class="badge"><span class="pulse"></span> Hub pessoal de estudos</span>
+  <h1>Aprenda. Revise.<br>Domine.</h1>
+  <p>Um lugar só seu para revisar conteúdos de qualquer disciplina — escolha o tema, mergulhe no material ou pratique direto nos quizzes.</p>
+  <div class="stats">
+    <div class="stat"><span class="num" id="topicCount">0</span><span class="lbl">temas</span></div>
+    <div class="stat"><span class="num" id="subjectCount">0</span><span class="lbl">disciplinas</span></div>
+    <div class="stat"><span class="num" id="quizCount">0</span><span class="lbl">questões</span></div>
+    <div class="stat"><span class="num" id="lastScore">—</span><span class="lbl">aproveitamento</span></div>
+  </div>
+</header>
 
 <main>
-  <h2>📚 Temas disponíveis</h2>
+  <div class="chips" id="chips"></div>
+
+  <div class="section-head">
+    <h2><span class="ico">📚</span> Temas</h2>
+    <span class="count" id="visibleCount">0</span>
+    <span class="line"></span>
+  </div>
   <div class="topics" id="topics"></div>
 
-  <h2>🛠️ Em breve</h2>
-  <div class="tools">
-    <div class="tool"><span class="ic">📈</span>Medidas de Dispersão</div>
-    <div class="tool"><span class="ic">🎯</span>Medidas de Posição</div>
-    <div class="tool"><span class="ic">📉</span>Gráficos & Visualizações</div>
-    <div class="tool"><span class="ic">🎲</span>Probabilidade Avançada</div>
+  <div class="section-head">
+    <h2><span class="ico">🛠️</span> Em breve</h2>
+    <span class="line"></span>
   </div>
+  <div class="tools" id="tools"></div>
 </main>
 
 <footer>
-  Feito para estudar estatística — adicione novos temas editando <code style="color:var(--accent)">index.html</code><br>
+  Hub pessoal — para adicionar temas, edite o array <code>SUBJECTS</code> em <code>index.html</code><br>
   <span style="opacity:.6">Pode ser instalado no celular: menu do navegador → "Adicionar à tela inicial"</span>
 </footer>
 
@@ -115,71 +331,221 @@
 </div>
 
 <script>
-  // ====== Adicione novos temas aqui ======
-  const TOPICS = [
+  // ====== Adicione disciplinas e temas aqui ======
+  // Cada tema usa as cores da disciplina. Basta criar uma nova entrada em SUBJECTS para uma nova matéria.
+  const SUBJECTS = [
     {
-      icon: "📊",
-      title: "Fundamentos de Estatística",
-      desc: "Probabilidade, inferência (dedutiva/indutiva/abdutiva), tipos de análise, escalas de medida e tipos numéricos.",
-      tags: ["55 slides", "8 temas"],
-      learn: "aprenda.html",
-      quiz: "revisao.html",
-      status: "" // "new" | "done" | ""
+      id:'estatistica',
+      name:'Estatística',
+      icon:'📊',
+      colors:['#7c5cff','#22d3ee'],
+      topics:[
+        {
+          icon:'📊', title:'Fundamentos de Estatística',
+          desc:'Probabilidade, inferência (dedutiva/indutiva/abdutiva), tipos de análise, escalas de medida e tipos numéricos.',
+          tags:['55 slides','8 temas'],
+          learn:'aprenda.html', quiz:'revisao.html',
+          statsKey:'quizStats', status:''
+        },
+        {
+          icon:'🔢', title:'Distribuição de Frequência',
+          desc:'Frequências absoluta, relativa, acumuladas, ROL, intervalos de classe e construção de tabelas.',
+          tags:['24 slides','4 temas'],
+          learn:'aprenda2.html', quiz:'revisao2.html',
+          statsKey:'quizStats2', status:''
+        },
+        {
+          icon:'📐', title:'Medidas de Tendência Central',
+          desc:'Média (aritmética e ponderada), mediana, moda, outliers e assimetria de distribuições.',
+          tags:['27 slides','5 temas'],
+          learn:'aprenda3.html', quiz:'revisao3.html',
+          statsKey:'quizStats3', status:''
+        },
+        {
+          icon:'📈', title:'Medidas de Dispersão',
+          desc:'Amplitude, variância, desvio padrão e coeficiente de variação. Caso completo Turma A vs Turma B.',
+          tags:['22 slides','6 temas'],
+          learn:'aprenda4.html', quiz:'revisao4.html',
+          statsKey:'quizStats4', status:'new'
+        },
+      ]
     },
     {
-      icon: "🔢",
-      title: "Distribuição de Frequência",
-      desc: "Frequências absoluta, relativa, acumuladas, ROL, intervalos de classe e construção de tabelas.",
-      tags: ["24 slides", "4 temas"],
-      learn: "aprenda2.html",
-      quiz: "revisao2.html",
-      status: ""
+      id:'neuro',
+      name:'Neuroanatomia',
+      icon:'🧠',
+      colors:['#ec4899','#a78bfa'],
+      topics:[
+        {
+          icon:'🧠', title:'Neuroanatomia — Aula 3',
+          desc:'Neurônios, células da glia, sinapses, potencial de ação, ossos da caixa craniana e meninges.',
+          tags:['6 temas','10 questões'],
+          learn:'aprenda-neuro.html', quiz:'revisao-neuro.html',
+          statsKey:'quizStatsNeuro', status:'new'
+        },
+      ]
     },
     {
-      icon: "📐",
-      title: "Medidas de Tendência Central",
-      desc: "Média (aritmética e ponderada), mediana, moda, outliers e assimetria de distribuições.",
-      tags: ["27 slides", "5 temas"],
-      learn: "aprenda3.html",
-      quiz: "revisao3.html",
-      status: "new"
+      id:'psico',
+      name:'Psicologia',
+      icon:'🧩',
+      colors:['#a855f7','#fbbf24'],
+      topics:[
+        {
+          icon:'🧩', title:'Introdução à Psicologia',
+          desc:'Psicologia como ciência, no Brasil, reforma psiquiátrica, filme "Nise", áreas, sistema/conselhos e código de ética.',
+          tags:['7 temas','quiz aberto+fechado'],
+          learn:'aprenda-psico.html', quiz:'revisao-psico.html',
+          statsKey:'quizStatsPsico', status:'new'
+        },
+      ]
     },
-    // ====== Para adicionar um novo tema, copie o bloco acima ======
   ];
 
-  // Render topics
+  const SOON = [
+    {ic:'📈', name:'Medidas de Dispersão'},
+    {ic:'🎯', name:'Medidas de Posição'},
+    {ic:'📉', name:'Gráficos & Visualizações'},
+    {ic:'🎲', name:'Probabilidade Avançada'},
+  ];
+
+  // ===== Render =====
   const grid = document.getElementById('topics');
-  TOPICS.forEach(t=>{
-    const card = document.createElement('div');
-    card.className = 'topic';
-    const ribbon = t.status==='new' ? '<div class="ribbon new">NOVO</div>'
-                 : t.status==='done' ? '<div class="ribbon">FEITO</div>' : '';
-    card.innerHTML = `
-      ${ribbon}
-      <div class="icon">${t.icon}</div>
-      <h3 class="title">${t.title}</h3>
-      <p class="desc">${t.desc}</p>
-      <div class="meta">${t.tags.map(x=>`<span>${x}</span>`).join('')}</div>
-      <div class="actions">
-        <a class="btn btn-learn" href="${t.learn}">📖 Aprender</a>
-        <a class="btn btn-quiz" href="${t.quiz}">✅ Quiz</a>
-      </div>`;
-    grid.appendChild(card);
+  const chipsEl = document.getElementById('chips');
+  const visibleCount = document.getElementById('visibleCount');
+  const searchEl = document.getElementById('search');
+
+  // flat list of topics with subject ref
+  const ALL = SUBJECTS.flatMap(s => s.topics.map(t => ({...t, subject:s})));
+
+  // chips
+  let activeFilter = 'all';
+  function renderChips(){
+    chipsEl.innerHTML = '';
+    const all = document.createElement('button');
+    all.className = 'chip' + (activeFilter==='all'?' active':'');
+    all.innerHTML = `<span class="dot"></span>Todos <span style="opacity:.6;margin-left:4px">${ALL.length}</span>`;
+    all.onclick = () => { activeFilter='all'; renderChips(); renderTopics(); };
+    chipsEl.appendChild(all);
+    SUBJECTS.forEach(s=>{
+      const c = document.createElement('button');
+      c.className = 'chip' + (activeFilter===s.id?' active':'');
+      c.innerHTML = `<span>${s.icon}</span> ${s.name} <span style="opacity:.6;margin-left:4px">${s.topics.length}</span>`;
+      c.onclick = () => { activeFilter=s.id; renderChips(); renderTopics(); };
+      chipsEl.appendChild(c);
+    });
+  }
+
+  function getProgress(key){
+    try{
+      const s = JSON.parse(localStorage.getItem(key)||'{}');
+      let q=0, ok=0;
+      Object.values(s).forEach(v => { q += (v.ok||0)+(v.err||0); ok += (v.ok||0); });
+      return {q, ok, pct: q ? Math.round(100*ok/q) : 0};
+    }catch{ return {q:0,ok:0,pct:0}; }
+  }
+
+  function renderTopics(){
+    const term = (searchEl.value||'').toLowerCase().trim();
+    grid.innerHTML = '';
+    const list = ALL.filter(t=>{
+      const subjectMatch = activeFilter==='all' || t.subject.id===activeFilter;
+      const text = (t.title+' '+t.desc+' '+t.subject.name).toLowerCase();
+      const searchMatch = !term || text.includes(term);
+      return subjectMatch && searchMatch;
+    });
+
+    visibleCount.textContent = list.length;
+
+    if(!list.length){
+      grid.innerHTML = `<div class="empty"><div class="ic">🔍</div>Nenhum tema encontrado<br><span style="opacity:.7;font-size:.9em">Tente outro termo ou limpe o filtro.</span></div>`;
+      return;
+    }
+
+    list.forEach((t, i)=>{
+      const [c1, c2] = t.subject.colors;
+      const prog = getProgress(t.statsKey);
+      const ribbon = t.status==='new' ? '<span class="ribbon new">Novo</span>'
+                    : t.status==='done' ? '<span class="ribbon done">Concluído</span>'
+                    : t.status==='wip' ? '<span class="ribbon wip">Em andamento</span>'
+                    : '';
+      const card = document.createElement('article');
+      card.className = 'topic';
+      card.style.setProperty('--c1', c1);
+      card.style.setProperty('--c2', c2);
+      card.style.animationDelay = (i*60)+'ms';
+
+      const progressHtml = prog.q > 0 ? `
+        <div>
+          <div class="progress"><div data-w="${prog.pct}"></div></div>
+          <div class="progress-info"><span>Aproveitamento</span><span>${prog.ok}/${prog.q} · ${prog.pct}%</span></div>
+        </div>` : '';
+
+      card.innerHTML = `
+        <div class="head">
+          <div class="icon-wrap">${t.icon}</div>
+          ${ribbon}
+        </div>
+        <h3 class="title">${t.title}</h3>
+        <p class="desc">${t.desc}</p>
+        <div class="meta">
+          <span>${t.subject.icon} ${t.subject.name}</span>
+          ${t.tags.map(x=>`<span>${x}</span>`).join('')}
+        </div>
+        ${progressHtml}
+        <div class="actions">
+          <a class="btn btn-learn ${t.learn?'':'disabled'}" href="${t.learn||'#'}">📖 Aprender</a>
+          <a class="btn btn-quiz ${t.quiz?'':'disabled'}" href="${t.quiz||'#'}">✅ Quiz</a>
+        </div>`;
+
+      // pointer-glow
+      card.addEventListener('pointermove', e=>{
+        const r = card.getBoundingClientRect();
+        card.style.setProperty('--mx', (e.clientX-r.left)+'px');
+        card.style.setProperty('--my', (e.clientY-r.top)+'px');
+      });
+
+      grid.appendChild(card);
+    });
+
+    // animate progress bars after mount
+    requestAnimationFrame(()=>{
+      grid.querySelectorAll('.progress > div').forEach(b => b.style.width = b.dataset.w+'%');
+    });
+  }
+
+  // soon
+  const toolsEl = document.getElementById('tools');
+  SOON.forEach(s=>{
+    const d = document.createElement('div');
+    d.className = 'tool';
+    d.innerHTML = `<span class="ic">${s.ic}</span>${s.name}`;
+    toolsEl.appendChild(d);
   });
 
-  // Stats — soma localStorage de todos os quizzes
-  document.getElementById('topicCount').textContent = TOPICS.length;
-  let totalQ = 0, totalOk = 0;
-  for(const k of ['quizStats','quizStats2','quizStats3']){
-    const s = JSON.parse(localStorage.getItem(k)||'{}');
-    Object.values(s).forEach(v=>{ totalQ += v.ok+v.err; totalOk += v.ok; });
-  }
+  // top stats
+  document.getElementById('topicCount').textContent = ALL.length;
+  document.getElementById('subjectCount').textContent = SUBJECTS.length;
+  let totalQ=0, totalOk=0;
+  ALL.forEach(t=>{ const p = getProgress(t.statsKey); totalQ += p.q; totalOk += p.ok; });
   document.getElementById('quizCount').textContent = totalQ;
   document.getElementById('lastScore').textContent = totalQ ? Math.round(100*totalOk/totalQ)+'%' : '—';
 
-  // Install hint (only on mobile and not dismissed)
+  // init
+  renderChips();
+  renderTopics();
+
+  // search bindings
+  let searchTimer;
+  searchEl.addEventListener('input', ()=>{ clearTimeout(searchTimer); searchTimer = setTimeout(renderTopics, 80); });
+  document.addEventListener('keydown', e=>{
+    if(e.key==='/' && document.activeElement!==searchEl){ e.preventDefault(); searchEl.focus(); }
+    if(e.key==='Escape' && document.activeElement===searchEl){ searchEl.value=''; renderTopics(); searchEl.blur(); }
+  });
+
+  // install hint (mobile)
   if(/Android|iPhone/i.test(navigator.userAgent) && !localStorage.getItem('hideInstall')){
-    setTimeout(()=>document.getElementById('installHint').classList.add('show'), 1500);
+    setTimeout(()=>document.getElementById('installHint').classList.add('show'), 1800);
   }
 </script>
 

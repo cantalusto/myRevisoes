@@ -82,6 +82,45 @@
   .bar{flex:1;background:linear-gradient(to top,var(--primary),var(--accent));border-radius:6px 6px 0 0;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;color:white;font-size:.85em;font-weight:600;padding:6px;position:relative;transition:transform .2s}
   .bar:hover{transform:scaleY(1.05)}
   .bar::after{content:attr(data-label);position:absolute;bottom:-22px;font-size:.8em;color:var(--muted);font-weight:normal}
+
+  /* ===== Mobile responsiveness ===== */
+  @media (max-width: 720px){
+    body{font-size:16px;line-height:1.7}
+    .hero{padding:48px 18px;min-height:auto}
+    .hero h1{font-size:clamp(1.8em,7vw,2.4em)}
+    .hero .subtitle{font-size:1em;margin-bottom:18px}
+    .hero .meta{gap:10px 14px;font-size:.82em}
+    .toc{padding:20px;margin:24px 14px;border-radius:12px}
+    .toc h2{font-size:1.3em}
+    main{padding:24px 16px 60px}
+    .chapter{margin:56px 0;padding-top:28px}
+    .chapter h2{font-size:1.7em}
+    .chapter h3{font-size:1.2em;margin:28px 0 10px}
+    .chapter h4{font-size:1.02em}
+    .analogy,.example,.warning,.deep,.story,.def{padding:14px 16px;font-size:.93em}
+    .lead{font-size:1.02em;padding:6px 0 6px 14px;margin:18px 0}
+    table{display:block;overflow-x:auto;white-space:nowrap;font-size:.88em}
+    th,td{padding:10px 12px}
+    .floating{right:14px;bottom:14px}
+    .floating button{width:44px;height:44px;font-size:1.05em}
+    .formula{font-size:1.15em;padding:16px}
+    .step{padding:12px 14px;font-size:.93em}
+    .step-num{width:28px;height:28px;margin-right:10px;font-size:.9em}
+    .symbol-card{font-size:.95em;padding:6px 10px}
+    .barchart{height:160px;gap:5px;padding:12px}
+    .bar{font-size:.72em}
+    .end{padding:40px 18px;margin-top:48px}
+    .end h2{font-size:1.5em}
+    .cta{padding:12px 22px;font-size:.95em}
+    blockquote{padding:8px 16px;margin:18px 0}
+    .selfcheck{padding:16px}
+  }
+  @media (max-width: 420px){
+    .hero h1{font-size:1.7em}
+    .chapter h2{font-size:1.45em}
+    .toc{margin:20px 12px;padding:16px}
+    .formula{font-size:1.05em}
+  }
 </style>
 </head>
 <body>
