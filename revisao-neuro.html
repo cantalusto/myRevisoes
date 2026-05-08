@@ -333,8 +333,8 @@
 </section>
 
 <section id="quiz">
-  <h2>✅ Quiz — 10 questões</h2>
-  <p style="color:var(--muted)">8 questões fechadas + 2 abertas. Nas abertas, escreva sua resposta, clique em <b>Ver gabarito</b> e marque honestamente se acertou ou não. Tudo é salvo localmente.</p>
+  <h2>✅ Quiz</h2>
+  <p>Marque a alternativa correta. Seu desempenho é salvo localmente.</p>
   <div id="quizArea"></div>
   <button class="btn" onclick="resetQuiz()">🔄 Resetar progresso</button>
 </section>
@@ -379,26 +379,21 @@
     fg.appendChild(c);
   });
 
-  // Quiz: 8 closed + 2 open
+  // Quiz
   const QUIZ = [
-    {type:'closed',
-     q:'Qual estrutura do neurônio é responsável por RECEBER os sinais de outros neurônios?',
+    {q:'Qual estrutura do neurônio é responsável por RECEBER os sinais de outros neurônios?',
      opts:['Axônio','Dendritos','Corpo celular','Bainha de mielina'], ok:1,
      exp:'Os dendritos são prolongamentos curtos e ramificados que recebem sinais. O axônio é quem conduz o sinal para fora.'},
-    {type:'closed',
-     q:'A bainha de mielina é produzida no Sistema Nervoso Central (SNC) por:',
+    {q:'A bainha de mielina é produzida no Sistema Nervoso Central (SNC) por:',
      opts:['Astrócitos','Micróglias','Oligodendrócitos','Células de Schwann'], ok:2,
      exp:'No SNC, a mielina vem dos oligodendrócitos. Schwann faz isso no SNP.'},
-    {type:'closed',
-     q:'Qual é o principal neurotransmissor INIBITÓRIO do SNC?',
+    {q:'Qual é o principal neurotransmissor INIBITÓRIO do SNC?',
      opts:['Glutamato','Dopamina','GABA','Acetilcolina'], ok:2,
      exp:'GABA é o principal inibitório; glutamato é o principal excitatório.'},
-    {type:'closed',
-     q:'Durante a despolarização do potencial de ação, qual íon entra na célula?',
+    {q:'Durante a despolarização do potencial de ação, qual íon entra na célula?',
      opts:['Cálcio (Ca²⁺)','Potássio (K⁺)','Sódio (Na⁺)','Cloro (Cl⁻)'], ok:2,
      exp:'A abertura de canais de Na⁺ permite a entrada de sódio, levando a carga interna a +30 mV.'},
-    {type:'closed',
-     q:'A "lei do tudo ou nada" do potencial de ação significa que:',
+    {q:'A "lei do tudo ou nada" do potencial de ação significa que:',
      opts:[
        'Estímulos mais fortes geram potenciais maiores',
        'Se o limiar é atingido, dispara sempre com a mesma amplitude; estímulos maiores aumentam a frequência',
@@ -406,24 +401,31 @@
        'O sódio sempre acompanha o potássio'
      ], ok:1,
      exp:'Atingiu o limiar, dispara com amplitude fixa. O que muda é a frequência dos disparos.'},
-    {type:'closed',
-     q:'Quantos ossos formam o neurocrânio (caixa craniana)?',
+    {q:'Quantos ossos formam o neurocrânio (caixa craniana)?',
      opts:['6','7','8','12'], ok:2,
      exp:'8 ossos: 1 frontal, 2 parietais, 2 temporais, 1 occipital, 1 esfenoide, 1 etmoide.'},
-    {type:'closed',
-     q:'Qual a meninge MAIS EXTERNA?',
+    {q:'Qual a meninge MAIS EXTERNA?',
      opts:['Pia-máter','Aracnoide','Dura-máter','Periósteo'], ok:2,
      exp:'A ordem da externa para a interna: Dura-máter → Aracnoide → Pia-máter.'},
-    {type:'closed',
-     q:'Em qual espaço meníngeo circula o líquido cefalorraquidiano (LCR)?',
+    {q:'Em qual espaço meníngeo circula o líquido cefalorraquidiano (LCR)?',
      opts:['Epidural','Subdural','Subaracnoide','Intracerebral'], ok:2,
      exp:'O LCR circula no espaço subaracnoide (entre aracnoide e pia-máter) e nos ventrículos.'},
-    {type:'open',
-     q:'Explique, com suas palavras, por que a sinapse química, embora mais lenta que a elétrica, é muito mais comum no sistema nervoso.',
-     gabarito:'A sinapse química é mais lenta porque envolve liberação de vesículas e ligação a receptores, mas oferece <b>modulação fina</b>: pode ser excitatória ou inibitória, sofrer ajustes pela quantidade de neurotransmissor liberado, ser potencializada ou enfraquecida com o tempo (plasticidade). Essa flexibilidade é a base de aprendizado, memória e adaptação — algo que a sinapse elétrica, sendo direta e estereotipada, não consegue oferecer.'},
-    {type:'open',
-     q:'Descreva, em ordem, as 3 meninges e cite uma característica importante de cada uma.',
-     gabarito:'<b>1. Dura-máter</b> — mais externa, espessa, resistente; tem vasos e nervos próprios.<br><b>2. Aracnoide</b> — camada média, delicada, sem vasos nem nervos; aspecto de teia de aranha.<br><b>3. Pia-máter</b> — mais interna, adere ao tecido nervoso e é ricamente vascularizada (leva nutrientes ao cérebro). Entre aracnoide e pia fica o espaço subaracnoide, onde circula o LCR.'},
+    {q:'Por que a sinapse química, embora mais lenta que a elétrica, é o tipo predominante no sistema nervoso?',
+     opts:[
+       'Porque consome menos energia do que a sinapse elétrica',
+       'Porque permite modulação fina — excitação/inibição, ajuste de força e plasticidade (base do aprendizado e da memória)',
+       'Porque os neurônios não conseguem transmitir corrente elétrica diretamente',
+       'Porque é mais rápida em distâncias longas'
+     ], ok:1,
+     exp:'A sinapse química, apesar do atraso, oferece flexibilidade — pode excitar ou inibir, ter sua força ajustada e sofrer plasticidade. Essa modulação é a base do aprendizado e da memória.'},
+    {q:'Qual a sequência correta das meninges, da mais EXTERNA para a mais INTERNA?',
+     opts:[
+       'Pia-máter → Aracnoide → Dura-máter',
+       'Aracnoide → Dura-máter → Pia-máter',
+       'Dura-máter → Aracnoide → Pia-máter',
+       'Dura-máter → Pia-máter → Aracnoide'
+     ], ok:2,
+     exp:'Da mais externa para a mais interna: Dura-máter (espessa, resistente) → Aracnoide (delicada, sem vasos) → Pia-máter (aderida ao tecido nervoso, ricamente vascularizada).'},
   ];
 
   const STATS_KEY = 'quizStatsNeuro';
@@ -433,27 +435,9 @@
   QUIZ.forEach((item, i) => {
     const div = document.createElement('div');
     div.className = 'quiz-q';
-    if(item.type === 'closed'){
-      div.innerHTML = `
-        <div class="qtype closed">Questão fechada</div>
-        <div class="q">${i+1}. ${item.q}</div>
-        <div class="opts">${item.opts.map((o,j) => `<button class="opt" data-i="${i}" data-j="${j}">${o}</button>`).join('')}</div>
-        <div class="feedback" id="fb${i}"></div>`;
-    } else {
-      div.innerHTML = `
-        <div class="qtype open">Questão aberta</div>
-        <div class="q">${i+1}. ${item.q}</div>
-        <div class="open-area">
-          <textarea id="ans${i}" placeholder="Escreva sua resposta aqui..."></textarea>
-          <div class="open-actions">
-            <button class="btn-sm" onclick="showGabarito(${i})">👁️ Ver gabarito</button>
-            <button class="btn-sm ok" onclick="markOpen(${i}, true)">✅ Acertei</button>
-            <button class="btn-sm no" onclick="markOpen(${i}, false)">❌ Errei</button>
-          </div>
-          <div class="answer-key" id="gab${i}"><b>Gabarito:</b><br>${item.gabarito}</div>
-          <div class="feedback" id="fb${i}"></div>
-        </div>`;
-    }
+    div.innerHTML = `<div class="q">${i+1}. ${item.q}</div>
+      <div class="opts">${item.opts.map((o,j) => `<button class="opt" data-i="${i}" data-j="${j}">${o}</button>`).join('')}</div>
+      <div class="feedback" id="fb${i}"></div>`;
     qa.appendChild(div);
   });
 
@@ -479,19 +463,6 @@
     updateScore();
   });
 
-  function showGabarito(i){
-    document.getElementById('gab'+i).classList.add('show');
-  }
-  function markOpen(i, correct){
-    if(stats[i] && (stats[i].ok + stats[i].err) > 0) return;
-    stats[i] = {ok: correct ? 1 : 0, err: correct ? 0 : 1};
-    const fb = document.getElementById('fb'+i);
-    fb.classList.add('show');
-    fb.classList.add(correct ? 'ok' : 'no');
-    fb.textContent = correct ? '✅ Marcada como acerto.' : '❌ Marcada como erro. Reveja o gabarito.';
-    localStorage.setItem(STATS_KEY, JSON.stringify(stats));
-    updateScore();
-  }
   function updateScore(){
     let ok=0, total=0;
     Object.values(stats).forEach(s => { ok += s.ok; total += s.ok+s.err; });
@@ -503,8 +474,6 @@
     stats = {}; localStorage.removeItem(STATS_KEY);
     document.querySelectorAll('.opt').forEach(o => { o.disabled = false; o.className = 'opt'; });
     document.querySelectorAll('.feedback').forEach(f => { f.className = 'feedback'; f.textContent = ''; });
-    document.querySelectorAll('.answer-key').forEach(g => g.classList.remove('show'));
-    document.querySelectorAll('.open-area textarea').forEach(t => t.value = '');
     updateScore();
   }
   updateScore();
