@@ -333,10 +333,40 @@
 </section>
 
 <section id="quiz">
-  <h2>✅ Quiz</h2>
-  <p>Marque a alternativa correta. Seu desempenho é salvo localmente.</p>
-  <div id="quizArea"></div>
-  <button class="btn" onclick="resetQuiz()">🔄 Resetar progresso</button>
+  <h2>✅ Quiz Interativo — Escolha o tema</h2>
+  <p>Cada quiz embaralha as perguntas E as alternativas. Refaça quantas vezes quiser para fixar o conteúdo.</p>
+
+  <div class="card">
+    <h3 style="margin-top:0">🎯 Escolha o tema</h3>
+    <div id="themePicker" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px"></div>
+    <label style="display:flex;align-items:center;gap:10px;margin-top:10px">
+      Quantidade de questões:
+      <select id="qCount" style="background:var(--bg2);color:var(--text);border:1px solid var(--border);padding:6px 10px;border-radius:6px">
+        <option value="5">5</option>
+        <option value="10" selected>10</option>
+        <option value="15">15</option>
+        <option value="20">20</option>
+        <option value="999">Todas</option>
+      </select>
+    </label>
+    <label style="display:flex;align-items:center;gap:10px;margin-top:10px">
+      Dificuldade:
+      <select id="qDiff" style="background:var(--bg2);color:var(--text);border:1px solid var(--border);padding:6px 10px;border-radius:6px">
+        <option value="all" selected>Todas</option>
+        <option value="1">🟢 Fácil</option>
+        <option value="2">🟡 Médio</option>
+        <option value="3">🔴 Difícil</option>
+      </select>
+    </label>
+    <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn" onclick="startQuiz()">🎲 Iniciar / Embaralhar</button>
+      <button class="btn" style="background:var(--accent);color:#0a0f1c" onclick="weakSpotsQuiz()">🎯 Focar nos meus erros</button>
+    </div>
+    <div id="quizStats" style="margin-top:12px;color:var(--muted);font-size:.9em"></div>
+  </div>
+
+  <div id="quizContainer"></div>
+  <div id="quizResult"></div>
 </section>
 
 </main>
@@ -379,104 +409,197 @@
     fg.appendChild(c);
   });
 
-  // Quiz
-  const QUIZ = [
-    {q:'Qual estrutura do neurônio é responsável por RECEBER os sinais de outros neurônios?',
-     opts:['Axônio','Dendritos','Corpo celular','Bainha de mielina'], ok:1,
-     exp:'Os dendritos são prolongamentos curtos e ramificados que recebem sinais. O axônio é quem conduz o sinal para fora.'},
-    {q:'A bainha de mielina é produzida no Sistema Nervoso Central (SNC) por:',
-     opts:['Astrócitos','Micróglias','Oligodendrócitos','Células de Schwann'], ok:2,
-     exp:'No SNC, a mielina vem dos oligodendrócitos. Schwann faz isso no SNP.'},
-    {q:'Qual é o principal neurotransmissor INIBITÓRIO do SNC?',
-     opts:['Glutamato','Dopamina','GABA','Acetilcolina'], ok:2,
-     exp:'GABA é o principal inibitório; glutamato é o principal excitatório.'},
-    {q:'Durante a despolarização do potencial de ação, qual íon entra na célula?',
-     opts:['Cálcio (Ca²⁺)','Potássio (K⁺)','Sódio (Na⁺)','Cloro (Cl⁻)'], ok:2,
-     exp:'A abertura de canais de Na⁺ permite a entrada de sódio, levando a carga interna a +30 mV.'},
-    {q:'A "lei do tudo ou nada" do potencial de ação significa que:',
-     opts:[
-       'Estímulos mais fortes geram potenciais maiores',
-       'Se o limiar é atingido, dispara sempre com a mesma amplitude; estímulos maiores aumentam a frequência',
-       'O potencial de ação só ocorre durante o sono',
-       'O sódio sempre acompanha o potássio'
-     ], ok:1,
-     exp:'Atingiu o limiar, dispara com amplitude fixa. O que muda é a frequência dos disparos.'},
-    {q:'Quantos ossos formam o neurocrânio (caixa craniana)?',
-     opts:['6','7','8','12'], ok:2,
-     exp:'8 ossos: 1 frontal, 2 parietais, 2 temporais, 1 occipital, 1 esfenoide, 1 etmoide.'},
-    {q:'Qual a meninge MAIS EXTERNA?',
-     opts:['Pia-máter','Aracnoide','Dura-máter','Periósteo'], ok:2,
-     exp:'A ordem da externa para a interna: Dura-máter → Aracnoide → Pia-máter.'},
-    {q:'Em qual espaço meníngeo circula o líquido cefalorraquidiano (LCR)?',
-     opts:['Epidural','Subdural','Subaracnoide','Intracerebral'], ok:2,
-     exp:'O LCR circula no espaço subaracnoide (entre aracnoide e pia-máter) e nos ventrículos.'},
-    {q:'Por que a sinapse química, embora mais lenta que a elétrica, é o tipo predominante no sistema nervoso?',
-     opts:[
-       'Porque consome menos energia do que a sinapse elétrica',
-       'Porque permite modulação fina — excitação/inibição, ajuste de força e plasticidade (base do aprendizado e da memória)',
-       'Porque os neurônios não conseguem transmitir corrente elétrica diretamente',
-       'Porque é mais rápida em distâncias longas'
-     ], ok:1,
-     exp:'A sinapse química, apesar do atraso, oferece flexibilidade — pode excitar ou inibir, ter sua força ajustada e sofrer plasticidade. Essa modulação é a base do aprendizado e da memória.'},
-    {q:'Qual a sequência correta das meninges, da mais EXTERNA para a mais INTERNA?',
-     opts:[
-       'Pia-máter → Aracnoide → Dura-máter',
-       'Aracnoide → Dura-máter → Pia-máter',
-       'Dura-máter → Aracnoide → Pia-máter',
-       'Dura-máter → Pia-máter → Aracnoide'
-     ], ok:2,
-     exp:'Da mais externa para a mais interna: Dura-máter (espessa, resistente) → Aracnoide (delicada, sem vasos) → Pia-máter (aderida ao tecido nervoso, ricamente vascularizada).'},
-  ];
+  // ============ QUIZ BANK (por tema, com dificuldade 1-3) ============
+  const QUIZ_BANK = {
+    "Neurônios": [
+      {q:"Qual estrutura do neurônio é responsável por RECEBER sinais de outros neurônios?",o:["Axônio","Dendritos","Bainha de mielina","Nódulos de Ranvier"],a:1,d:1,e:"Os dendritos são prolongamentos curtos e ramificados que recebem sinais."},
+      {q:"O que conduz o impulso nervoso para FORA do corpo celular até o terminal?",o:["Dendritos","Axônio","Soma","Sinapse"],a:1,d:1,e:"O axônio é o prolongamento longo único que leva o impulso ao terminal."},
+      {q:"A bainha de mielina serve principalmente para:",o:["Receber neurotransmissores","Acelerar a condução do impulso","Armazenar energia","Filtrar íons"],a:1,d:2,e:"O isolamento lipídico permite a condução saltatória, muito mais rápida."},
+      {q:"Os nódulos de Ranvier permitem:",o:["Reabsorver neurotransmissores","A condução saltatória","Produzir mielina","Inibir o impulso"],a:1,d:2,e:"O impulso 'pula' entre os nódulos sem mielina, acelerando a transmissão."},
+      {q:"Neurônio que conduz informação dos receptores sensoriais até o SNC é chamado de:",o:["Motor (eferente)","Sensitivo (aferente)","Interneurônio","Neuroglial"],a:1,d:1,e:"Aferente = leva ao SNC; eferente = leva do SNC."},
+      {q:"A maior parte dos neurônios do SNC pertence ao tipo:",o:["Sensitivo","Motor","Interneurônio","Glial"],a:2,d:3,e:"Interneurônios fazem a maior parte das conexões dentro do SNC."},
+      {q:"O corpo celular (soma) tem como função principal:",o:["Liberar neurotransmissores","Integrar os sinais recebidos","Conduzir o impulso para fora","Produzir mielina"],a:1,d:2,e:"O soma contém núcleo e organelas e integra os sinais antes de gerar resposta."},
+    ],
+    "Células da Glia": [
+      {q:"No SNC, a bainha de mielina é produzida por:",o:["Schwann","Astrócitos","Oligodendrócitos","Micróglias"],a:2,d:1,e:"Oligodendrócitos mielinizam vários axônios cada um."},
+      {q:"No SNP, a mielina é produzida por:",o:["Astrócitos","Oligodendrócitos","Células de Schwann","Ependimárias"],a:2,d:1,e:"Schwann mieliniza apenas um trecho de axônio cada uma."},
+      {q:"Células responsáveis pela DEFESA imunológica do SNC:",o:["Astrócitos","Micróglias","Schwann","Oligodendrócitos"],a:1,d:2,e:"Micróglias atuam como macrófagos do cérebro."},
+      {q:"A barreira hematoencefálica é formada principalmente por:",o:["Schwann","Micróglias","Astrócitos","Ependimárias"],a:2,d:2,e:"Os astrócitos sustentam vasos e formam a barreira."},
+      {q:"O líquido cefalorraquidiano (LCR) é produzido pelas:",o:["Astrócitos","Células ependimárias","Micróglias","Schwann"],a:1,d:2,e:"Ependimárias forram os ventrículos e produzem o LCR."},
+      {q:"A maioria dos tumores cerebrais é de origem:",o:["Neuronal","Glial","Vascular","Meníngea"],a:1,d:3,e:"Glia continua se dividindo na vida adulta — daí a frequência de tumores gliais."},
+    ],
+    "Sinapses": [
+      {q:"Tipo de sinapse PREDOMINANTE no sistema nervoso:",o:["Elétrica","Química","Mecânica","Térmica"],a:1,d:1,e:"A química é a mais comum, embora mais lenta que a elétrica."},
+      {q:"Sinapse com transmissão DIRETA via gap junctions é a:",o:["Química","Elétrica","Híbrida","Sensorial"],a:1,d:2,e:"A elétrica conecta os neurônios diretamente — mais rápida, menos modulável."},
+      {q:"Que íon, ao entrar no terminal axônico, dispara a liberação de neurotransmissores?",o:["Sódio","Potássio","Cálcio","Cloro"],a:2,d:2,e:"O Ca²⁺ é o sinal para fusão das vesículas com a membrana."},
+      {q:"Principal neurotransmissor INIBITÓRIO do SNC:",o:["Glutamato","Dopamina","GABA","Acetilcolina"],a:2,d:1,e:"GABA é o principal inibitório."},
+      {q:"Principal neurotransmissor EXCITATÓRIO do SNC:",o:["GABA","Glutamato","Serotonina","Noradrenalina"],a:1,d:1,e:"Glutamato é o principal excitatório."},
+      {q:"A acetilcolina atua principalmente:",o:["Apenas no córtex","Na junção neuromuscular","Na bainha de mielina","Nos vasos sanguíneos"],a:1,d:3,e:"É o neurotransmissor da junção neuromuscular e tem papel em memória/atenção."},
+      {q:"Por que a sinapse química, embora mais lenta, é mais comum?",o:["Consome menos energia","Permite modulação fina e plasticidade","É mais rápida em distâncias longas","Não precisa de receptores"],a:1,d:3,e:"Pode excitar ou inibir, ajustar força e sofrer plasticidade — base do aprendizado."},
+    ],
+    "Potencial de Ação": [
+      {q:"Carga interna típica no potencial de REPOUSO:",o:["+30 mV","0 mV","−70 mV","−100 mV"],a:2,d:1,e:"Aproximadamente −70 mV, mantido pela bomba Na⁺/K⁺."},
+      {q:"Na DESPOLARIZAÇÃO, qual íon entra rapidamente?",o:["Cálcio","Potássio","Sódio","Cloro"],a:2,d:1,e:"Canais de Na⁺ se abrem; o sódio entra e a carga sobe a +30 mV."},
+      {q:"Na REPOLARIZAÇÃO, qual íon SAI da célula?",o:["Sódio","Potássio","Cálcio","Cloro"],a:1,d:2,e:"Canais de K⁺ abrem; potássio sai e a carga volta a ficar negativa."},
+      {q:"A 'lei do tudo ou nada' significa que:",o:["Estímulos mais fortes geram potenciais maiores","Atingiu o limiar, dispara sempre com a mesma amplitude","Sódio e potássio agem juntos","O potencial só ocorre durante o sono"],a:1,d:2,e:"Acima do limiar, o disparo é igual; estímulos mais fortes aumentam a frequência."},
+      {q:"Limiar de despolarização ≈:",o:["−100 mV","−70 mV","−55 mV","+30 mV"],a:2,d:3,e:"Por volta de −55 mV o potencial dispara."},
+      {q:"A bomba Na⁺/K⁺ transporta a cada ciclo:",o:["1 Na⁺ fora / 1 K⁺ dentro","2 Na⁺ fora / 3 K⁺ dentro","3 Na⁺ fora / 2 K⁺ dentro","Apenas Na⁺"],a:2,d:3,e:"3 Na⁺ para fora e 2 K⁺ para dentro, gastando ATP."},
+      {q:"Condução SALTATÓRIA ocorre em:",o:["Axônios sem mielina","Axônios mielinizados","Dendritos","Corpo celular"],a:1,d:2,e:"O impulso pula entre os nódulos de Ranvier nos axônios mielinizados."},
+    ],
+    "Caixa Craniana": [
+      {q:"Quantos ossos formam o neurocrânio?",o:["6","7","8","12"],a:2,d:1,e:"8: 1 frontal, 2 parietais, 2 temporais, 1 occipital, 1 esfenoide, 1 etmoide."},
+      {q:"O forame magno (passagem da medula) está em qual osso?",o:["Frontal","Esfenoide","Occipital","Temporal"],a:2,d:2,e:"O forame magno é uma abertura no occipital."},
+      {q:"Sutura entre os DOIS parietais:",o:["Coronal","Sagital","Lambdoide","Escamosa"],a:1,d:2,e:"A sagital fica no topo, entre os dois parietais."},
+      {q:"Camada esponjosa do osso, entre as duas lâminas compactas:",o:["Periósteo","Díploe","Cortical","Endósteo"],a:1,d:2,e:"O díploe é o osso esponjoso interno."},
+      {q:"Osso ÍMPAR localizado na região da testa:",o:["Parietal","Frontal","Temporal","Esfenoide"],a:1,d:1,e:"O frontal é único e forma a testa."},
+      {q:"O esfenoide forma principalmente:",o:["O teto do crânio","A base do crânio","A região posterior","A maxila"],a:1,d:3,e:"Tem formato de borboleta e fica na base do crânio."},
+      {q:"Sutura entre frontal e parietais:",o:["Sagital","Lambdoide","Coronal","Escamosa"],a:2,d:2,e:"A coronal corre transversalmente na frente da cabeça."},
+    ],
+    "Meninges": [
+      {q:"Meninge MAIS EXTERNA:",o:["Pia-máter","Aracnoide","Dura-máter","Periósteo"],a:2,d:1,e:"Da externa para a interna: dura → aracnoide → pia."},
+      {q:"Meninge MAIS INTERNA, em contato com o tecido nervoso:",o:["Dura-máter","Aracnoide","Pia-máter","Subaracnoide"],a:2,d:1,e:"A pia-máter adere ao cérebro e é vascularizada."},
+      {q:"Meninge SEM vasos nem nervos, com aspecto de teia:",o:["Dura-máter","Aracnoide","Pia-máter","Periósteo"],a:1,d:2,e:"Aracnoide — daí o nome (aspecto de teia de aranha)."},
+      {q:"Espaço onde circula o líquido cefalorraquidiano (LCR):",o:["Epidural","Subdural","Subaracnoide","Subpial"],a:2,d:2,e:"O LCR fica entre aracnoide e pia, no espaço subaracnoide."},
+      {q:"Meninge RICAMENTE vascularizada que leva nutrientes ao cérebro:",o:["Dura-máter","Aracnoide","Pia-máter","Nenhuma"],a:2,d:2,e:"Por meio da pia-máter os vasos chegam ao tecido nervoso."},
+      {q:"Hematoma de evolução RÁPIDA, geralmente arterial, entre osso e dura-máter:",o:["Epidural","Subdural","Subaracnoide","Intracerebral"],a:0,d:3,e:"Sangramento arterial epidural é emergência cirúrgica."},
+      {q:"Produção/reabsorção diária aproximada de LCR:",o:["50 ml","250 ml","500 ml","2000 ml"],a:2,d:3,e:"Cerca de 500 ml/dia, com pressão intracraniana ≈ 10 mmHg."},
+    ],
+  };
 
+  // Estado
   const STATS_KEY = 'quizStatsNeuro';
-  let stats = JSON.parse(localStorage.getItem(STATS_KEY) || '{}');
-  const qa = document.getElementById('quizArea');
+  let currentTheme = "Todos";
+  let currentQuiz = [];
+  let score = 0, answered = 0;
+  const stats = JSON.parse(localStorage.getItem(STATS_KEY) || '{}');
 
-  QUIZ.forEach((item, i) => {
-    const div = document.createElement('div');
-    div.className = 'quiz-q';
-    div.innerHTML = `<div class="q">${i+1}. ${item.q}</div>
-      <div class="opts">${item.opts.map((o,j) => `<button class="opt" data-i="${i}" data-j="${j}">${o}</button>`).join('')}</div>
-      <div class="feedback" id="fb${i}"></div>`;
-    qa.appendChild(div);
+  // Picker de temas
+  const tp = document.getElementById('themePicker');
+  const themes = ["Todos", ...Object.keys(QUIZ_BANK)];
+  themes.forEach(t => {
+    const b = document.createElement('button');
+    b.className = 'opt'; b.style.flex = '0 0 auto'; b.style.padding = '8px 14px';
+    b.textContent = t === "Todos" ? "🎲 Todos" : t;
+    b.onclick = () => {
+      currentTheme = t;
+      document.querySelectorAll('#themePicker .opt').forEach(x => x.classList.remove('correct'));
+      b.classList.add('correct');
+    };
+    if(t === "Todos") b.classList.add('correct');
+    tp.appendChild(b);
   });
 
-  qa.addEventListener('click', e => {
-    if(!e.target.classList.contains('opt')) return;
-    const i = +e.target.dataset.i, j = +e.target.dataset.j;
-    const item = QUIZ[i];
-    const buttons = qa.querySelectorAll(`.opt[data-i="${i}"]`);
-    if(buttons[0].disabled) return;
-    buttons.forEach(b => b.disabled = true);
-    if(j === item.ok){
-      e.target.classList.add('correct');
-      stats[i] = stats[i] || {ok:0,err:0}; stats[i].ok++;
+  function getPool(){
+    const diff = document.getElementById('qDiff').value;
+    let pool = currentTheme === "Todos"
+      ? Object.entries(QUIZ_BANK).flatMap(([t,arr]) => arr.map(q => ({...q, theme:t})))
+      : QUIZ_BANK[currentTheme].map(q => ({...q, theme:currentTheme}));
+    if(diff !== "all") pool = pool.filter(q => q.d === +diff);
+    return pool;
+  }
+
+  function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+  function startQuiz(){
+    const pool = getPool();
+    if(pool.length === 0){ alert("Nenhuma questão para esses filtros."); return; }
+    const n = Math.min(+document.getElementById('qCount').value, pool.length);
+    currentQuiz = shuffle(pool).slice(0, n).map(q => {
+      const idx = q.o.map((_,i) => i);
+      const sh = shuffle(idx);
+      return {...q, o: sh.map(i => q.o[i]), a: sh.indexOf(q.a)};
+    });
+    renderQuiz();
+  }
+
+  function weakSpotsQuiz(){
+    const all = Object.entries(QUIZ_BANK).flatMap(([t,arr]) => arr.map(q => ({...q, theme:t})));
+    const ranked = all.map(q => {
+      const k = q.q;
+      const s = stats[k] || {ok:0, err:0};
+      const total = s.ok + s.err;
+      const errRate = total ? s.err/total : 0;
+      return {q, score: errRate*10 + (total === 0 ? 5 : 0)};
+    }).sort((a,b) => b.score - a.score);
+    const n = Math.min(+document.getElementById('qCount').value, ranked.length);
+    currentQuiz = ranked.slice(0, n).map(r => r.q).map(q => {
+      const idx = q.o.map((_,i) => i); const sh = shuffle(idx);
+      return {...q, o: sh.map(i => q.o[i]), a: sh.indexOf(q.a)};
+    });
+    renderQuiz();
+  }
+
+  function renderQuiz(){
+    const qc = document.getElementById('quizContainer');
+    qc.innerHTML = '';
+    document.getElementById('quizResult').innerHTML = '';
+    score = 0; answered = 0;
+    document.getElementById('score').textContent = 0;
+    document.getElementById('total').textContent = currentQuiz.length;
+    const diffEmoji = {1:"🟢", 2:"🟡", 3:"🔴"};
+    currentQuiz.forEach((it, i) => {
+      const div = document.createElement('div');
+      div.className = 'quiz-q';
+      const themeTag = it.theme ? `<span class="pill">${it.theme}</span>` : '';
+      div.innerHTML = `<div class="q">${themeTag}<span class="pill warn">${diffEmoji[it.d]} ${it.d===1?'Fácil':it.d===2?'Médio':'Difícil'}</span><br>${i+1}. ${it.q}</div><div class="opts"></div><div class="feedback"></div>`;
+      const opts = div.querySelector('.opts');
+      it.o.forEach((opt, j) => {
+        const b = document.createElement('button');
+        b.className = 'opt'; b.textContent = opt;
+        b.onclick = () => answer(div, it, j, b);
+        opts.appendChild(b);
+      });
+      qc.appendChild(div);
+    });
+    updateStatsLabel();
+    qc.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  function answer(div, it, j, btn){
+    const opts = div.querySelectorAll('.opt');
+    if([...opts].some(o => o.disabled)) return;
+    opts.forEach((o, k) => { o.disabled = true; if(k === it.a) o.classList.add('correct'); });
+    const fb = div.querySelector('.feedback');
+    const key = it.q;
+    stats[key] = stats[key] || {ok:0, err:0};
+    if(j === it.a){
+      score++; stats[key].ok++;
+      fb.className = 'feedback show ok'; fb.innerHTML = '✅ <b>Correto!</b> ' + it.e;
     } else {
-      e.target.classList.add('wrong');
-      buttons[item.ok].classList.add('correct');
-      stats[i] = stats[i] || {ok:0,err:0}; stats[i].err++;
+      stats[key].err++;
+      btn.classList.add('wrong'); fb.className = 'feedback show no';
+      fb.innerHTML = '❌ <b>Não foi dessa vez.</b> ' + it.e;
     }
-    const fb = document.getElementById('fb'+i);
-    fb.classList.add('show', j === item.ok ? 'ok' : 'no');
-    fb.textContent = (j === item.ok ? '✅ Correto! ' : '❌ Resposta certa em verde. ') + item.exp;
     localStorage.setItem(STATS_KEY, JSON.stringify(stats));
-    updateScore();
-  });
+    answered++;
+    document.getElementById('score').textContent = score;
+    if(answered === currentQuiz.length) showResult();
+    updateStatsLabel();
+  }
 
-  function updateScore(){
-    let ok=0, total=0;
-    Object.values(stats).forEach(s => { ok += s.ok; total += s.ok+s.err; });
-    document.getElementById('score').textContent = ok;
-    document.getElementById('total').textContent = total;
+  function showResult(){
+    const pct = Math.round(100*score/currentQuiz.length);
+    let msg = pct === 100 ? "🏆 Perfeito! Você dominou!" :
+              pct >= 80 ? "🌟 Muito bem! Quase lá." :
+              pct >= 60 ? "👍 Bom! Revise os pontos errados." :
+              pct >= 40 ? "📚 Está pegando o jeito — refaça!" :
+                          "💪 Hora de revisar a teoria e tentar de novo!";
+    document.getElementById('quizResult').innerHTML =
+      `<div class="card highlight" style="text-align:center"><h3 style="margin-top:0">Resultado: ${score}/${currentQuiz.length} (${pct}%)</h3><p>${msg}</p>
+      <button class="btn" onclick="startQuiz()">🔄 Novo quiz embaralhado</button>
+      <button class="btn" style="background:var(--accent);color:#0a0f1c;margin-left:8px" onclick="weakSpotsQuiz()">🎯 Focar nos meus erros</button></div>`;
   }
-  function resetQuiz(){
-    if(!confirm('Apagar progresso do quiz?')) return;
-    stats = {}; localStorage.removeItem(STATS_KEY);
-    document.querySelectorAll('.opt').forEach(o => { o.disabled = false; o.className = 'opt'; });
-    document.querySelectorAll('.feedback').forEach(f => { f.className = 'feedback'; f.textContent = ''; });
-    updateScore();
+
+  function updateStatsLabel(){
+    const total = Object.values(stats).reduce((s,x) => s+x.ok+x.err, 0);
+    const oks = Object.values(stats).reduce((s,x) => s+x.ok, 0);
+    const pct = total ? Math.round(100*oks/total) : 0;
+    document.getElementById('quizStats').innerHTML =
+      `📊 Histórico geral: <b>${oks}/${total}</b> (${pct}%) — <a href="#" onclick="event.preventDefault();if(confirm('Apagar histórico?')){localStorage.removeItem('${STATS_KEY}');location.reload()}" style="color:var(--accent)">limpar histórico</a>`;
   }
-  updateScore();
+
+  updateStatsLabel();
+  startQuiz();
 </script>
 
 </body>
