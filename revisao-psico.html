@@ -334,10 +334,40 @@
 </section>
 
 <section id="quiz">
-  <h2>✅ Quiz</h2>
-  <p>Marque a alternativa correta. Seu desempenho é salvo localmente.</p>
-  <div id="quizArea"></div>
-  <button class="btn" onclick="resetQuiz()">🔄 Resetar progresso</button>
+  <h2>✅ Quiz Interativo — Escolha o tema</h2>
+  <p>Cada quiz embaralha as perguntas E as alternativas. Refaça quantas vezes quiser para fixar o conteúdo.</p>
+
+  <div class="card">
+    <h3 style="margin-top:0">🎯 Escolha o tema</h3>
+    <div id="themePicker" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px"></div>
+    <label style="display:flex;align-items:center;gap:10px;margin-top:10px">
+      Quantidade de questões:
+      <select id="qCount" style="background:var(--bg2);color:var(--text);border:1px solid var(--border);padding:6px 10px;border-radius:6px">
+        <option value="5">5</option>
+        <option value="10" selected>10</option>
+        <option value="15">15</option>
+        <option value="20">20</option>
+        <option value="999">Todas</option>
+      </select>
+    </label>
+    <label style="display:flex;align-items:center;gap:10px;margin-top:10px">
+      Dificuldade:
+      <select id="qDiff" style="background:var(--bg2);color:var(--text);border:1px solid var(--border);padding:6px 10px;border-radius:6px">
+        <option value="all" selected>Todas</option>
+        <option value="1">🟢 Fácil</option>
+        <option value="2">🟡 Médio</option>
+        <option value="3">🔴 Difícil</option>
+      </select>
+    </label>
+    <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn" onclick="startQuiz()">🎲 Iniciar / Embaralhar</button>
+      <button class="btn" style="background:var(--accent);color:#0e0a1f" onclick="weakSpotsQuiz()">🎯 Focar nos meus erros</button>
+    </div>
+    <div id="quizStats" style="margin-top:12px;color:var(--muted);font-size:.9em"></div>
+  </div>
+
+  <div id="quizContainer"></div>
+  <div id="quizResult"></div>
 </section>
 
 </main>
@@ -380,129 +410,206 @@
     fg.appendChild(c);
   });
 
-  // Quiz
-  const QUIZ = [
-    {q:'Em que ano e por quem foi fundado o primeiro laboratório de psicologia experimental, marcando o "nascimento" da psicologia como ciência?',
-     opts:['1850 — William James','1879 — Wilhelm Wundt','1900 — Sigmund Freud','1913 — John Watson'], ok:1,
-     exp:'Em 1879, Wundt fundou o laboratório em Leipzig, Alemanha. Marca a separação entre psicologia e filosofia.'},
-    {q:'Qual lei regulamentou a profissão de psicólogo no Brasil?',
-     opts:['Lei 5.766/1971','Lei 4.119/1962','Lei 10.216/2001','Lei 8.080/1990'], ok:1,
-     exp:'Lei 4.119/1962. A Lei 5.766/1971 criou os Conselhos; a 10.216/2001 é da Reforma Psiquiátrica.'},
-    {q:'A Lei 10.216/2001 (Reforma Psiquiátrica) tem como principal característica:',
-     opts:[
-       'Proibir totalmente todo e qualquer tipo de internação psiquiátrica',
-       'Substituir o modelo manicomial por cuidado territorial em rede, garantindo direitos',
-       'Determinar que apenas psiquiatras podem tratar transtornos mentais',
-       'Criar o Sistema Conselhos da Psicologia'
-     ], ok:1,
-     exp:'A lei mantém a possibilidade de internação, mas a regula e prioriza o cuidado territorial (CAPS, residências terapêuticas etc.).'},
-    {q:'Quem foi Nise da Silveira?',
-     opts:[
-       'Filósofa que fundou a fenomenologia',
-       'Psiquiatra brasileira pioneira no tratamento humanizado, que usou a arte como terapia',
-       'Primeira mulher a presidir o CFP',
-       'Autora do Código de Ética do Psicólogo'
-     ], ok:1,
-     exp:'Nise se recusou a usar lobotomia/eletrochoque e introduziu a terapia ocupacional pela arte. Criou o Museu de Imagens do Inconsciente.'},
-    {q:'Qual a diferença entre CFP e CRP?',
-     opts:[
-       'O CFP atua nos estados; o CRP é nacional',
-       'O CFP é sindical; o CRP é fiscalizatório',
-       'O CFP é o conselho federal (nacional); o CRP é regional, atuando nos estados',
-       'O CFP é privado; o CRP é estatal'
-     ], ok:2,
-     exp:'CFP = Conselho Federal (nacional). CRP = Conselho Regional (estadual). Ambos são autarquias federais.'},
-    {q:'Sobre o sigilo profissional, é correto afirmar que:',
-     opts:[
-       'Pode ser quebrado livremente pelo psicólogo se ele achar necessário',
-       'É absoluto — não pode ser quebrado em hipótese alguma',
-       'Pode ser quebrado em situações excepcionais (risco grave, ordem judicial), revelando apenas o necessário',
-       'Vale apenas durante a vida do cliente, depois desaparece'
-     ], ok:2,
-     exp:'O sigilo é regra; a quebra é exceção, em situações graves previstas no código, e mesmo aí, revelando o mínimo necessário. Permanece mesmo após a morte.'},
-    {q:'A psicanálise está para a psicologia assim como…',
-     opts:[
-       'Uma área de atuação está para um campo profissional',
-       'Uma abordagem está para uma ciência',
-       'Um conselho está para um sindicato',
-       'Uma lei está para uma resolução'
-     ], ok:1,
-     exp:'Psicanálise é UMA das abordagens dentro da psicologia, que é a ciência. Há várias outras (TCC, humanista, sistêmica etc.).'},
-    {q:'Sobre as áreas e abordagens da Psicologia:',
-     opts:[
-       'Áreas e abordagens são sinônimos',
-       'Áreas indicam ONDE o psicólogo atua; abordagens indicam COMO ele intervém',
-       'Cada área permite apenas uma abordagem',
-       'As abordagens só existem na clínica'
-     ], ok:1,
-     exp:'A área é o campo (clínica, escolar, organizacional...); a abordagem é o referencial teórico (psicanálise, TCC, humanista...). Em qualquer área, várias abordagens são possíveis.'},
-    {q:'Qual das alternativas descreve corretamente a principal mudança trazida pela Reforma Psiquiátrica brasileira?',
-     opts:[
-       'A criação dos primeiros hospitais psiquiátricos do país',
-       'A substituição do modelo manicomial por uma rede psicossocial (CAPS, residências terapêuticas, cuidado territorial)',
-       'A obrigatoriedade da lobotomia em casos graves',
-       'A privatização integral dos serviços de saúde mental'
-     ], ok:1,
-     exp:'A Reforma trocou o foco em internação prolongada por um modelo de cuidado em rede, com CAPS como dispositivo central, residências terapêuticas e programa "De Volta para Casa".'},
-    {q:'Sobre o filme "Nise — O Coração da Loucura" e a prática de Nise da Silveira, qual afirmação é CORRETA?',
-     opts:[
-       'Nise defendia o uso intensivo de lobotomia e eletrochoque como técnicas humanizadas',
-       'Nise rejeitou métodos invasivos e introduziu a terapia ocupacional pela arte, influenciada por Jung; criou o Museu de Imagens do Inconsciente',
-       'O filme mostra Nise fundando o primeiro CAPS do Brasil',
-       'Nise foi a autora do Código de Ética do Psicólogo'
-     ], ok:1,
-     exp:'Nise se opôs à lobotomia/eletrochoque, propondo arte e vínculo como caminho terapêutico. Foi influenciada por Jung e criou o Museu de Imagens do Inconsciente — antecipou em décadas princípios da Reforma.'},
-  ];
+  // ============ QUIZ BANK (por tema, com dificuldade 1-3) ============
+  const QUIZ_BANK = {
+    "Psicologia como Ciência": [
+      {q:"Em que ano o primeiro laboratório de psicologia experimental foi fundado, marcando o nascimento da psicologia como ciência?",o:["1850","1879","1900","1920"],a:1,d:1,e:"Em 1879, Wundt fundou o laboratório em Leipzig, separando psicologia e filosofia."},
+      {q:"Quem fundou o primeiro laboratório de psicologia experimental?",o:["William James","Sigmund Freud","Wilhelm Wundt","John Watson"],a:2,d:1,e:"Wilhelm Wundt — considerado pai da psicologia experimental."},
+      {q:"Em qual cidade ficava o laboratório fundador de Wundt?",o:["Viena","Paris","Leipzig","Berlim"],a:2,d:2,e:"Leipzig, na Alemanha."},
+      {q:"O Behaviorismo (Watson, Skinner) tem como objeto de estudo:",o:["O inconsciente","A consciência","O comportamento observável","Arquétipos"],a:2,d:2,e:"Behaviorismo restringe-se ao que pode ser observado e mensurado."},
+      {q:"\"O todo é diferente da soma das partes\" é princípio de qual escola?",o:["Funcionalismo","Estruturalismo","Gestalt","Behaviorismo"],a:2,d:2,e:"Princípio central da Gestalt."},
+      {q:"Quem formulou a teoria do inconsciente como motor do psiquismo?",o:["Jung","Freud","Watson","Wundt"],a:1,d:1,e:"Sigmund Freud — fundador da psicanálise."},
+      {q:"O Humanismo (Rogers, Maslow) coloca no centro:",o:["A patologia","A pessoa em desenvolvimento e a autorrealização","O reflexo condicionado","O inconsciente coletivo"],a:1,d:3,e:"Foco na pessoa, na experiência e no potencial humano."},
+      {q:"A psicanálise está para a psicologia assim como:",o:["Uma área para um campo","Uma abordagem para uma ciência","Um conselho para um sindicato","Uma lei para uma resolução"],a:1,d:3,e:"Psicanálise é UMA das abordagens dentro da psicologia (ciência)."},
+    ],
+    "Psicologia no Brasil": [
+      {q:"Qual lei regulamentou a profissão de psicólogo no Brasil?",o:["Lei 5.766/1971","Lei 4.119/1962","Lei 10.216/2001","Lei 8.080/1990"],a:1,d:1,e:"Lei 4.119/1962 — marco fundamental da profissão."},
+      {q:"Qual data é o Dia do Psicólogo no Brasil?",o:["27 de agosto","8 de outubro","19 de abril","20 de novembro"],a:0,d:2,e:"Dia da sanção da Lei 4.119/1962."},
+      {q:"Qual lei criou o Sistema Conselhos (CFP e CRPs)?",o:["Lei 4.119/1962","Lei 5.766/1971","Lei 10.216/2001","Lei 8.080/1990"],a:1,d:3,e:"Lei 5.766/1971."},
+      {q:"Pioneira brasileira no tratamento humanizado da esquizofrenia:",o:["Cecília Meireles","Nise da Silveira","Madalena Freire","Heloísa Marinho"],a:1,d:1,e:"Nise da Silveira — recusou lobotomia/eletrochoque e usou arte."},
+      {q:"Os primeiros cursos universitários de Psicologia no Brasil surgiram em qual década?",o:["1930","1940","1950","1970"],a:2,d:2,e:"Década de 1950 (PUC-RJ, USP)."},
+      {q:"O Movimento dos Trabalhadores em Saúde Mental, motor da Reforma, surge em:",o:["1962","1971","1987","2001"],a:2,d:3,e:"1987 — base política da luta antimanicomial."},
+    ],
+    "Reforma Psiquiátrica": [
+      {q:"Lei brasileira da Reforma Psiquiátrica:",o:["Lei 4.119/1962","Lei 5.766/1971","Lei 10.216/2001","Lei 8.080/1990"],a:2,d:1,e:"Lei 10.216/2001 — também conhecida como Lei Paulo Delgado."},
+      {q:"A Lei 10.216/2001 é também conhecida como:",o:["Lei do SUS","Lei Paulo Delgado","Lei do Psicólogo","Lei do CAPS"],a:1,d:2,e:"Em referência ao deputado autor do projeto, em tramitação desde 1989."},
+      {q:"Psiquiatra italiano que inspirou a Reforma brasileira:",o:["Sigmund Freud","Carl Jung","Franco Basaglia","Michel Foucault"],a:2,d:2,e:"Basaglia liderou a Psiquiatria Democrática Italiana, fechando manicômios."},
+      {q:"O que significa CAPS?",o:["Centro de Apoio Psiquiátrico Social","Centro de Atenção Psicossocial","Conselho de Atenção Primária à Saúde","Comissão de Assistência Psiquiátrica e Saúde"],a:1,d:2,e:"Centros de Atenção Psicossocial — núcleo da rede pós-Reforma."},
+      {q:"Modelo de assistência SUBSTITUÍDO pela Reforma:",o:["Psicossocial","Manicomial","Comunitário","Ambulatorial"],a:1,d:1,e:"O modelo manicomial (internações longas) foi substituído."},
+      {q:"Modelo ATUAL de assistência em saúde mental:",o:["Manicomial","Hospitalocêntrico","Psicossocial e territorial","Apenas medicamentoso"],a:2,d:1,e:"Cuidado em rede, próximo da comunidade."},
+      {q:"Lema do Movimento Antimanicomial:",o:["\"Mente sã, corpo são\"","\"Por uma sociedade sem manicômios\"","\"Cuidar é tratar\"","\"Saúde mental para todos\""],a:1,d:3,e:"Slogan que marca a luta pela substituição dos manicômios."},
+    ],
+    "Filme Nise": [
+      {q:"Diretor do filme \"Nise — O Coração da Loucura\":",o:["Walter Salles","Roberto Berliner","Fernando Meirelles","Bruno Barreto"],a:1,d:2,e:"Roberto Berliner, lançado em 2015."},
+      {q:"Ano de lançamento do filme:",o:["2005","2010","2015","2020"],a:2,d:2,e:"2015."},
+      {q:"Profissão de Nise da Silveira:",o:["Psicóloga","Psiquiatra","Assistente social","Filósofa"],a:1,d:1,e:"Médica psiquiátrica — não psicóloga."},
+      {q:"Práticas que Nise se RECUSOU a usar:",o:["Análise dos sonhos","Lobotomia e eletrochoque","Terapia ocupacional","Conversa terapêutica"],a:1,d:1,e:"Considerava-as desumanas; apostou em arte e vínculo."},
+      {q:"Influência teórica importante na prática de Nise:",o:["Freud","Jung","Skinner","Watson"],a:1,d:2,e:"Carl Jung — conceito de inconsciente coletivo, leitura simbólica das obras."},
+      {q:"Acervo histórico criado por Nise com obras dos pacientes:",o:["Museu da Loucura","Museu de Imagens do Inconsciente","Galeria de Engenho de Dentro","Casa da Arte Bruta"],a:1,d:2,e:"Museu de Imagens do Inconsciente — patrimônio nacional."},
+      {q:"Local em que Nise atuou e que aparece no filme:",o:["Hospital São Paulo","Centro Psiquiátrico Nacional, Engenho de Dentro (RJ)","Hospital de Barbacena","Hospital Pinel, RJ"],a:1,d:3,e:"Engenho de Dentro, no Rio de Janeiro."},
+    ],
+    "Áreas da Psicologia": [
+      {q:"Atendimento individual em consultório, hospitais e CAPS é a área:",o:["Organizacional","Clínica","Escolar","Trânsito"],a:1,d:1,e:"Clínica."},
+      {q:"Avaliação psicológica para obtenção de CNH é da área:",o:["Trânsito","Jurídica","Esporte","Hospitalar"],a:0,d:1,e:"Psicologia do Trânsito."},
+      {q:"Atuação em CRAS, CREAS e projetos sociais é da área:",o:["Clínica","Organizacional","Social/Comunitária","Esporte"],a:2,d:2,e:"Psicologia Social/Comunitária."},
+      {q:"Atuação em empresas, RH e seleção é da área:",o:["Organizacional/Trabalho","Hospitalar","Jurídica","Escolar"],a:0,d:1,e:"Psicologia Organizacional/do Trabalho."},
+      {q:"Atuação em varas judiciais, perícias e laudos:",o:["Clínica","Jurídica/Forense","Social","Hospitalar"],a:1,d:2,e:"Psicologia Jurídica/Forense."},
+      {q:"Avaliação e reabilitação cognitiva (atenção, memória, funções executivas):",o:["Clínica geral","Escolar","Neuropsicologia","Trânsito"],a:2,d:3,e:"Neuropsicologia."},
+      {q:"Diferença entre ÁREAS e ABORDAGENS:",o:["São sinônimos","Áreas indicam ONDE atua; abordagens indicam COMO intervém","Áreas são teóricas; abordagens são práticas","Cada área permite só uma abordagem"],a:1,d:2,e:"Em qualquer área, várias abordagens (TCC, psicanálise, humanista...) são possíveis."},
+    ],
+    "Sistema e Conselhos": [
+      {q:"Conselho NACIONAL da Psicologia:",o:["CRP","CFP","FENAPSI","ABEP"],a:1,d:1,e:"Conselho Federal de Psicologia."},
+      {q:"Conselhos REGIONAIS, atuando nos estados:",o:["CFP","CRP","SBP","ABRAPSO"],a:1,d:1,e:"Conselho Regional de Psicologia — registra, fiscaliza, julga em 1ª instância."},
+      {q:"Entidade SINDICAL dos psicólogos:",o:["CFP","ABEP","FENAPSI","SBP"],a:2,d:2,e:"Federação Nacional dos Psicólogos — pauta trabalhista."},
+      {q:"Entidade ligada ao ENSINO de Psicologia:",o:["FENAPSI","ABEP","CRP","SBP"],a:1,d:3,e:"Associação Brasileira de Ensino de Psicologia."},
+      {q:"Para exercer legalmente a profissão é OBRIGATÓRIO:",o:["Filiar-se à FENAPSI","Registro ativo no CRP","Filiar-se à ABEP","Curso na PUC"],a:1,d:1,e:"Sem CRP ativo, não é legal exercer a profissão."},
+      {q:"Conselho e sindicato:",o:["Têm a mesma função","Conselho regula a profissão; sindicato representa a categoria","Apenas o sindicato é obrigatório","Apenas o conselho cobra mensalidade"],a:1,d:2,e:"Conselho = interesse público (regula). Sindicato = interesse da categoria."},
+    ],
+    "Código de Ética": [
+      {q:"Resolução do CFP que estabelece o Código de Ética:",o:["010/2005","005/2003","015/2010","001/1971"],a:0,d:3,e:"Resolução CFP nº 010/2005."},
+      {q:"O sigilo profissional do psicólogo é:",o:["Absoluto, nunca quebrado","Regra; quebrado apenas em situações excepcionais","Decidido livremente pelo profissional","Quebrado sempre que o cliente concorda"],a:1,d:1,e:"Sigilo é regra; a quebra é exceção, em situações graves previstas no código."},
+      {q:"Em qual situação o sigilo PODE ser quebrado?",o:["Curiosidade do colega","Risco grave à vida ou ordem judicial fundamentada","Pedido da família","Pesquisa acadêmica genérica"],a:1,d:2,e:"E mesmo nessas situações, revelando apenas o estritamente necessário."},
+      {q:"Quem julga processos éticos contra psicólogos em PRIMEIRA instância?",o:["CFP","CRP","FENAPSI","Justiça comum"],a:1,d:2,e:"O CRP da região onde o profissional está inscrito."},
+      {q:"Sanção MAIS GRAVE prevista no Código de Ética:",o:["Advertência","Multa","Suspensão temporária","Cassação do registro"],a:3,d:3,e:"A cassação retira o direito de exercer a profissão."},
+      {q:"Após a morte do cliente, o sigilo profissional:",o:["Desaparece automaticamente","Permanece — continua sendo dever do psicólogo","Vale por 5 anos","Pode ser quebrado livremente"],a:1,d:2,e:"O sigilo permanece mesmo após a morte do cliente."},
+      {q:"A vedação ao 'duplo vínculo' significa:",o:["Não cobrar honorários duplos","Não atender psicologicamente quem o psicólogo já tem relação prévia que comprometa imparcialidade","Não atuar em duas áreas","Não trabalhar em dois empregos"],a:1,d:3,e:"Ex: não atender amigos, parentes ou pessoas com vínculo profissional anterior."},
+    ],
+  };
 
+  // Estado
   const STATS_KEY = 'quizStatsPsico';
-  let stats = JSON.parse(localStorage.getItem(STATS_KEY) || '{}');
-  const qa = document.getElementById('quizArea');
+  let currentTheme = "Todos";
+  let currentQuiz = [];
+  let score = 0, answered = 0;
+  const stats = JSON.parse(localStorage.getItem(STATS_KEY) || '{}');
 
-  QUIZ.forEach((item, i) => {
-    const div = document.createElement('div');
-    div.className = 'quiz-q';
-    div.innerHTML = `<div class="q">${i+1}. ${item.q}</div>
-      <div class="opts">${item.opts.map((o,j) => `<button class="opt" data-i="${i}" data-j="${j}">${o}</button>`).join('')}</div>
-      <div class="feedback" id="fb${i}"></div>`;
-    qa.appendChild(div);
+  // Picker de temas
+  const tp = document.getElementById('themePicker');
+  const themes = ["Todos", ...Object.keys(QUIZ_BANK)];
+  themes.forEach(t => {
+    const b = document.createElement('button');
+    b.className = 'opt'; b.style.flex = '0 0 auto'; b.style.padding = '8px 14px';
+    b.textContent = t === "Todos" ? "🎲 Todos" : t;
+    b.onclick = () => {
+      currentTheme = t;
+      document.querySelectorAll('#themePicker .opt').forEach(x => x.classList.remove('correct'));
+      b.classList.add('correct');
+    };
+    if(t === "Todos") b.classList.add('correct');
+    tp.appendChild(b);
   });
 
-  qa.addEventListener('click', e => {
-    if(!e.target.classList.contains('opt')) return;
-    const i = +e.target.dataset.i, j = +e.target.dataset.j;
-    const item = QUIZ[i];
-    const buttons = qa.querySelectorAll(`.opt[data-i="${i}"]`);
-    if(buttons[0].disabled) return;
-    buttons.forEach(b => b.disabled = true);
-    if(j === item.ok){
-      e.target.classList.add('correct');
-      stats[i] = stats[i] || {ok:0,err:0}; stats[i].ok++;
+  function getPool(){
+    const diff = document.getElementById('qDiff').value;
+    let pool = currentTheme === "Todos"
+      ? Object.entries(QUIZ_BANK).flatMap(([t,arr]) => arr.map(q => ({...q, theme:t})))
+      : QUIZ_BANK[currentTheme].map(q => ({...q, theme:currentTheme}));
+    if(diff !== "all") pool = pool.filter(q => q.d === +diff);
+    return pool;
+  }
+
+  function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+  function startQuiz(){
+    const pool = getPool();
+    if(pool.length === 0){ alert("Nenhuma questão para esses filtros."); return; }
+    const n = Math.min(+document.getElementById('qCount').value, pool.length);
+    currentQuiz = shuffle(pool).slice(0, n).map(q => {
+      const idx = q.o.map((_,i) => i);
+      const sh = shuffle(idx);
+      return {...q, o: sh.map(i => q.o[i]), a: sh.indexOf(q.a)};
+    });
+    renderQuiz();
+  }
+
+  function weakSpotsQuiz(){
+    const all = Object.entries(QUIZ_BANK).flatMap(([t,arr]) => arr.map(q => ({...q, theme:t})));
+    const ranked = all.map(q => {
+      const k = q.q;
+      const s = stats[k] || {ok:0, err:0};
+      const total = s.ok + s.err;
+      const errRate = total ? s.err/total : 0;
+      return {q, score: errRate*10 + (total === 0 ? 5 : 0)};
+    }).sort((a,b) => b.score - a.score);
+    const n = Math.min(+document.getElementById('qCount').value, ranked.length);
+    currentQuiz = ranked.slice(0, n).map(r => r.q).map(q => {
+      const idx = q.o.map((_,i) => i); const sh = shuffle(idx);
+      return {...q, o: sh.map(i => q.o[i]), a: sh.indexOf(q.a)};
+    });
+    renderQuiz();
+  }
+
+  function renderQuiz(){
+    const qc = document.getElementById('quizContainer');
+    qc.innerHTML = '';
+    document.getElementById('quizResult').innerHTML = '';
+    score = 0; answered = 0;
+    document.getElementById('score').textContent = 0;
+    document.getElementById('total').textContent = currentQuiz.length;
+    const diffEmoji = {1:"🟢", 2:"🟡", 3:"🔴"};
+    currentQuiz.forEach((it, i) => {
+      const div = document.createElement('div');
+      div.className = 'quiz-q';
+      const themeTag = it.theme ? `<span class="pill">${it.theme}</span>` : '';
+      div.innerHTML = `<div class="q">${themeTag}<span class="pill warn">${diffEmoji[it.d]} ${it.d===1?'Fácil':it.d===2?'Médio':'Difícil'}</span><br>${i+1}. ${it.q}</div><div class="opts"></div><div class="feedback"></div>`;
+      const opts = div.querySelector('.opts');
+      it.o.forEach((opt, j) => {
+        const b = document.createElement('button');
+        b.className = 'opt'; b.textContent = opt;
+        b.onclick = () => answer(div, it, j, b);
+        opts.appendChild(b);
+      });
+      qc.appendChild(div);
+    });
+    updateStatsLabel();
+    qc.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  function answer(div, it, j, btn){
+    const opts = div.querySelectorAll('.opt');
+    if([...opts].some(o => o.disabled)) return;
+    opts.forEach((o, k) => { o.disabled = true; if(k === it.a) o.classList.add('correct'); });
+    const fb = div.querySelector('.feedback');
+    const key = it.q;
+    stats[key] = stats[key] || {ok:0, err:0};
+    if(j === it.a){
+      score++; stats[key].ok++;
+      fb.className = 'feedback show ok'; fb.innerHTML = '✅ <b>Correto!</b> ' + it.e;
     } else {
-      e.target.classList.add('wrong');
-      buttons[item.ok].classList.add('correct');
-      stats[i] = stats[i] || {ok:0,err:0}; stats[i].err++;
+      stats[key].err++;
+      btn.classList.add('wrong'); fb.className = 'feedback show no';
+      fb.innerHTML = '❌ <b>Não foi dessa vez.</b> ' + it.e;
     }
-    const fb = document.getElementById('fb'+i);
-    fb.classList.add('show', j === item.ok ? 'ok' : 'no');
-    fb.textContent = (j === item.ok ? '✅ Correto! ' : '❌ Resposta certa em verde. ') + item.exp;
     localStorage.setItem(STATS_KEY, JSON.stringify(stats));
-    updateScore();
-  });
+    answered++;
+    document.getElementById('score').textContent = score;
+    if(answered === currentQuiz.length) showResult();
+    updateStatsLabel();
+  }
 
-  function updateScore(){
-    let ok=0, total=0;
-    Object.values(stats).forEach(s => { ok += s.ok; total += s.ok+s.err; });
-    document.getElementById('score').textContent = ok;
-    document.getElementById('total').textContent = total;
+  function showResult(){
+    const pct = Math.round(100*score/currentQuiz.length);
+    let msg = pct === 100 ? "🏆 Perfeito! Você dominou!" :
+              pct >= 80 ? "🌟 Muito bem! Quase lá." :
+              pct >= 60 ? "👍 Bom! Revise os pontos errados." :
+              pct >= 40 ? "📚 Está pegando o jeito — refaça!" :
+                          "💪 Hora de revisar a teoria e tentar de novo!";
+    document.getElementById('quizResult').innerHTML =
+      `<div class="card highlight" style="text-align:center"><h3 style="margin-top:0">Resultado: ${score}/${currentQuiz.length} (${pct}%)</h3><p>${msg}</p>
+      <button class="btn" onclick="startQuiz()">🔄 Novo quiz embaralhado</button>
+      <button class="btn" style="background:var(--accent);color:#0e0a1f;margin-left:8px" onclick="weakSpotsQuiz()">🎯 Focar nos meus erros</button></div>`;
   }
-  function resetQuiz(){
-    if(!confirm('Apagar progresso do quiz?')) return;
-    stats = {}; localStorage.removeItem(STATS_KEY);
-    document.querySelectorAll('.opt').forEach(o => { o.disabled = false; o.className = 'opt'; });
-    document.querySelectorAll('.feedback').forEach(f => { f.className = 'feedback'; f.textContent = ''; });
-    updateScore();
+
+  function updateStatsLabel(){
+    const total = Object.values(stats).reduce((s,x) => s+x.ok+x.err, 0);
+    const oks = Object.values(stats).reduce((s,x) => s+x.ok, 0);
+    const pct = total ? Math.round(100*oks/total) : 0;
+    document.getElementById('quizStats').innerHTML =
+      `📊 Histórico geral: <b>${oks}/${total}</b> (${pct}%) — <a href="#" onclick="event.preventDefault();if(confirm('Apagar histórico?')){localStorage.removeItem('${STATS_KEY}');location.reload()}" style="color:var(--accent)">limpar histórico</a>`;
   }
-  updateScore();
+
+  updateStatsLabel();
+  startQuiz();
 </script>
 
 </body>
