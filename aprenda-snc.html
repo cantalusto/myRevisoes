@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aprenda — Sistema Nervoso Central (SNC)</title>
+<style>
+  :root{
+    --bg:#0a0f1c; --bg2:#1a1f2e; --card:#1e2438; --border:#2d3650;
+    --primary:#ec4899; --primary2:#f472b6; --accent:#a78bfa;
+    --good:#10b981; --bad:#ef4444; --warn:#f59e0b; --pink:#ec4899;
+    --text:#e2e8f0; --muted:#94a3b8;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:Georgia,'Times New Roman',serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:17px}
+  .hero{min-height:60vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:60px 24px;background:radial-gradient(ellipse at top,#831843 0%,#0a0f1c 70%);position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 20% 30%,rgba(236,72,153,.18) 0,transparent 50%),radial-gradient(circle at 80% 70%,rgba(167,139,250,.12) 0,transparent 50%)}
+  .hero-content{position:relative;z-index:1;max-width:800px}
+  .hero h1{font-size:3.2em;margin:0 0 12px;background:linear-gradient(135deg,#f472b6,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
+  .hero .subtitle{font-size:1.3em;color:var(--muted);font-style:italic;margin-bottom:30px}
+  .hero .meta{display:flex;justify-content:center;gap:30px;flex-wrap:wrap;color:var(--muted);font-size:.9em;font-family:sans-serif}
+  #progressBar{position:fixed;top:0;left:0;height:4px;background:linear-gradient(90deg,var(--primary),var(--accent));z-index:1000;transition:width .1s;width:0%}
+  .toc{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:30px;margin:40px auto;max-width:900px}
+  .toc h2{margin-top:0;color:var(--primary2);font-family:sans-serif}
+  .toc ol{padding-left:24px;font-family:sans-serif}
+  .toc li{margin:10px 0}
+  .toc a{color:var(--text);text-decoration:none;border-bottom:1px dashed transparent;transition:all .2s}
+  .toc a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+  main{max-width:880px;margin:0 auto;padding:40px 24px 80px}
+  .chapter{margin:80px 0;padding-top:40px;border-top:1px solid var(--border)}
+  .chapter:first-child{border-top:none}
+  .chapter-num{display:inline-block;font-family:sans-serif;color:var(--accent);font-size:.85em;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px}
+  .chapter h2{font-size:2.4em;margin:0 0 24px;color:var(--text);line-height:1.2;font-weight:700}
+  .chapter h3{font-size:1.5em;color:var(--primary2);margin:40px 0 12px;font-family:sans-serif}
+  .chapter h4{color:var(--accent);margin:24px 0 8px;font-family:sans-serif;font-size:1.1em}
+  .chapter p{margin:18px 0}
+  .lead{font-size:1.2em;color:var(--muted);font-style:italic;border-left:3px solid var(--primary);padding:8px 0 8px 20px;margin:24px 0}
+  .analogy,.example,.warning,.deep,.story,.def{margin:28px 0;padding:20px 24px;border-radius:12px;font-family:sans-serif;font-size:.95em;line-height:1.7}
+  .analogy{background:linear-gradient(135deg,rgba(236,72,153,.12),rgba(236,72,153,.04));border-left:4px solid var(--pink)}
+  .analogy::before{content:'🎭 Analogia';display:block;font-weight:700;color:var(--pink);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .example{background:linear-gradient(135deg,rgba(167,139,250,.12),rgba(167,139,250,.02));border-left:4px solid var(--accent)}
+  .example::before{content:'💡 Exemplo';display:block;font-weight:700;color:var(--accent);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .warning{background:linear-gradient(135deg,rgba(245,158,11,.12),rgba(245,158,11,.02));border-left:4px solid var(--warn)}
+  .warning::before{content:'⚠️ Cuidado';display:block;font-weight:700;color:var(--warn);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .deep{background:linear-gradient(135deg,rgba(236,72,153,.12),rgba(236,72,153,.02));border-left:4px solid var(--primary)}
+  .deep::before{content:'🔍 Aprofundando';display:block;font-weight:700;color:var(--primary2);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .story{background:linear-gradient(135deg,rgba(16,185,129,.1),rgba(16,185,129,.02));border-left:4px solid var(--good)}
+  .story::before{content:'📖 Contexto';display:block;font-weight:700;color:var(--good);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .def{background:var(--bg2);border:1px solid var(--border);border-radius:8px}
+  .def::before{content:'📌 Definição';display:block;font-weight:700;color:var(--primary2);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  table{width:100%;border-collapse:collapse;margin:24px 0;background:var(--card);border-radius:12px;overflow:hidden;font-family:sans-serif;font-size:.95em}
+  th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+  th{background:linear-gradient(135deg,var(--primary),#9333ea);color:white;font-weight:700}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:rgba(236,72,153,.05)}
+  .key{background:rgba(236,72,153,.15);color:var(--primary2);padding:2px 8px;border-radius:4px;font-weight:600;font-family:sans-serif}
+  .selfcheck{background:var(--card);border:2px dashed var(--primary);border-radius:12px;padding:20px;margin:30px 0;font-family:sans-serif}
+  .selfcheck-q{font-weight:600;color:var(--primary2);margin-bottom:12px}
+  .selfcheck-q::before{content:'🤔 Pergunta para você: ';font-weight:700;color:var(--accent)}
+  details summary{cursor:pointer;color:var(--accent);font-weight:600;outline:none;list-style:none}
+  details summary::before{content:'👁️ Mostrar resposta ▼';font-size:.9em}
+  details[open] summary::before{content:'🙈 Esconder ▲'}
+  details[open] .answer{margin-top:12px;padding:14px;background:var(--bg2);border-radius:8px;border-left:3px solid var(--good);font-style:italic;color:var(--text);font-weight:normal}
+  .floating{position:fixed;right:24px;bottom:24px;display:flex;flex-direction:column;gap:8px;z-index:50}
+  .floating button,.floating a{background:var(--card);border:1px solid var(--border);color:var(--text);width:48px;height:48px;border-radius:50%;cursor:pointer;font-size:1.2em;transition:all .2s;box-shadow:0 4px 12px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;text-decoration:none}
+  .floating button:hover,.floating a:hover{background:var(--primary);transform:scale(1.1)}
+  .end{text-align:center;padding:60px 24px;background:radial-gradient(ellipse at center,rgba(236,72,153,.15),transparent);margin-top:80px;border-top:1px solid var(--border)}
+  .end h2{font-size:2em;color:var(--primary2)}
+  .cta{display:inline-block;margin-top:20px;padding:14px 28px;background:linear-gradient(135deg,var(--primary),var(--accent));color:white;border-radius:99px;text-decoration:none;font-family:sans-serif;font-weight:600;transition:transform .2s}
+  .cta:hover{transform:scale(1.05)}
+  figure.pdf-fig{margin:28px 0;text-align:center;font-family:sans-serif}
+  figure.pdf-fig img{max-width:100%;border-radius:14px;border:1px solid var(--border);background:white;box-shadow:0 12px 32px -10px rgba(0,0,0,.6);transition:transform .3s, box-shadow .3s;cursor:zoom-in}
+  figure.pdf-fig img:hover{transform:translateY(-2px) scale(1.01);box-shadow:0 20px 44px -10px rgba(236,72,153,.25)}
+  figure.pdf-fig figcaption{font-size:.84em;color:var(--muted);margin-top:10px;font-style:italic;padding:0 12px}
+  .img-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:24px 0}
+  .img-grid figure{margin:0}
+  .img-grid img{width:100%;height:200px;object-fit:cover;border-radius:12px;border:1px solid var(--border);background:white;cursor:zoom-in;transition:transform .2s}
+  .img-grid img:hover{transform:scale(1.03)}
+  .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;z-index:200;padding:20px;cursor:zoom-out}
+  .lightbox.open{display:flex}
+  .lightbox img{max-width:96vw;max-height:92vh;border-radius:10px}
+  .lightbox .close{position:absolute;top:18px;right:22px;background:rgba(255,255,255,.1);border:none;color:white;width:44px;height:44px;border-radius:50%;font-size:1.4em;cursor:pointer}
+
+  @media (max-width: 720px){
+    body{font-size:16px;line-height:1.7}
+    .hero{padding:48px 18px;min-height:auto}
+    .hero h1{font-size:clamp(1.8em,7vw,2.4em)}
+    .hero .subtitle{font-size:1em;margin-bottom:18px}
+    .hero .meta{gap:10px 14px;font-size:.82em}
+    .toc{padding:20px;margin:24px 14px;border-radius:12px}
+    main{padding:24px 16px 60px}
+    .chapter{margin:56px 0;padding-top:28px}
+    .chapter h2{font-size:1.7em}
+    .chapter h3{font-size:1.2em;margin:28px 0 10px}
+    .analogy,.example,.warning,.deep,.story,.def{padding:14px 16px;font-size:.93em}
+    .lead{font-size:1.02em;padding:6px 0 6px 14px;margin:18px 0}
+    table{display:block;overflow-x:auto;white-space:nowrap;font-size:.86em}
+    th,td{padding:9px 11px}
+    .floating{right:14px;bottom:14px}
+    .floating button,.floating a{width:44px;height:44px;font-size:1.05em}
+    .end{padding:40px 18px;margin-top:48px}
+    .end h2{font-size:1.5em}
+    .img-grid{grid-template-columns:1fr 1fr;gap:10px}
+    .img-grid img{height:140px}
+    .selfcheck{padding:16px}
+  }
+  @media (max-width: 420px){
+    .hero h1{font-size:1.7em}
+    .chapter h2{font-size:1.45em}
+    .img-grid{grid-template-columns:1fr}
+    .img-grid img{height:auto}
+  }
+</style>
+</head>
+<body>
+
+<div id="progressBar"></div>
+
+<div class="hero">
+  <div class="hero-content">
+    <h1>Sistema Nervoso Central</h1>
+    <p class="subtitle">"Encéfalo + medula — a central de comando que coordena tudo o que somos."</p>
+    <div class="meta">
+      <span>📚 Guia com imagens</span>
+      <span>⏱️ ~35 minutos</span>
+      <span>🧠 Aula da Profa. Isabele Alcoforado</span>
+    </div>
+  </div>
+</div>
+
+<div class="toc" id="top">
+  <h2>📑 Sumário</h2>
+  <ol>
+    <li><a href="#cap1">Visão geral do SNC</a></li>
+    <li><a href="#cap2">Caixa craniana e Meninges</a></li>
+    <li><a href="#cap3">Líquor — o LCR</a></li>
+    <li><a href="#cap4">Cérebro (Telencéfalo) e Córtex</a></li>
+    <li><a href="#cap5">Diencéfalo — Tálamo, Hipotálamo, Hipófise</a></li>
+    <li><a href="#cap6">Tronco Encefálico</a></li>
+    <li><a href="#cap7">Cerebelo</a></li>
+    <li><a href="#cap8">Medula Espinhal</a></li>
+  </ol>
+</div>
+
+<main>
+
+<article class="chapter" id="cap1">
+  <div class="chapter-num">Capítulo 1</div>
+  <h2>Visão geral do SNC</h2>
+
+  <p class="lead">O Sistema Nervoso Central é a <b>central de comando</b> do corpo. Recebe, processa e envia informações para coordenar todas as atividades — voluntárias e involuntárias.</p>
+
+  <div class="def">
+    O <b>SNC</b> é formado pelo <b>encéfalo</b> (cérebro + cerebelo + tronco encefálico) e pela <b>medula espinhal</b>. É protegido pelo crânio e pela coluna vertebral, respectivamente.
+  </div>
+
+  <figure class="pdf-fig">
+    <img src="assets/img/snc/p04.png" alt="Classificação anatômica do sistema nervoso" loading="lazy">
+    <figcaption>Classificação anatômica: SN Central (encéfalo + medula) e SN Periférico (nervos, gânglios, receptores).</figcaption>
+  </figure>
+
+  <h3>Componentes</h3>
+  <table>
+    <thead><tr><th>Componente</th><th>Subpartes</th></tr></thead>
+    <tbody>
+      <tr><td><b>Encéfalo</b></td><td>Cérebro, cerebelo, tronco encefálico</td></tr>
+      <tr><td><b>Medula Espinhal</b></td><td>Cordão cilíndrico no canal vertebral</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Classificação funcional do SNC</h3>
+  <figure class="pdf-fig">
+    <img src="assets/img/snc/p05.png" alt="Classificação funcional do SNC: somático e visceral" loading="lazy">
+    <figcaption>Somático (relação com o corpo) e Visceral (controle das vísceras via SNA simpático/parassimpático).</figcaption>
+  </figure>
+</article>
+
+<article class="chapter" id="cap2">
+  <div class="chapter-num">Capítulo 2</div>
+  <h2>Caixa craniana e Meninges</h2>
+
+  <p class="lead">Entre o osso e o tecido nervoso ficam três membranas concêntricas — as meninges — que protegem mecanicamente o SNC e conduzem vasos sanguíneos.</p>
+
+  <h3>Estrutura do osso craniano</h3>
+  <figure class="pdf-fig">
+    <img src="assets/img/snc/p13.png" alt="Caixa craniana - osso plano com tábua externa, díploe e tábua interna" loading="lazy">
+    <figcaption>Organização estrutural do osso plano da caixa craniana: tábua externa, díploe e tábua interna.</figcaption>
+  </figure>
+
+  <ul>
+    <li><b>Tábua externa</b> — osso compacto, lâmina externa.</li>
+    <li><b>Díploe</b> — camada esponjosa intermediária, com medula óssea.</li>
+    <li><b>Tábua interna</b> — osso compacto interno, em contato com as meninges.</li>
+  </ul>
+
+  <h3>As 3 meninges</h3>
+  <div class="def">
+    O SNC é completamente envolvido por <b>meninges</b> — membranas conjuntivas que isolam e protegem. Da superficial para a profunda:
+    <ol>
+      <li><b>Dura-máter</b> (paquimeninge) — a mais externa, espessa e resistente.</li>
+      <li><b>Aracnoide</b> — média, delicada, sem vasos nem nervos.</li>
+      <li><b>Pia-máter</b> — interna, fina, ricamente vascularizada.</li>
+    </ol>
+    Aracnoide + pia-máter = <b>leptomeninges</b>.
+  </div>
+
+  <figure class="pdf-fig">
+    <img src="assets/img/snc/p15.png" alt="Esquema das três meninges encefálicas" loading="lazy">
+    <figcaption>As três meninges encefálicas protegem o encéfalo e a medula.</figcaption>
+  </figure>
+
+  <table>
+    <thead><tr><th>Meninge</th><th>Características</th></tr></thead>
+    <tbody>
+      <tr><td><b>Dura-máter</b></td><td>Mais externa, espessa, resistente. Possui sistema próprio de vasos e nervos.</td></tr>
+      <tr><td><b>Aracnoide</b></td><td>Membrana média, muito delicada. Sem vasos ou nervos. Nome vem do aspecto de teia de aranha.</td></tr>
+      <tr><td><b>Pia-máter</b></td><td>Mais interna. Fina e transparente. Reveste todos os relevos e penetra nos sulcos. Ricamente vascularizada — leva sangue ao tecido nervoso.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Espaços entre meninges</h3>
+  <ul>
+    <li><b>Espaço subdural</b> — entre dura-máter e aracnoide. Fenda fina com fluido lubrificante.</li>
+    <li><b>Espaço subaracnoide</b> — entre aracnoide e pia-máter. <b>Contém o LCR</b> (líquor) e se comunica com os ventrículos.</li>
+  </ul>
+
+  <div class="warning">
+    <b>Hematomas</b> são classificados por onde sangram:<br>
+    • <b>Epidural</b> — entre osso e dura (frequentemente arterial, evolução rápida).<br>
+    • <b>Subdural</b> — entre dura e aracnoide (frequentemente venoso, evolução mais lenta).<br>
+    • <b>Subaracnoide</b> — entre aracnoide e pia (frequentemente por aneurisma).
+  </div>
+</article>
+
+<article class="chapter" id="cap3">
+  <div class="chapter-num">Capítulo 3</div>
+  <h2>Líquor — o LCR</h2>
+
+  <p class="lead">O <span class="key">líquido cefalorraquidiano</span> banha e protege o SNC. Sem ele, o cérebro pesaria contra a base do crânio sob seu próprio peso.</p>
+
+  <figure class="pdf-fig">
+    <img src="assets/img/snc/p22.png" alt="Líquor circulando nos ventrículos cerebrais" loading="lazy">
+    <figcaption>O LCR circula nos ventrículos cerebrais e no espaço subaracnoide.</figcaption>
+  </figure>
+
+  <div class="def">
+    O <b>Líquor</b> (Líquido CefaloRaquidiano, LCR) é um líquido produzido nos <b>ventrículos laterais</b>, mais especificamente pelos <b>plexos coroides</b>. É um ultrafiltrado do sangue, composto basicamente de cloreto de sódio e glicose.
+  </div>
+
+  <h3>Características</h3>
+  <table>
+    <thead><tr><th>Aspecto</th><th>Valor / função</th></tr></thead>
+    <tbody>
+      <tr><td>Volume normal num adulto</td><td>~150 ml</td></tr>
+      <tr><td>Produção/reabsorção</td><td>~500 ml/dia</td></tr>
+      <tr><td>Pressão intracraniana</td><td>~10 mmHg</td></tr>
+      <tr><td>Função principal</td><td>Barreira mecânica e imunológica para o SNC</td></tr>
+      <tr><td>Onde circula</td><td>Ventrículos, espaço subaracnoide, canal central da medula</td></tr>
+    </tbody>
+  </table>
+
+  <div class="deep">
+    O <b>balanço entre produção e absorção</b> é o que mantém a pressão intracraniana estável. Quando algo bloqueia a circulação (ex: tumores, infecções) ou aumenta a produção, surge a <b>hidrocefalia</b> — acúmulo de LCR e aumento da pressão intracraniana.
+  </div>
+</article>
+
+<article class="chapter" id="cap4">
+  <div class="chapter-num">Capítulo 4</div>
+  <h2>Cérebro (Telencéfalo) e Córtex</h2>
+
+  <p class="lead">O cérebro é a maior estrutura do encéfalo — constitui cerca de <b>80% da massa total</b>. É composto pelo telencéfalo e pelo diencéfalo.</p>
+
+  <figure class="pdf-fig">
+    <img src="assets/img/snc/p36.png" alt="Cérebro - hemisférios cerebrais" loading="lazy">
+    <figcaption>O cérebro está dividido em dois hemisférios (esquerdo e direito), interligados pelo corpo caloso.</figcaption>
+  </figure>
+
+  <h3>Hemisférios cerebrais</h3>
+  <ul>
+    <li>Dois hemisférios — <b>esquerdo e direito</b>, interligados pelo <b>corpo caloso</b>.</li>
+    <li>Estão divididos em 4 <b>lobos</b>: <b>frontal, parietal, temporal e occipital</b>.</li>
+    <li>Sua superfície é intensamente pregueada — economiza espaço aumentando a área cortical.</li>
+  </ul>
+
+  <h3>Giros, sulcos e fissuras</h3>
+  <div class="def">
+    <b>Giros</b> — as saliências.<br>
+    <b>Sulcos</b> — as reentrâncias.<br>
+    <b>Fissuras</b> — sulcos muito profundos (ex: fissura inter-hemisférica que separa os hemisférios).
+  </div>
+
+  <h3>Córtex cerebral</h3>
+  <figure class="pdf-fig">
+    <img src="assets/img/snc/p43.png" alt="Córtex cerebral - substância cinzenta e branca" loading="lazy">
+    <figcaption>Camada superficial fina (córtex = substância cinzenta) sobre uma camada profunda de substância branca.</figcaption>
+  </figure>
+
+  <ul>
+    <li><b>Substância cinzenta (córtex)</b> — camada externa fina; contém os <em>corpos celulares</em> dos neurônios.</li>
+    <li><b>Substância branca</b> — camada profunda; contém feixes de <em>axônios mielinizados</em> (daí a cor branca).</li>
+  </ul>
+
+  <h3>Áreas funcionais importantes</h3>
+  <ul>
+    <li><b>Giro pré-central</b> (lobo frontal) — controle dos movimentos voluntários.</li>
+    <li><b>Giro pós-central</b> (lobo parietal) — sensação somática (tato).</li>
+    <li><b>Giro temporal superior</b> (lobo temporal) — audição.</li>
+    <li><b>Lobo occipital</b> — visão.</li>
+  </ul>
+
+  <h3>Amígdala, hipocampo, fórnix e corpo caloso</h3>
+  <ul>
+    <li><b>Amígdala</b> — sob o córtex; ligada à <em>memória</em> e regulação dos <em>estados emocionais</em> (sistema límbico).</li>
+    <li><b>Hipocampo</b> — papel central no <em>aprendizado</em> e na <em>memória</em>.</li>
+    <li><b>Corpo caloso</b> — imenso feixe de axônios que conecta os dois hemisférios.</li>
+    <li><b>Fórnix</b> — feixe que conecta o hipocampo ao hipotálamo (memória).</li>
+  </ul>
+
+  <div class="selfcheck">
+    <div class="selfcheck-q">Por que o córtex é "cinzento" e o interior do cérebro "branco"?</div>
+    <details><summary></summary><div class="answer">Porque o <strong>córtex (substância cinzenta)</strong> contém principalmente <em>corpos celulares</em> de neurônios — sem a coloração da mielina. Já a <strong>substância branca</strong> é formada por axônios mielinizados, e a mielina dá a cor branca.</div></details>
+  </div>
+</article>
+
+<article class="chapter" id="cap5">
+  <div class="chapter-num">Capítulo 5</div>
+  <h2>Diencéfalo — Tálamo, Hipotálamo, Hipófise</h2>
+
+  <p class="lead">Logo abaixo dos hemisférios cerebrais, o diencéfalo é o "andar" das estruturas que regulam a homeostase e fazem a ponte com o sistema endócrino.</p>
+
+  <figure class="pdf-fig">
+    <img src="assets/img/snc/p53.png" alt="Diencéfalo - tálamo, hipotálamo e corpo pineal" loading="lazy">
+    <figcaption>Diencéfalo: tálamo, hipotálamo e corpo pineal.</figcaption>
+  </figure>
+
+  <h3>Tálamo</h3>
+  <ul>
+    <li>Composto de muitos corpos celulares.</li>
+    <li><b>Recepção e transmissão</b> de mensagens sensoriais ao córtex.</li>
+    <li>Envolvido na regulação do <b>estado de atenção e consciência</b>.</li>
+  </ul>
+
+  <h3>Hipotálamo</h3>
+  <ul>
+    <li>Envolvido com <b>emoções</b> — articula resposta de luta-ou-fuga.</li>
+    <li>Comanda o <b>Sistema Nervoso Autônomo (SNA)</b>.</li>
+    <li>Regula <b>sono, sede, fome, balanço hídrico e temperatura corporal</b>.</li>
+    <li>Controla as respostas corporais por meio da hipófise (libera hormônios tróficos).</li>
+  </ul>
+
+  <h3>Hipófise (Pituitária)</h3>
+  <figure class="pdf-fig">
+    <img src="assets/img/snc/p60.png" alt="Hipófise (pituitária) - localizada abaixo do encéfalo" loading="lazy">
+    <figcaption>A hipófise fica abaixo do encéfalo, conectada ao hipotálamo na sela túrcica do esfenoide.</figcaption>
+  </figure>
+
+  <ul>
+    <li>Pequena (~1 cm de diâmetro, ~1 g).</li>
+    <li>Localizada na <b>sela túrcica</b> (base do crânio, no esfenoide).</li>
+    <li>Conectada ao hipotálamo pelo <b>pedúnculo hipofisário</b>.</li>
+    <li>Dividida em:
+      <ul>
+        <li><b>Adenoipófise</b> (anterior) — libera <em>trofinas</em> (hormônios tróficos) que estimulam outras glândulas: TSH, FSH, LH, ACTH, GH, PRL.</li>
+        <li><b>Neuroipófise</b> (posterior) — tecido neural; libera hormônios produzidos no hipotálamo.</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h3>Corpo Pineal</h3>
+  <ul>
+    <li>Pequena glândula cinza-avermelhada localizada dorsalmente ao tálamo.</li>
+    <li>Secreta <b>melatonina</b>.</li>
+    <li>Regula o <b>ciclo do sono</b> (ritmo circadiano).</li>
+  </ul>
+
+  <h3>Corpos mamilares</h3>
+  <div class="example">
+    Os corpos mamilares estão na superfície ventral do encéfalo. Têm duas funções integradas:
+    <ul>
+      <li><b>Memórias episódicas</b> (lembrar de eventos) — especialmente espaciais.</li>
+      <li><b>Memórias ligadas a emoções fortes</b> e à sobrevivência (encontrar comida, parceiros).</li>
+    </ul>
+    Sua lesão causa <em>amnésia anterógrada</em> — vista em doenças como <b>Alzheimer</b>.
+  </div>
+</article>
+
+<article class="chapter" id="cap6">
+  <div class="chapter-num">Capítulo 6</div>
+  <h2>Tronco Encefálico</h2>
+
+  <p class="lead">O tronco encefálico é a "rodovia" entre o encéfalo e a medula. Aloja os <b>centros das funções vitais</b> e a maioria dos núcleos dos nervos cranianos.</p>
+
+  <figure class="pdf-fig">
+    <img src="assets/img/snc/p68.png" alt="Tronco encefálico - mesencéfalo, ponte e bulbo" loading="lazy">
+    <figcaption>Tronco encefálico: mesencéfalo (superior), ponte (intermediária) e bulbo (medula oblonga, inferior).</figcaption>
+  </figure>
+
+  <div class="def">
+    O <b>tronco encefálico</b> é a região de transição entre o encéfalo e a medula. Tem 3 componentes: <b>mesencéfalo, ponte e bulbo</b>.
+  </div>
+
+  <h3>Funções gerais</h3>
+  <ol>
+    <li><b>Recebe informações sensitivas</b> de nervos cranianos e controla os músculos da cabeça.</li>
+    <li>Contém circuitos que <b>transmitem informações</b> da medula até regiões encefálicas e vice-versa.</li>
+    <li><b>Regula atenção, sono e vigília</b> + controla a <b>postura corporal</b> (via formação reticular).</li>
+  </ol>
+
+  <h3>Mesencéfalo</h3>
+  <ul>
+    <li>Segmento mais curto e <b>mais superior</b> do tronco.</li>
+    <li>Conecta a ponte e o cerebelo com o telencéfalo.</li>
+    <li>Participa do controle das contrações musculares e postura.</li>
+  </ul>
+
+  <h3>Ponte</h3>
+  <figure class="pdf-fig">
+    <img src="assets/img/snc/p70.png" alt="Ponte cerebral - parte intermediária do tronco" loading="lazy">
+    <figcaption>A ponte conecta o córtex cerebral ao cerebelo e participa do controle da respiração.</figcaption>
+  </figure>
+
+  <ul>
+    <li>Parte intermediária do tronco encefálico.</li>
+    <li><b>Conecta o córtex cerebral ao cerebelo</b>; mais de 90% dos axônios descendentes do mesencéfalo fazem sinapse aqui.</li>
+    <li>Participa do <b>controle da respiração</b> e dá origem aos nervos cranianos V, VI, VII e VIII.</li>
+  </ul>
+
+  <div class="warning">
+    Lesões na ponte podem causar fraqueza facial, alterações sensoriais, problemas de visão (estrabismo), tontura, surdez e afetar o controle respiratório.
+  </div>
+
+  <h3>Bulbo (Medula Oblonga)</h3>
+  <figure class="pdf-fig">
+    <img src="assets/img/snc/p82.png" alt="Bulbo - parte terminal do tronco encefálico" loading="lazy">
+    <figcaption>Bulbo (medula oblonga) — porção inferior do tronco, contínua com a medula espinhal.</figcaption>
+  </figure>
+
+  <ul>
+    <li><b>Parte terminal do tronco</b>, contínua com a medula espinhal.</li>
+    <li>Abriga centros das <b>funções vitais</b>: frequência cardíaca, pressão arterial, respiração.</li>
+    <li>Controla reflexos viscerais: <b>salivação, tosse, espirro, deglutição</b>.</li>
+    <li>Contém os núcleos dos 4 últimos nervos cranianos: IX (glossofaríngeo), X (vago), XI (acessório) e XII (hipoglosso).</li>
+    <li>Tem a <b>pirâmide bulbar</b> — feixes de axônios envolvidos no controle do movimento voluntário.</li>
+  </ul>
+</article>
+
+<article class="chapter" id="cap7">
+  <div class="chapter-num">Capítulo 7</div>
+  <h2>Cerebelo</h2>
+
+  <p class="lead">O cerebelo ("pequeno cérebro") é o grande maestro do <b>controle motor fino</b>: equilíbrio, coordenação, postura e precisão dos movimentos.</p>
+
+  <figure class="pdf-fig">
+    <img src="assets/img/snc/p85.png" alt="Cerebelo - centro do controle motor fino" loading="lazy">
+    <figcaption>O cerebelo recebe informações da medula (posição do corpo) e da ponte (meta do movimento).</figcaption>
+  </figure>
+
+  <h3>O que faz?</h3>
+  <ul>
+    <li>Recebe <b>aferências da medula</b> (posição do corpo no espaço).</li>
+    <li>Recebe <b>aferências da ponte</b> (qual é a meta do movimento — do córtex).</li>
+    <li><b>Compara as informações</b> e calcula a sequência de contrações musculares necessárias para atingir a meta.</li>
+  </ul>
+
+  <div class="analogy">
+    Pense no cerebelo como o <em>"corretor automático"</em> dos movimentos. Você quer pegar o copo (intenção do córtex), mas é o cerebelo que ajusta finamente a aproximação, a força e a precisão do gesto.
+  </div>
+
+  <h3>Sintomas de lesão (síndromes cerebelares)</h3>
+  <table>
+    <thead><tr><th>Sintoma</th><th>Descrição</th></tr></thead>
+    <tbody>
+      <tr><td><b>Ataxia</b></td><td>Falta de coordenação motora e dificuldade no equilíbrio</td></tr>
+      <tr><td><b>Tremores</b></td><td>Especialmente tremores de intenção (ao realizar movimentos)</td></tr>
+      <tr><td><b>Hipotonia</b></td><td>Redução do tônus muscular</td></tr>
+      <tr><td><b>Disartria</b></td><td>Dificuldade na articulação da fala</td></tr>
+    </tbody>
+  </table>
+</article>
+
+<article class="chapter" id="cap8">
+  <div class="chapter-num">Capítulo 8</div>
+  <h2>Medula Espinhal</h2>
+
+  <p class="lead">A medula é a parte alongada do SNC — um cordão cilíndrico que viaja dentro da coluna vertebral, conduzindo informações em ambos os sentidos e gerando atos reflexos.</p>
+
+  <div class="def">
+    A <b>medula espinhal</b> é a parte mais alongada do SNC. Cordão cilíndrico de células nervosas, localizado no canal vertebral, contínuo com o bulbo. Estende-se do <b>forame magno</b> até as vértebras lombares <b>L1-L2</b>.
+  </div>
+
+  <h3>Características</h3>
+  <ul>
+    <li><b>Comprimento</b>: ~45 cm em homens, ~42 cm em mulheres.</li>
+    <li>Origina <b>31 pares de nervos espinhais</b> — conectam a medula a células sensoriais e músculos.</li>
+    <li>Tem um <b>canal central</b> por onde circula o LCR.</li>
+    <li>É revestida pelas <b>meninges</b>.</li>
+  </ul>
+
+  <h3>Funções principais</h3>
+  <ul>
+    <li><b>Conduzir informações</b> entre o cérebro e o resto do corpo.</li>
+    <li>Comandar <b>atos reflexos</b> (sem precisar do cérebro — ex: retirar a mão de algo quente).</li>
+  </ul>
+
+  <h3>Organização interna</h3>
+  <div class="example">
+    Em corte transversal, a medula mostra:<br>
+    • <b>Substância branca</b> externa (axônios mielinizados — vias longas).<br>
+    • <b>Substância cinzenta</b> interna em forma de <b>letra "H"</b> (corpos celulares de neurônios).
+  </div>
+
+  <h3>Lembrando a coluna vertebral</h3>
+  <p>A medula é protegida pela coluna, que tem:</p>
+  <ul>
+    <li>7 vértebras cervicais (C1 = Atlas, C2 = Axis)</li>
+    <li>12 vértebras torácicas (com fóveas costais)</li>
+    <li>5 vértebras lombares</li>
+    <li>Sacro (5 fundidas) e cóccix</li>
+  </ul>
+
+  <div class="selfcheck">
+    <div class="selfcheck-q">Até onde a medula espinhal se estende no adulto?</div>
+    <details><summary></summary><div class="answer">Do forame magno (na base do crânio) até as vértebras lombares <b>L1-L2</b>. Abaixo desse nível, o canal vertebral contém apenas as raízes nervosas (a "cauda equina"), o que torna seguras as punções lombares feitas em L3-L4.</div></details>
+  </div>
+</article>
+
+</main>
+
+<div class="end">
+  <h2>Pronto para o quiz?</h2>
+  <p style="color:var(--muted);font-family:sans-serif">Banco organizado por tema, com dificuldade e modo "focar nos erros".</p>
+  <a class="cta" href="revisao-snc.html">✅ Ir para o Quiz</a>
+</div>
+
+<div class="floating">
+  <a href="index.html" title="Hub">🏠</a>
+  <button onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Topo">↑</button>
+</div>
+
+<div class="lightbox" id="lightbox">
+  <button class="close" onclick="closeLightbox()">×</button>
+  <img id="lightboxImg" alt="">
+</div>
+
+<script>
+  const bar = document.getElementById('progressBar');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const scrolled = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    bar.style.width = scrolled + '%';
+  });
+
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightboxImg');
+  document.querySelectorAll('figure.pdf-fig img, .img-grid img').forEach(img => {
+    img.addEventListener('click', () => { lbImg.src = img.src; lb.classList.add('open'); });
+  });
+  lb.addEventListener('click', e => { if(e.target === lb) closeLightbox(); });
+  function closeLightbox(){ lb.classList.remove('open'); lbImg.src = ''; }
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') closeLightbox(); });
+</script>
+
+</body>
+</html>

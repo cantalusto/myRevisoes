@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Revisão — Tecido Nervoso</title>
+<style>
+  :root{
+    --bg:#0a0f1c; --bg2:#1a1f2e; --card:#1e2438; --border:#2d3650;
+    --primary:#ec4899; --primary2:#f472b6; --accent:#a78bfa;
+    --good:#10b981; --bad:#ef4444; --warn:#f59e0b;
+    --text:#e2e8f0; --muted:#94a3b8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+  header{background:linear-gradient(135deg,#831843,#ec4899);padding:32px 24px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.3)}
+  header h1{margin:0;font-size:2em}
+  header p{margin:8px 0 0;color:#fce7f3}
+  nav{position:sticky;top:0;background:rgba(10,15,28,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:12px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;z-index:100}
+  nav button{background:var(--card);color:var(--text);border:1px solid var(--border);padding:8px 14px;border-radius:8px;cursor:pointer;font-size:.9em;transition:all .2s}
+  nav button:hover,nav button.active{background:var(--primary);border-color:var(--primary)}
+  main{max-width:1100px;margin:0 auto;padding:24px}
+  section{display:none;animation:fadeIn .4s}
+  section.active{display:block}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  h2{color:var(--primary2);border-bottom:2px solid var(--primary);padding-bottom:8px;margin-top:0}
+  h3{color:var(--accent);margin-top:24px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:16px 0;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+  .card.highlight{border-left:4px solid var(--primary)}
+  table{width:100%;border-collapse:collapse;margin:12px 0;background:var(--bg2);border-radius:8px;overflow:hidden}
+  th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+  th{background:var(--primary);color:white}
+  tr:last-child td{border-bottom:none}
+  .pill{display:inline-block;background:var(--primary);color:white;padding:2px 10px;border-radius:99px;font-size:.8em;margin-right:6px}
+  .pill.good{background:var(--good)} .pill.bad{background:var(--bad)} .pill.warn{background:var(--warn)}
+  .flash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+  .flash{background:var(--card);border:1px solid var(--border);border-radius:12px;height:180px;perspective:1000px;cursor:pointer}
+  .flash-inner{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+  .flash.flipped .flash-inner{transform:rotateY(180deg)}
+  .flash-front,.flash-back{position:absolute;inset:0;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;text-align:center;padding:16px;border-radius:12px}
+  .flash-front{background:linear-gradient(135deg,#831843,#ec4899);font-weight:600;font-size:1.05em}
+  .flash-back{background:var(--bg2);transform:rotateY(180deg);font-size:.95em;color:var(--muted)}
+  .quiz-q{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:16px 0}
+  .quiz-q .q{font-weight:600;margin-bottom:12px}
+  .opts{display:flex;flex-direction:column;gap:8px}
+  .opt{background:var(--bg2);border:1px solid var(--border);padding:12px;border-radius:8px;cursor:pointer;transition:all .2s;text-align:left;color:var(--text);font-size:.95em}
+  .opt:hover:not(:disabled){border-color:var(--primary);background:#2a2540}
+  .opt.correct{background:rgba(16,185,129,.2);border-color:var(--good);color:#a7f3d0}
+  .opt.wrong{background:rgba(239,68,68,.2);border-color:var(--bad);color:#fecaca}
+  .feedback{margin-top:12px;padding:10px 14px;border-radius:8px;font-size:.9em;display:none}
+  .feedback.show{display:block}
+  .feedback.ok{background:rgba(16,185,129,.15);border-left:3px solid var(--good)}
+  .feedback.no{background:rgba(239,68,68,.15);border-left:3px solid var(--bad)}
+  .progress{position:fixed;bottom:20px;right:20px;background:var(--card);border:1px solid var(--border);padding:12px 18px;border-radius:99px;font-size:.9em;box-shadow:0 4px 20px rgba(0,0,0,.4)}
+  .progress span{color:var(--accent);font-weight:700}
+  .tip{background:rgba(236,72,153,.1);border-left:3px solid var(--primary);padding:10px 14px;border-radius:6px;margin:10px 0;font-size:.92em}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:700px){.grid2{grid-template-columns:1fr}}
+  ul{padding-left:20px} li{margin:4px 0}
+  code{background:var(--bg2);padding:2px 6px;border-radius:4px;font-size:.9em;color:var(--accent)}
+  .btn{background:var(--primary);color:white;border:none;padding:10px 18px;border-radius:8px;cursor:pointer;font-size:.95em;margin-top:10px}
+  .btn:hover{filter:brightness(1.1)}
+
+  /* PDF image grid */
+  .pdf-thumbs{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:14px 0}
+  .pdf-thumbs img{width:100%;height:140px;object-fit:cover;border-radius:8px;border:1px solid var(--border);background:white;cursor:zoom-in;transition:transform .2s}
+  .pdf-thumbs img:hover{transform:scale(1.04)}
+  .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;z-index:200;padding:20px;cursor:zoom-out}
+  .lightbox.open{display:flex}
+  .lightbox img{max-width:96vw;max-height:92vh;border-radius:10px}
+  .lightbox .close{position:absolute;top:18px;right:22px;background:rgba(255,255,255,.1);border:none;color:white;width:44px;height:44px;border-radius:50%;font-size:1.4em;cursor:pointer}
+
+  /* ===== Mobile responsiveness ===== */
+  @media (max-width: 720px){
+    body{font-size:15.5px;overflow-x:hidden}
+    header{padding:22px 16px}
+    header h1{font-size:1.35em}
+    header p{font-size:.88em}
+    nav{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;padding:10px 12px;gap:6px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+    nav::-webkit-scrollbar{display:none}
+    nav button, nav a{flex:0 0 auto;font-size:.82em;padding:8px 12px;white-space:nowrap;min-height:38px}
+    main{padding:16px 14px 100px}
+    h2{font-size:1.3em;padding-bottom:6px}
+    h3{font-size:1.1em;margin-top:20px}
+    .card{padding:14px;border-radius:10px;margin:12px 0}
+    table{display:block;overflow-x:auto;font-size:.86em}
+    th,td{padding:9px 11px}
+    .flash-grid{grid-template-columns:1fr;gap:12px}
+    .flash{height:160px}
+    .quiz-q{padding:14px}
+    .opt{padding:12px;font-size:.92em;min-height:44px;line-height:1.45}
+    .progress{bottom:14px;right:14px;left:14px;text-align:center;padding:10px 14px;font-size:.85em;border-radius:14px}
+    .btn{padding:11px 16px;font-size:.92em;min-height:42px}
+    .pdf-thumbs img{height:110px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🧠 Tecido Nervoso</h1>
+  <p>Revisão Interativa — Neurônios · Glia · Impulso Nervoso · Sinapses</p>
+</header>
+
+<nav>
+  <a href="index.html" style="background:var(--accent);color:#0a0f1c;border:1px solid var(--accent);padding:8px 14px;border-radius:8px;font-size:.9em;text-decoration:none;font-weight:600">🏠 Hub</a>
+  <button onclick="show('intro',this)" class="active">📖 Intro</button>
+  <button onclick="show('neuronios',this)">🧬 Neurônios</button>
+  <button onclick="show('glia',this)">🌟 Glia</button>
+  <button onclick="show('impulso',this)">⚡ Impulso</button>
+  <button onclick="show('sinapse',this)">🔗 Sinapses</button>
+  <button onclick="show('flash',this)">🃏 Flashcards</button>
+  <button onclick="show('quiz',this)">✅ Quiz</button>
+</nav>
+
+<main>
+
+<section id="intro" class="active">
+  <h2>📖 Visão Geral</h2>
+  <div class="card highlight">
+    <p>Tecido nervoso = <b>neurônios + células da glia</b>. Neurônios captam, processam e transmitem; a glia sustenta, isola e nutre.</p>
+  </div>
+  <div class="grid2">
+    <div class="card">🧬 <b>Neurônio</b><br><small>Unidade morfofuncional. Propriedades: irritabilidade e condutibilidade.</small></div>
+    <div class="card">🌟 <b>Glia</b><br><small>Sustentação, mielinização, defesa, LCR.</small></div>
+    <div class="card">⚡ <b>Impulso</b><br><small>Onda elétrica — bomba Na⁺/K⁺, despolarização, repolarização.</small></div>
+    <div class="card">🔗 <b>Sinapse</b><br><small>Comunicação química (maioria) ou elétrica entre neurônios.</small></div>
+  </div>
+  <div class="tip">📍 Quase todas as sinapses do SNC são <b>químicas</b>.</div>
+</section>
+
+<section id="neuronios">
+  <h2>🧬 Neurônios</h2>
+  <div class="card highlight">
+    <p>Células responsáveis pela <b>recepção e transmissão</b> dos estímulos do meio interno e externo.</p>
+  </div>
+  <h3>Partes</h3>
+  <ul>
+    <li><b>Corpo celular (pericário)</b> — núcleo e organelas; integra os sinais.</li>
+    <li><b>Dendritos</b> — ramificações do corpo celular; <b>captam estímulos</b>.</li>
+    <li><b>Axônio</b> — maior prolongamento; conduz o impulso. Vesículas com neurotransmissores na porção terminal.</li>
+    <li><b>Bainha de mielina</b> — isolante elétrico formado pelas células de Schwann (SNP) ou oligodendrócitos (SNC).</li>
+    <li><b>Nódulos de Ranvier</b> — regiões sem bainha; permitem condução saltatória.</li>
+  </ul>
+  <div class="pdf-thumbs">
+    <img src="assets/img/tecido/p05.png" alt="Design básico do neurônio">
+    <img src="assets/img/tecido/p08.png" alt="Estrutura básica">
+    <img src="assets/img/tecido/p09.png" alt="Neurônio detalhado">
+  </div>
+  <h3>Tipos morfológicos</h3>
+  <table>
+    <thead><tr><th>Tipo</th><th>Exemplo</th></tr></thead>
+    <tbody>
+      <tr><td>Multipolares</td><td>Grande maioria</td></tr>
+      <tr><td>Bipolares</td><td>Interneurônios (ex: retina)</td></tr>
+      <tr><td>Pseudo-unipolares</td><td>Gânglios espinhais</td></tr>
+    </tbody>
+  </table>
+  <h3>Tipos funcionais</h3>
+  <ul>
+    <li><b>Aferente (sensitivo)</b> — leva info ao SNC.</li>
+    <li><b>Eferente (motor)</b> — leva ordens do SNC ao efetuador.</li>
+    <li><b>Interneurônio (associativo)</b> — conecta os dois.</li>
+  </ul>
+</section>
+
+<section id="glia">
+  <h2>🌟 Células da Glia (Neuróglia)</h2>
+  <div class="card highlight">
+    <p>Participam da atividade neural, da nutrição, da defesa e da sustentação. <b>São em maior número que os neurônios.</b></p>
+  </div>
+  <div class="pdf-thumbs">
+    <img src="assets/img/tecido/p17.png" alt="Células da glia">
+    <img src="assets/img/tecido/p19.png" alt="Tipos de glia">
+    <img src="assets/img/tecido/p29.png" alt="Astrócito">
+    <img src="assets/img/tecido/p30.png" alt="Microglia">
+  </div>
+  <table>
+    <thead><tr><th>Célula</th><th>Local</th><th>Função</th></tr></thead>
+    <tbody>
+      <tr><td><b>Astrócitos</b></td><td>SNC</td><td>Sustentação, nutrição, <b>barreira hematoencefálica</b></td></tr>
+      <tr><td><b>Oligodendrócitos</b></td><td>SNC</td><td>Mielinização (vários axônios cada um)</td></tr>
+      <tr><td><b>Células de Schwann</b></td><td>SNP</td><td>Mielinização no SNP — um trecho cada</td></tr>
+      <tr><td><b>Micróglias</b></td><td>SNC</td><td>Defesa imunológica, fagocitose</td></tr>
+      <tr><td><b>Células ependimárias</b></td><td>Ventrículos</td><td>Produzem o LCR nos plexos coroides</td></tr>
+    </tbody>
+  </table>
+  <div class="tip">💧 <b>LCR</b>: ≈ 500 ml/dia, volume normal ≈ 150 ml. Pressão intracraniana ≈ 10 mmHg.</div>
+</section>
+
+<section id="impulso">
+  <h2>⚡ Impulso Nervoso</h2>
+  <div class="card highlight">
+    <p>Onda elétrica baseada na inversão do potencial da membrana via troca de Na⁺ e K⁺.</p>
+  </div>
+  <div class="pdf-thumbs">
+    <img src="assets/img/tecido/p32.png" alt="Propagação do impulso">
+    <img src="assets/img/tecido/p37.png" alt="Eventos elétricos">
+    <img src="assets/img/tecido/p35.png" alt="Condução saltatória">
+  </div>
+  <h3>Fases</h3>
+  <table>
+    <thead><tr><th>Fase</th><th>Carga</th><th>Evento</th></tr></thead>
+    <tbody>
+      <tr><td>Repouso (polarização)</td><td>≈ −70 mV</td><td>Bomba Na⁺/K⁺ mantém o gradiente</td></tr>
+      <tr><td>Despolarização</td><td>até +30 mV</td><td>Canais de Na⁺ abrem; Na⁺ entra</td></tr>
+      <tr><td>Repolarização</td><td>volta a negativa</td><td>Canais de K⁺ abrem; K⁺ sai</td></tr>
+    </tbody>
+  </table>
+  <h3>Bomba Na⁺/K⁺</h3>
+  <div class="tip">🔋 3 Na⁺ para fora / 2 K⁺ para dentro — gasta ATP. Mantém o gradiente entre disparos.</div>
+  <h3>Condução saltatória</h3>
+  <p>Em axônios mielinizados, o impulso pula entre os <b>nódulos de Ranvier</b> — muito mais rápido.</p>
+</section>
+
+<section id="sinapse">
+  <h2>🔗 Sinapses e Neurotransmissores</h2>
+  <div class="card highlight">
+    <p>Sinapse: região de conexão (<em>sem contato</em>) entre dois neurônios. A maioria é química.</p>
+  </div>
+  <div class="pdf-thumbs">
+    <img src="assets/img/tecido/p41.png" alt="Estrutura da sinapse">
+    <img src="assets/img/tecido/p47.png" alt="Sinapse química detalhada">
+    <img src="assets/img/tecido/p54.png" alt="Placa motora">
+  </div>
+  <h3>Tipos</h3>
+  <table>
+    <thead><tr><th>Tipo</th><th>Características</th></tr></thead>
+    <tbody>
+      <tr><td><b>Elétrica</b></td><td>Mais rápida; ocorre em músculo liso e cardíaco</td></tr>
+      <tr><td><b>Química</b></td><td>Maioria; usa neurotransmissores</td></tr>
+    </tbody>
+  </table>
+  <h3>Por quem se conecta</h3>
+  <ul>
+    <li><b>Interneuronais</b> — neurônio × neurônio</li>
+    <li><b>Neuromusculares</b> — neurônio × músculo (placa motora)</li>
+    <li><b>Neuroglandulares</b> — neurônio × célula glandular</li>
+  </ul>
+  <h3>Passos da sinapse química</h3>
+  <ol>
+    <li>Potencial de ação chega ao terminal</li>
+    <li>Entrada de <b>Ca²⁺</b></li>
+    <li>Vesículas se fundem à membrana</li>
+    <li>Neurotransmissores liberados na fenda</li>
+    <li>Ligam-se aos receptores pós-sinápticos</li>
+    <li>Remoção (enzimas) encerra o sinal</li>
+  </ol>
+  <h3>Principais neurotransmissores</h3>
+  <table>
+    <thead><tr><th>NT</th><th>Função / associação</th></tr></thead>
+    <tbody>
+      <tr><td><b>Acetilcolina</b></td><td>Atenção, memória; Alzheimer ↓; SNA parassimpático</td></tr>
+      <tr><td><b>Dopamina</b></td><td>Controle motor, motivação; Parkinson ↓</td></tr>
+      <tr><td><b>Serotonina</b></td><td>Humor, sono, memória</td></tr>
+      <tr><td><b>Noradrenalina</b></td><td>SNA simpático; alerta</td></tr>
+      <tr><td><b>Glutamato</b></td><td>Principal <b>excitatório</b></td></tr>
+      <tr><td><b>GABA</b></td><td>Principal <b>inibitório</b></td></tr>
+      <tr><td><b>Encefalina/endorfina</b></td><td>Opiáceos endógenos — dor, estresse</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="flash">
+  <h2>🃏 Flashcards</h2>
+  <p>Clique para virar.</p>
+  <div class="flash-grid" id="flashGrid"></div>
+</section>
+
+<section id="quiz">
+  <h2>✅ Quiz Interativo — Escolha o tema</h2>
+  <p>Cada quiz embaralha as perguntas E as alternativas. Refaça quantas vezes quiser para fixar o conteúdo.</p>
+
+  <div class="card">
+    <h3 style="margin-top:0">🎯 Escolha o tema</h3>
+    <div id="themePicker" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px"></div>
+    <label style="display:flex;align-items:center;gap:10px;margin-top:10px">
+      Quantidade de questões:
+      <select id="qCount" style="background:var(--bg2);color:var(--text);border:1px solid var(--border);padding:6px 10px;border-radius:6px">
+        <option value="5">5</option>
+        <option value="10" selected>10</option>
+        <option value="15">15</option>
+        <option value="20">20</option>
+        <option value="999">Todas</option>
+      </select>
+    </label>
+    <label style="display:flex;align-items:center;gap:10px;margin-top:10px">
+      Dificuldade:
+      <select id="qDiff" style="background:var(--bg2);color:var(--text);border:1px solid var(--border);padding:6px 10px;border-radius:6px">
+        <option value="all" selected>Todas</option>
+        <option value="1">🟢 Fácil</option>
+        <option value="2">🟡 Médio</option>
+        <option value="3">🔴 Difícil</option>
+      </select>
+    </label>
+    <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn" onclick="startQuiz()">🎲 Iniciar / Embaralhar</button>
+      <button class="btn" style="background:var(--accent);color:#0a0f1c" onclick="weakSpotsQuiz()">🎯 Focar nos meus erros</button>
+    </div>
+    <div id="quizStats" style="margin-top:12px;color:var(--muted);font-size:.9em"></div>
+  </div>
+
+  <div id="quizContainer"></div>
+  <div id="quizResult"></div>
+</section>
+
+</main>
+
+<div class="progress">📊 Acertos: <span id="score">0</span>/<span id="total">0</span></div>
+
+<div class="lightbox" id="lightbox">
+  <button class="close" onclick="closeLightbox()">×</button>
+  <img id="lightboxImg" alt="">
+</div>
+
+<script>
+  function show(id, btn){
+    document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  // Lightbox
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightboxImg');
+  document.querySelectorAll('.pdf-thumbs img').forEach(img => {
+    img.addEventListener('click', () => { lbImg.src = img.src; lb.classList.add('open'); });
+  });
+  lb.addEventListener('click', e => { if(e.target === lb) closeLightbox(); });
+  function closeLightbox(){ lb.classList.remove('open'); lbImg.src = ''; }
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') closeLightbox(); });
+
+  // Flashcards
+  const FLASH = [
+    ['Tecido nervoso','Neurônios + células da glia.'],
+    ['Propriedades do neurônio','Irritabilidade e condutibilidade.'],
+    ['Dendritos','Captam estímulos — ramificações do corpo celular.'],
+    ['Axônio','Maior prolongamento — conduz o impulso ao terminal.'],
+    ['Bainha de mielina (SNC)','Formada pelos oligodendrócitos.'],
+    ['Bainha de mielina (SNP)','Formada pelas células de Schwann.'],
+    ['Nódulos de Ranvier','Regiões sem mielina — permitem condução saltatória.'],
+    ['Astrócitos','Sustentação, nutrição, barreira hematoencefálica.'],
+    ['Micróglia','Macrófagos do SNC — fagocitam restos celulares.'],
+    ['Células ependimárias','Forram ventrículos e produzem o LCR (plexos coroides).'],
+    ['Potencial de repouso','≈ −70 mV — bomba Na⁺/K⁺.'],
+    ['Despolarização','Na⁺ entra; carga sobe até +30 mV.'],
+    ['Repolarização','K⁺ sai; carga volta a ser negativa.'],
+    ['Bomba Na⁺/K⁺','3 Na⁺ para fora / 2 K⁺ para dentro. Gasta ATP.'],
+    ['Sinapse química','Liberação de neurotransmissor na fenda.'],
+    ['Ca²⁺ na sinapse','Sinal para fusão das vesículas e liberação do NT.'],
+    ['Glutamato','Principal excitatório do SN.'],
+    ['GABA','Principal inibitório do SN.'],
+    ['Acetilcolina','Memória/atenção; junção neuromuscular; parassimpático.'],
+    ['Dopamina e Parkinson','Baixa de dopamina = Parkinson.'],
+  ];
+  const fg = document.getElementById('flashGrid');
+  FLASH.forEach(([f,b]) => {
+    const c = document.createElement('div');
+    c.className = 'flash';
+    c.innerHTML = `<div class="flash-inner"><div class="flash-front">${f}</div><div class="flash-back">${b}</div></div>`;
+    c.onclick = () => c.classList.toggle('flipped');
+    fg.appendChild(c);
+  });
+
+  // ===== QUIZ BANK por tema =====
+  const QUIZ_BANK = {
+    "Visão Geral do SN": [
+      {q:"O sistema nervoso se divide anatomicamente em:",o:["Somático e Visceral","Central e Periférico","Simpático e Parassimpático","Aferente e Eferente"],a:1,d:1,e:"Anatomicamente: SNC (encéfalo + medula) e SNP (nervos, gânglios, receptores)."},
+      {q:"Quais componentes formam o SNC?",o:["Nervos e gânglios","Encéfalo e medula espinal","Receptores e nervos","Músculos e tendões"],a:1,d:1,e:"O SNC = encéfalo (cérebro + cerebelo + tronco) e medula espinal."},
+      {q:"Funcionalmente, o SN se divide em:",o:["Aferente e Eferente apenas","Somático e Visceral","Cranianos e Espinais","Simpático e Voluntário"],a:1,d:2,e:"Funcional: Somático (relação com o corpo) e Visceral (vísceras, via SNA)."},
+      {q:"O Sistema Nervoso Autônomo se subdivide em:",o:["Somático e Visceral","Aferente e Eferente","Simpático e Parassimpático","Central e Periférico"],a:2,d:1,e:"O SNA tem ramos simpático e parassimpático."},
+      {q:"A função de \"trazer\" informações ao SNC é da via:",o:["Eferente","Aferente","Visceral motora","Reflexa"],a:1,d:2,e:"Aferente = traz para o SNC. Eferente = leva para fora."},
+      {q:"Receptores sensoriais e gânglios pertencem ao:",o:["SNC","SNP","SNA","Encéfalo"],a:1,d:2,e:"Pertencem ao Sistema Nervoso Periférico."},
+    ],
+    "Neurônios": [
+      {q:"Estrutura do neurônio que CAPTA estímulos:",o:["Axônio","Bainha de mielina","Dendritos","Nódulo de Ranvier"],a:2,d:1,e:"Os dendritos são ramificações que captam estímulos."},
+      {q:"O axônio se caracteriza por:",o:["Ser curto e ramificado","Ser o maior prolongamento e conduzir o impulso","Conter o núcleo","Receber neurotransmissores"],a:1,d:1,e:"Axônio é o maior prolongamento, conduz o impulso e tem vesículas com NT no terminal."},
+      {q:"Onde ficam o núcleo e a maioria das organelas do neurônio?",o:["Dendritos","Axônio","Corpo celular (pericário)","Terminal axônico"],a:2,d:1,e:"O corpo celular abriga o núcleo e as organelas."},
+      {q:"As duas propriedades fundamentais do neurônio são:",o:["Mitose e meiose","Irritabilidade e condutibilidade","Síntese e secreção","Fagocitose e pinocitose"],a:1,d:2,e:"Irritabilidade (responder ao estímulo) e condutibilidade (transmitir o impulso)."},
+      {q:"Neurônios MULTIPOLARES são típicos de:",o:["Gânglios espinhais","Interneurônios da retina","A maioria dos neurônios","Apenas células motoras"],a:2,d:2,e:"Multipolares são a grande maioria dos neurônios."},
+      {q:"Neurônios PSEUDO-UNIPOLARES são encontrados em:",o:["Córtex cerebral","Cerebelo","Gânglios espinhais","Placa motora"],a:2,d:3,e:"Pseudo-unipolares são típicos dos gânglios espinhais."},
+      {q:"Neurônios AFERENTES (sensitivos):",o:["Levam informação dos receptores ao SNC","Levam ordens do SNC ao músculo","Fazem conexão entre neurônios","Produzem mielina"],a:0,d:1,e:"Aferentes = sensitivos = levam ao SNC."},
+      {q:"Interneurônios (de associação):",o:["Conectam aferentes a eferentes","Apenas conduzem o impulso ao músculo","Mielinizam axônios","Produzem LCR"],a:0,d:2,e:"Os interneurônios fazem a conexão dentro do SNC."},
+    ],
+    "Células da Glia": [
+      {q:"Quem produz a bainha de mielina no SNC?",o:["Schwann","Astrócitos","Oligodendrócitos","Micróglias"],a:2,d:1,e:"Oligodendrócitos no SNC; cada um mieliniza vários axônios."},
+      {q:"Quem produz a bainha de mielina no SNP?",o:["Astrócitos","Oligodendrócitos","Células de Schwann","Ependimárias"],a:2,d:1,e:"Células de Schwann — cada uma mieliniza apenas um trecho."},
+      {q:"As células de DEFESA imunológica do SNC são:",o:["Astrócitos","Micróglias","Ependimárias","Schwann"],a:1,d:2,e:"Micróglias atuam como macrófagos do cérebro."},
+      {q:"A BARREIRA HEMATOENCEFÁLICA é formada principalmente por:",o:["Oligodendrócitos","Micróglias","Astrócitos","Ependimárias"],a:2,d:2,e:"Os astrócitos se relacionam com os capilares e induzem modificações nas células endoteliais."},
+      {q:"O LCR é produzido por:",o:["Micróglias","Schwann","Astrócitos","Células ependimárias (plexos coroides)"],a:3,d:2,e:"Ependimárias dos plexos coroides nos ventrículos secretam a maior parte do LCR."},
+      {q:"Bainha de mielina é formada por:",o:["Camadas de proteína","Camadas múltiplas concêntricas de fosfolipídios","Apenas água","Cálcio"],a:1,d:3,e:"Cerca de 150 camadas de fosfolipídios em alguns neurônios."},
+      {q:"A função da bainha de mielina é:",o:["Captar estímulos","Atuar como isolante elétrico","Liberar neurotransmissores","Sintetizar proteínas"],a:1,d:2,e:"Isolante elétrico, permitindo a condução saltatória."},
+      {q:"Volume normal do LCR num adulto:",o:["50 ml","150 ml","500 ml","2000 ml"],a:1,d:3,e:"Cerca de 150 ml; produção/reabsorção ≈ 500 ml/dia."},
+      {q:"Pressão intracraniana normal:",o:["~10 mmHg","~50 mmHg","~80 mmHg","~120 mmHg"],a:0,d:3,e:"Mantida em torno de 10 mmHg pelo balanço produção/absorção do LCR."},
+    ],
+    "Impulso Nervoso": [
+      {q:"Carga interna típica no POTENCIAL DE REPOUSO:",o:["+30 mV","0 mV","−70 mV","−150 mV"],a:2,d:1,e:"Aproximadamente −70 mV, mantida pela bomba Na⁺/K⁺."},
+      {q:"Na DESPOLARIZAÇÃO, qual íon entra rapidamente?",o:["Cálcio","Sódio","Potássio","Cloro"],a:1,d:1,e:"Canais de Na⁺ se abrem; sódio entra; carga sobe a +30 mV."},
+      {q:"Na REPOLARIZAÇÃO, qual íon sai?",o:["Sódio","Potássio","Cálcio","Cloro"],a:1,d:2,e:"Canais de K⁺ abrem; potássio sai; carga volta a ser negativa."},
+      {q:"A bomba Na⁺/K⁺ transporta a cada ciclo:",o:["1 Na⁺ fora / 1 K⁺ dentro","2 Na⁺ fora / 2 K⁺ dentro","3 Na⁺ fora / 2 K⁺ dentro","3 Na⁺ dentro / 2 K⁺ fora"],a:2,d:3,e:"3 Na⁺ para fora e 2 K⁺ para dentro, gastando ATP."},
+      {q:"Pico do potencial de ação atinge aproximadamente:",o:["−70 mV","0 mV","+30 mV","+100 mV"],a:2,d:2,e:"Por volta de +30 mV no pico da despolarização."},
+      {q:"Em axônios mielinizados, o impulso:",o:["Despolariza toda a membrana ponto a ponto","Salta entre os nódulos de Ranvier (condução saltatória)","Não se propaga","Vai apenas em uma direção"],a:1,d:2,e:"Condução saltatória — muito mais rápida que a contínua."},
+      {q:"Doenças desmielinizantes (ex: esclerose múltipla) afetam:",o:["O corpo celular","A bainha de mielina","Os dendritos","O DNA"],a:1,d:3,e:"A bainha é destruída — a condução fica lenta, errática ou bloqueada."},
+    ],
+    "Sinapses e Neurotransmissores": [
+      {q:"A maioria das sinapses do SNC é:",o:["Elétrica","Química","Mecânica","Térmica"],a:1,d:1,e:"Quase todas as sinapses do SNC são químicas."},
+      {q:"Sinapse com transmissão DIRETA via junções comunicantes é:",o:["Química","Elétrica","Híbrida","Sensorial"],a:1,d:2,e:"Sinapse elétrica — mais rápida, ocorre em músculo liso e cardíaco."},
+      {q:"Qual íon dispara a liberação dos neurotransmissores no terminal pré-sináptico?",o:["Sódio","Potássio","Cálcio","Cloro"],a:2,d:2,e:"Ca²⁺ entra no terminal e provoca a fusão das vesículas com a membrana."},
+      {q:"Principal neurotransmissor EXCITATÓRIO do SN:",o:["GABA","Glutamato","Dopamina","Serotonina"],a:1,d:1,e:"Glutamato é o principal excitatório do sistema nervoso."},
+      {q:"Principal neurotransmissor INIBITÓRIO do SN:",o:["GABA","Glutamato","Acetilcolina","Noradrenalina"],a:0,d:1,e:"GABA é o principal inibitório."},
+      {q:"A doença de Parkinson está associada à diminuição de:",o:["Acetilcolina","Serotonina","Dopamina","GABA"],a:2,d:2,e:"Baixa de dopamina compromete o controle motor — sinais de Parkinson."},
+      {q:"A doença de Alzheimer está associada à diminuição de:",o:["Acetilcolina no córtex","Glutamato","GABA","Endorfina"],a:0,d:2,e:"Baixa de acetilcolina no córtex — relacionada a memória/atenção."},
+      {q:"Principal neurotransmissor do SNA SIMPÁTICO:",o:["Acetilcolina","Noradrenalina","Glutamato","GABA"],a:1,d:3,e:"Noradrenalina é o principal NT do simpático."},
+      {q:"A sinapse entre neurônio motor e fibra muscular se chama:",o:["Sinapse interneuronal","Placa motora (junção neuromuscular)","Sinapse axoaxônica","Sinapse axodendrítica"],a:1,d:2,e:"Placa motora ou junção neuromuscular."},
+      {q:"Encefalinas e endorfinas atuam como:",o:["Excitatórios fortes","Opiáceos endógenos que modulam a dor","Sinais inibitórios para visão","Hormônios reprodutivos"],a:1,d:3,e:"São opiáceos endógenos — modulam dor, estresse."},
+    ],
+  };
+
+  // Estado e lógica do quiz (padrão do hub)
+  const STATS_KEY = 'quizStatsTecido';
+  let currentTheme = "Todos";
+  let currentQuiz = [];
+  let score = 0, answered = 0;
+  const stats = JSON.parse(localStorage.getItem(STATS_KEY) || '{}');
+
+  const tp = document.getElementById('themePicker');
+  const themes = ["Todos", ...Object.keys(QUIZ_BANK)];
+  themes.forEach(t => {
+    const b = document.createElement('button');
+    b.className = 'opt'; b.style.flex='0 0 auto'; b.style.padding='8px 14px';
+    b.textContent = t === "Todos" ? "🎲 Todos" : t;
+    b.onclick = () => {
+      currentTheme = t;
+      document.querySelectorAll('#themePicker .opt').forEach(x => x.classList.remove('correct'));
+      b.classList.add('correct');
+    };
+    if(t === "Todos") b.classList.add('correct');
+    tp.appendChild(b);
+  });
+
+  function getPool(){
+    const diff = document.getElementById('qDiff').value;
+    let pool = currentTheme === "Todos"
+      ? Object.entries(QUIZ_BANK).flatMap(([t,arr]) => arr.map(q => ({...q, theme:t})))
+      : QUIZ_BANK[currentTheme].map(q => ({...q, theme:currentTheme}));
+    if(diff !== "all") pool = pool.filter(q => q.d === +diff);
+    return pool;
+  }
+  function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+  function startQuiz(){
+    const pool = getPool();
+    if(pool.length === 0){ alert("Nenhuma questão para esses filtros."); return; }
+    const n = Math.min(+document.getElementById('qCount').value, pool.length);
+    currentQuiz = shuffle(pool).slice(0,n).map(q => {
+      const idx = q.o.map((_,i) => i); const sh = shuffle(idx);
+      return {...q, o: sh.map(i => q.o[i]), a: sh.indexOf(q.a)};
+    });
+    renderQuiz();
+  }
+  function weakSpotsQuiz(){
+    const all = Object.entries(QUIZ_BANK).flatMap(([t,arr]) => arr.map(q => ({...q, theme:t})));
+    const ranked = all.map(q => {
+      const k = q.q; const s = stats[k] || {ok:0,err:0};
+      const total = s.ok+s.err; const errRate = total ? s.err/total : 0;
+      return {q, score: errRate*10 + (total === 0 ? 5 : 0)};
+    }).sort((a,b) => b.score - a.score);
+    const n = Math.min(+document.getElementById('qCount').value, ranked.length);
+    currentQuiz = ranked.slice(0,n).map(r => r.q).map(q => {
+      const idx = q.o.map((_,i) => i); const sh = shuffle(idx);
+      return {...q, o: sh.map(i => q.o[i]), a: sh.indexOf(q.a)};
+    });
+    renderQuiz();
+  }
+  function renderQuiz(){
+    const qc = document.getElementById('quizContainer');
+    qc.innerHTML=''; document.getElementById('quizResult').innerHTML='';
+    score=0; answered=0;
+    document.getElementById('score').textContent=0;
+    document.getElementById('total').textContent=currentQuiz.length;
+    const diffEmoji = {1:"🟢",2:"🟡",3:"🔴"};
+    currentQuiz.forEach((it,i) => {
+      const div = document.createElement('div'); div.className='quiz-q';
+      const themeTag = it.theme ? `<span class="pill">${it.theme}</span>` : '';
+      div.innerHTML = `<div class="q">${themeTag}<span class="pill warn">${diffEmoji[it.d]} ${it.d===1?'Fácil':it.d===2?'Médio':'Difícil'}</span><br>${i+1}. ${it.q}</div><div class="opts"></div><div class="feedback"></div>`;
+      const opts = div.querySelector('.opts');
+      it.o.forEach((opt,j) => {
+        const b = document.createElement('button'); b.className='opt'; b.textContent=opt;
+        b.onclick = () => answer(div,it,j,b); opts.appendChild(b);
+      });
+      qc.appendChild(div);
+    });
+    updateStatsLabel();
+    qc.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  function answer(div,it,j,btn){
+    const opts = div.querySelectorAll('.opt');
+    if([...opts].some(o => o.disabled)) return;
+    opts.forEach((o,k) => { o.disabled = true; if(k===it.a) o.classList.add('correct'); });
+    const fb = div.querySelector('.feedback');
+    const key = it.q;
+    stats[key] = stats[key] || {ok:0,err:0};
+    if(j === it.a){
+      score++; stats[key].ok++;
+      fb.className='feedback show ok'; fb.innerHTML='✅ <b>Correto!</b> '+it.e;
+    } else {
+      stats[key].err++; btn.classList.add('wrong');
+      fb.className='feedback show no'; fb.innerHTML='❌ <b>Não foi dessa vez.</b> '+it.e;
+    }
+    localStorage.setItem(STATS_KEY, JSON.stringify(stats));
+    answered++; document.getElementById('score').textContent=score;
+    if(answered === currentQuiz.length) showResult();
+    updateStatsLabel();
+  }
+  function showResult(){
+    const pct = Math.round(100*score/currentQuiz.length);
+    let msg = pct===100 ? "🏆 Perfeito! Você dominou!" :
+              pct>=80 ? "🌟 Muito bem! Quase lá." :
+              pct>=60 ? "👍 Bom! Revise os pontos errados." :
+              pct>=40 ? "📚 Está pegando o jeito — refaça!" :
+                        "💪 Hora de revisar a teoria e tentar de novo!";
+    document.getElementById('quizResult').innerHTML =
+      `<div class="card highlight" style="text-align:center"><h3 style="margin-top:0">Resultado: ${score}/${currentQuiz.length} (${pct}%)</h3><p>${msg}</p>
+      <button class="btn" onclick="startQuiz()">🔄 Novo quiz embaralhado</button>
+      <button class="btn" style="background:var(--accent);color:#0a0f1c;margin-left:8px" onclick="weakSpotsQuiz()">🎯 Focar nos meus erros</button></div>`;
+  }
+  function updateStatsLabel(){
+    const total = Object.values(stats).reduce((s,x) => s+x.ok+x.err, 0);
+    const oks = Object.values(stats).reduce((s,x) => s+x.ok, 0);
+    const pct = total ? Math.round(100*oks/total) : 0;
+    document.getElementById('quizStats').innerHTML =
+      `📊 Histórico geral: <b>${oks}/${total}</b> (${pct}%) — <a href="#" onclick="event.preventDefault();if(confirm('Apagar histórico?')){localStorage.removeItem('${STATS_KEY}');location.reload()}" style="color:var(--accent)">limpar histórico</a>`;
+  }
+  updateStatsLabel();
+  startQuiz();
+</script>
+
+</body>
+</html>
