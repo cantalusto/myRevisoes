@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Revisão — Sistema Nervoso Central</title>
+<style>
+  :root{
+    --bg:#0a0f1c; --bg2:#1a1f2e; --card:#1e2438; --border:#2d3650;
+    --primary:#ec4899; --primary2:#f472b6; --accent:#a78bfa;
+    --good:#10b981; --bad:#ef4444; --warn:#f59e0b;
+    --text:#e2e8f0; --muted:#94a3b8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+  header{background:linear-gradient(135deg,#831843,#ec4899);padding:32px 24px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.3)}
+  header h1{margin:0;font-size:2em}
+  header p{margin:8px 0 0;color:#fce7f3}
+  nav{position:sticky;top:0;background:rgba(10,15,28,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:12px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;z-index:100}
+  nav button{background:var(--card);color:var(--text);border:1px solid var(--border);padding:8px 14px;border-radius:8px;cursor:pointer;font-size:.9em;transition:all .2s}
+  nav button:hover,nav button.active{background:var(--primary);border-color:var(--primary)}
+  main{max-width:1100px;margin:0 auto;padding:24px}
+  section{display:none;animation:fadeIn .4s}
+  section.active{display:block}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  h2{color:var(--primary2);border-bottom:2px solid var(--primary);padding-bottom:8px;margin-top:0}
+  h3{color:var(--accent);margin-top:24px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:16px 0;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+  .card.highlight{border-left:4px solid var(--primary)}
+  table{width:100%;border-collapse:collapse;margin:12px 0;background:var(--bg2);border-radius:8px;overflow:hidden}
+  th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+  th{background:var(--primary);color:white}
+  tr:last-child td{border-bottom:none}
+  .pill{display:inline-block;background:var(--primary);color:white;padding:2px 10px;border-radius:99px;font-size:.8em;margin-right:6px}
+  .pill.good{background:var(--good)} .pill.bad{background:var(--bad)} .pill.warn{background:var(--warn)}
+  .flash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+  .flash{background:var(--card);border:1px solid var(--border);border-radius:12px;height:180px;perspective:1000px;cursor:pointer}
+  .flash-inner{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+  .flash.flipped .flash-inner{transform:rotateY(180deg)}
+  .flash-front,.flash-back{position:absolute;inset:0;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;text-align:center;padding:16px;border-radius:12px}
+  .flash-front{background:linear-gradient(135deg,#831843,#ec4899);font-weight:600;font-size:1.05em}
+  .flash-back{background:var(--bg2);transform:rotateY(180deg);font-size:.95em;color:var(--muted)}
+  .quiz-q{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:16px 0}
+  .quiz-q .q{font-weight:600;margin-bottom:12px}
+  .opts{display:flex;flex-direction:column;gap:8px}
+  .opt{background:var(--bg2);border:1px solid var(--border);padding:12px;border-radius:8px;cursor:pointer;transition:all .2s;text-align:left;color:var(--text);font-size:.95em}
+  .opt:hover:not(:disabled){border-color:var(--primary);background:#2a2540}
+  .opt.correct{background:rgba(16,185,129,.2);border-color:var(--good);color:#a7f3d0}
+  .opt.wrong{background:rgba(239,68,68,.2);border-color:var(--bad);color:#fecaca}
+  .feedback{margin-top:12px;padding:10px 14px;border-radius:8px;font-size:.9em;display:none}
+  .feedback.show{display:block}
+  .feedback.ok{background:rgba(16,185,129,.15);border-left:3px solid var(--good)}
+  .feedback.no{background:rgba(239,68,68,.15);border-left:3px solid var(--bad)}
+  .progress{position:fixed;bottom:20px;right:20px;background:var(--card);border:1px solid var(--border);padding:12px 18px;border-radius:99px;font-size:.9em;box-shadow:0 4px 20px rgba(0,0,0,.4)}
+  .progress span{color:var(--accent);font-weight:700}
+  .tip{background:rgba(236,72,153,.1);border-left:3px solid var(--primary);padding:10px 14px;border-radius:6px;margin:10px 0;font-size:.92em}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:700px){.grid2{grid-template-columns:1fr}}
+  ul{padding-left:20px} li{margin:4px 0}
+  code{background:var(--bg2);padding:2px 6px;border-radius:4px;font-size:.9em;color:var(--accent)}
+  .btn{background:var(--primary);color:white;border:none;padding:10px 18px;border-radius:8px;cursor:pointer;font-size:.95em;margin-top:10px}
+  .btn:hover{filter:brightness(1.1)}
+  .pdf-thumbs{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:14px 0}
+  .pdf-thumbs img{width:100%;height:140px;object-fit:cover;border-radius:8px;border:1px solid var(--border);background:white;cursor:zoom-in;transition:transform .2s}
+  .pdf-thumbs img:hover{transform:scale(1.04)}
+  .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;z-index:200;padding:20px;cursor:zoom-out}
+  .lightbox.open{display:flex}
+  .lightbox img{max-width:96vw;max-height:92vh;border-radius:10px}
+  .lightbox .close{position:absolute;top:18px;right:22px;background:rgba(255,255,255,.1);border:none;color:white;width:44px;height:44px;border-radius:50%;font-size:1.4em;cursor:pointer}
+
+  @media (max-width: 720px){
+    body{font-size:15.5px;overflow-x:hidden}
+    header{padding:22px 16px}
+    header h1{font-size:1.35em}
+    header p{font-size:.88em}
+    nav{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;padding:10px 12px;gap:6px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+    nav::-webkit-scrollbar{display:none}
+    nav button, nav a{flex:0 0 auto;font-size:.82em;padding:8px 12px;white-space:nowrap;min-height:38px}
+    main{padding:16px 14px 100px}
+    h2{font-size:1.3em;padding-bottom:6px}
+    h3{font-size:1.1em;margin-top:20px}
+    .card{padding:14px;border-radius:10px;margin:12px 0}
+    table{display:block;overflow-x:auto;font-size:.86em}
+    th,td{padding:9px 11px}
+    .flash-grid{grid-template-columns:1fr;gap:12px}
+    .flash{height:160px}
+    .quiz-q{padding:14px}
+    .opt{padding:12px;font-size:.92em;min-height:44px;line-height:1.45}
+    .progress{bottom:14px;right:14px;left:14px;text-align:center;padding:10px 14px;font-size:.85em;border-radius:14px}
+    .btn{padding:11px 16px;font-size:.92em;min-height:42px}
+    .pdf-thumbs img{height:110px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🧠 Sistema Nervoso Central</h1>
+  <p>Revisão Interativa — Meninges · LCR · Cérebro · Tronco · Cerebelo · Medula</p>
+</header>
+
+<nav>
+  <a href="index.html" style="background:var(--accent);color:#0a0f1c;border:1px solid var(--accent);padding:8px 14px;border-radius:8px;font-size:.9em;text-decoration:none;font-weight:600">🏠 Hub</a>
+  <button onclick="show('intro',this)" class="active">📖 Intro</button>
+  <button onclick="show('meninges',this)">🛡️ Meninges</button>
+  <button onclick="show('lcr',this)">💧 LCR</button>
+  <button onclick="show('cerebro',this)">🧠 Cérebro</button>
+  <button onclick="show('dienc',this)">⚙️ Diencéfalo</button>
+  <button onclick="show('tronco',this)">🌳 Tronco</button>
+  <button onclick="show('cerebelo',this)">🤹 Cerebelo</button>
+  <button onclick="show('medula',this)">🦴 Medula</button>
+  <button onclick="show('flash',this)">🃏 Flashcards</button>
+  <button onclick="show('quiz',this)">✅ Quiz</button>
+</nav>
+
+<main>
+
+<section id="intro" class="active">
+  <h2>📖 Visão Geral do SNC</h2>
+  <div class="card highlight">
+    <p>O <b>SNC</b> = encéfalo (cérebro + cerebelo + tronco) + medula espinhal. Protegido pelo crânio e coluna vertebral, envolvido pelas <b>meninges</b> e banhado pelo <b>LCR</b>.</p>
+  </div>
+  <div class="pdf-thumbs">
+    <img src="assets/img/snc/p04.png" alt="Classificação anatômica">
+    <img src="assets/img/snc/p05.png" alt="Classificação funcional">
+    <img src="assets/img/snc/p32.png" alt="Divisões do SNC">
+  </div>
+</section>
+
+<section id="meninges">
+  <h2>🛡️ Caixa Craniana e Meninges</h2>
+  <div class="card highlight">
+    <p>3 camadas concêntricas: <b>dura-máter → aracnoide → pia-máter</b>. As duas últimas formam as <b>leptomeninges</b>.</p>
+  </div>
+  <div class="pdf-thumbs">
+    <img src="assets/img/snc/p13.png" alt="Caixa craniana - osso plano">
+    <img src="assets/img/snc/p15.png" alt="3 meninges">
+    <img src="assets/img/snc/p18.png" alt="Dura-máter">
+  </div>
+  <table>
+    <thead><tr><th>Meninge</th><th>Características</th></tr></thead>
+    <tbody>
+      <tr><td>Dura-máter</td><td>Externa, espessa, resistente; tem vasos e nervos próprios</td></tr>
+      <tr><td>Aracnoide</td><td>Média, delicada, SEM vasos ou nervos; aspecto de teia</td></tr>
+      <tr><td>Pia-máter</td><td>Interna; adere ao tecido; <b>ricamente vascularizada</b></td></tr>
+    </tbody>
+  </table>
+  <div class="tip">💧 <b>Espaço subaracnoide</b> (entre aracnoide e pia) — contém o LCR.</div>
+</section>
+
+<section id="lcr">
+  <h2>💧 Líquor (LCR)</h2>
+  <div class="pdf-thumbs">
+    <img src="assets/img/snc/p22.png" alt="LCR nos ventrículos">
+    <img src="assets/img/snc/p25.png" alt="LCR - meninges medula">
+    <img src="assets/img/snc/p28.png" alt="LCR mais detalhes">
+  </div>
+  <table>
+    <thead><tr><th>Item</th><th>Valor</th></tr></thead>
+    <tbody>
+      <tr><td>Produzido por</td><td>Plexos coroides nos ventrículos (células ependimárias)</td></tr>
+      <tr><td>Volume</td><td>~150 ml</td></tr>
+      <tr><td>Produção/reabsorção</td><td>~500 ml/dia</td></tr>
+      <tr><td>Pressão intracraniana</td><td>~10 mmHg</td></tr>
+      <tr><td>Função</td><td>Barreira mecânica e imunológica</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="cerebro">
+  <h2>🧠 Cérebro (Telencéfalo) e Córtex</h2>
+  <div class="card highlight">
+    <p>Maior estrutura do encéfalo (80% da massa). 2 hemisférios ligados pelo <b>corpo caloso</b>. 4 lobos: frontal, parietal, temporal, occipital.</p>
+  </div>
+  <div class="pdf-thumbs">
+    <img src="assets/img/snc/p36.png" alt="Hemisférios cerebrais">
+    <img src="assets/img/snc/p43.png" alt="Córtex">
+    <img src="assets/img/snc/p46.png" alt="Áreas funcionais">
+    <img src="assets/img/snc/p48.png" alt="Córtex cerebral detalhe">
+  </div>
+  <h3>Substância cinzenta × branca</h3>
+  <ul>
+    <li><b>Cinzenta (córtex)</b> — externa, com corpos celulares.</li>
+    <li><b>Branca</b> — profunda, com axônios mielinizados.</li>
+  </ul>
+  <h3>Áreas funcionais</h3>
+  <ul>
+    <li>Giro <b>pré-central</b>: movimentos voluntários</li>
+    <li>Giro <b>pós-central</b>: sensação somática (tato)</li>
+    <li>Giro <b>temporal superior</b>: audição</li>
+    <li><b>Lobo occipital</b>: visão</li>
+  </ul>
+  <h3>Estruturas importantes</h3>
+  <ul>
+    <li><b>Amígdala</b> — memória + emoções (sistema límbico)</li>
+    <li><b>Hipocampo</b> — aprendizado e memória</li>
+    <li><b>Corpo caloso</b> — conecta os dois hemisférios</li>
+    <li><b>Fórnix</b> — conecta hipocampo ao hipotálamo</li>
+  </ul>
+</section>
+
+<section id="dienc">
+  <h2>⚙️ Diencéfalo — Tálamo, Hipotálamo, Hipófise</h2>
+  <div class="pdf-thumbs">
+    <img src="assets/img/snc/p53.png" alt="Diencéfalo">
+    <img src="assets/img/snc/p58.png" alt="Corpos mamilares">
+    <img src="assets/img/snc/p60.png" alt="Hipófise">
+  </div>
+  <table>
+    <thead><tr><th>Estrutura</th><th>Função principal</th></tr></thead>
+    <tbody>
+      <tr><td><b>Tálamo</b></td><td>Recepção e transmissão de mensagens sensoriais ao córtex; atenção/consciência</td></tr>
+      <tr><td><b>Hipotálamo</b></td><td>Emoções, SNA, sono, sede, fome, temperatura, comanda a hipófise</td></tr>
+      <tr><td><b>Hipófise (Pituitária)</b></td><td>Adenoipófise libera trofinas; neuroipófise libera hormônios do hipotálamo</td></tr>
+      <tr><td><b>Corpo Pineal</b></td><td>Secreta <b>melatonina</b>; regula o sono</td></tr>
+      <tr><td><b>Corpos mamilares</b></td><td>Memórias episódicas; lesão = amnésia anterógrada (Alzheimer)</td></tr>
+    </tbody>
+  </table>
+  <div class="tip">🧪 Adenoipófise: TSH, FSH, LH, ACTH, GH, PRL. Neuroipófise: ocitocina e ADH (do hipotálamo).</div>
+</section>
+
+<section id="tronco">
+  <h2>🌳 Tronco Encefálico</h2>
+  <div class="card highlight">
+    <p>Transição entre encéfalo e medula. 3 componentes: <b>mesencéfalo, ponte, bulbo</b>. Aloja centros das funções vitais.</p>
+  </div>
+  <div class="pdf-thumbs">
+    <img src="assets/img/snc/p68.png" alt="Tronco encefálico">
+    <img src="assets/img/snc/p70.png" alt="Mesencéfalo">
+    <img src="assets/img/snc/p78.png" alt="Ponte">
+    <img src="assets/img/snc/p82.png" alt="Bulbo">
+  </div>
+  <table>
+    <thead><tr><th>Parte</th><th>Função/Característica</th></tr></thead>
+    <tbody>
+      <tr><td><b>Mesencéfalo</b></td><td>Mais curto e superior; conecta ponte/cerebelo ao telencéfalo; postura</td></tr>
+      <tr><td><b>Ponte</b></td><td>Conecta córtex ao cerebelo; controle da respiração; nervos V, VI, VII, VIII</td></tr>
+      <tr><td><b>Bulbo (medula oblonga)</b></td><td>Funções vitais: FC, PA, respiração; reflexos: tosse, espirro, deglutição; nervos IX, X, XI, XII</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="cerebelo">
+  <h2>🤹 Cerebelo</h2>
+  <div class="card highlight">
+    <p>O "pequeno cérebro" — coordenação motora fina, equilíbrio, postura e precisão dos movimentos.</p>
+  </div>
+  <div class="pdf-thumbs">
+    <img src="assets/img/snc/p85.png" alt="Cerebelo">
+    <img src="assets/img/snc/p87.png" alt="Funções cerebelo">
+  </div>
+  <h3>Como funciona</h3>
+  <ul>
+    <li>Recebe da <b>medula</b> a posição do corpo no espaço</li>
+    <li>Recebe da <b>ponte</b> qual é a meta do movimento (do córtex)</li>
+    <li>Compara e calcula a sequência de contrações</li>
+  </ul>
+  <h3>Sintomas de lesão</h3>
+  <table>
+    <thead><tr><th>Sintoma</th><th>Descrição</th></tr></thead>
+    <tbody>
+      <tr><td>Ataxia</td><td>Descoordenação e desequilíbrio</td></tr>
+      <tr><td>Tremores de intenção</td><td>Aparecem ao realizar movimentos</td></tr>
+      <tr><td>Hipotonia</td><td>Redução do tônus muscular</td></tr>
+      <tr><td>Disartria</td><td>Fala arrastada</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="medula">
+  <h2>🦴 Medula Espinhal</h2>
+  <div class="card highlight">
+    <p>Cordão cilíndrico que vai do <b>forame magno</b> até L1-L2. 31 pares de nervos espinhais. Substância cinzenta em forma de <b>H</b>.</p>
+  </div>
+  <h3>Dados</h3>
+  <ul>
+    <li>~45 cm em homens, ~42 cm em mulheres</li>
+    <li>Canal central com LCR</li>
+    <li>Revestida pelas meninges</li>
+    <li>Substância <b>branca</b> externa (axônios), <b>cinzenta</b> interna (corpos celulares)</li>
+  </ul>
+  <h3>Funções</h3>
+  <ul>
+    <li>Conduzir info entre cérebro e corpo</li>
+    <li>Comandar atos reflexos</li>
+  </ul>
+</section>
+
+<section id="flash">
+  <h2>🃏 Flashcards</h2>
+  <p>Clique para virar.</p>
+  <div class="flash-grid" id="flashGrid"></div>
+</section>
+
+<section id="quiz">
+  <h2>✅ Quiz Interativo — Escolha o tema</h2>
+  <p>Cada quiz embaralha perguntas e alternativas.</p>
+
+  <div class="card">
+    <h3 style="margin-top:0">🎯 Escolha o tema</h3>
+    <div id="themePicker" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px"></div>
+    <label style="display:flex;align-items:center;gap:10px;margin-top:10px">
+      Quantidade:
+      <select id="qCount" style="background:var(--bg2);color:var(--text);border:1px solid var(--border);padding:6px 10px;border-radius:6px">
+        <option value="5">5</option>
+        <option value="10" selected>10</option>
+        <option value="15">15</option>
+        <option value="20">20</option>
+        <option value="999">Todas</option>
+      </select>
+    </label>
+    <label style="display:flex;align-items:center;gap:10px;margin-top:10px">
+      Dificuldade:
+      <select id="qDiff" style="background:var(--bg2);color:var(--text);border:1px solid var(--border);padding:6px 10px;border-radius:6px">
+        <option value="all" selected>Todas</option>
+        <option value="1">🟢 Fácil</option>
+        <option value="2">🟡 Médio</option>
+        <option value="3">🔴 Difícil</option>
+      </select>
+    </label>
+    <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn" onclick="startQuiz()">🎲 Iniciar / Embaralhar</button>
+      <button class="btn" style="background:var(--accent);color:#0a0f1c" onclick="weakSpotsQuiz()">🎯 Focar nos meus erros</button>
+    </div>
+    <div id="quizStats" style="margin-top:12px;color:var(--muted);font-size:.9em"></div>
+  </div>
+
+  <div id="quizContainer"></div>
+  <div id="quizResult"></div>
+</section>
+
+</main>
+
+<div class="progress">📊 Acertos: <span id="score">0</span>/<span id="total">0</span></div>
+
+<div class="lightbox" id="lightbox">
+  <button class="close" onclick="closeLightbox()">×</button>
+  <img id="lightboxImg" alt="">
+</div>
+
+<script>
+  function show(id, btn){
+    document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightboxImg');
+  document.querySelectorAll('.pdf-thumbs img').forEach(img => {
+    img.addEventListener('click', () => { lbImg.src = img.src; lb.classList.add('open'); });
+  });
+  lb.addEventListener('click', e => { if(e.target === lb) closeLightbox(); });
+  function closeLightbox(){ lb.classList.remove('open'); lbImg.src = ''; }
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') closeLightbox(); });
+
+  const FLASH = [
+    ['SNC','Encéfalo + medula espinhal.'],
+    ['Encéfalo','Cérebro + cerebelo + tronco encefálico.'],
+    ['Meninges (externa → interna)','Dura-máter → Aracnoide → Pia-máter.'],
+    ['Leptomeninges','Aracnoide + pia-máter (mais delicadas).'],
+    ['Espaço subaracnoide','Contém o LCR.'],
+    ['LCR (volume)','~150 ml; produção ~500 ml/dia.'],
+    ['Plexos coroides','Produzem o LCR — células ependimárias nos ventrículos.'],
+    ['Substância cinzenta (córtex)','Corpos celulares de neurônios.'],
+    ['Substância branca','Axônios mielinizados — feixes (tratos).'],
+    ['Lobos cerebrais','Frontal, parietal, temporal e occipital.'],
+    ['Corpo caloso','Conecta os 2 hemisférios cerebrais.'],
+    ['Amígdala','Memória + estados emocionais (sistema límbico).'],
+    ['Hipocampo','Aprendizado e memória.'],
+    ['Tálamo','Relé sensorial para o córtex; atenção/consciência.'],
+    ['Hipotálamo','Sono, fome, sede, temperatura; comanda SNA e hipófise.'],
+    ['Adenoipófise','TSH, FSH, LH, ACTH, GH, PRL.'],
+    ['Corpo pineal','Melatonina — ritmo circadiano.'],
+    ['Tronco encefálico','Mesencéfalo + ponte + bulbo.'],
+    ['Bulbo (medula oblonga)','FC, PA, respiração; reflexos tosse/espirro.'],
+    ['Cerebelo','Coordenação motora, equilíbrio, postura.'],
+    ['Ataxia','Sintoma cerebelar: descoordenação motora.'],
+    ['Medula espinhal','Forame magno até L1-L2; 31 pares de nervos.'],
+    ['Substância cinzenta da medula','Forma de letra H (vista em corte).'],
+  ];
+  const fg = document.getElementById('flashGrid');
+  FLASH.forEach(([f,b]) => {
+    const c = document.createElement('div');
+    c.className = 'flash';
+    c.innerHTML = `<div class="flash-inner"><div class="flash-front">${f}</div><div class="flash-back">${b}</div></div>`;
+    c.onclick = () => c.classList.toggle('flipped');
+    fg.appendChild(c);
+  });
+
+  const QUIZ_BANK = {
+    "Visão Geral": [
+      {q:"O SNC é composto por:",o:["Nervos e gânglios","Encéfalo e medula espinal","Receptores e nervos","Apenas pelo cérebro"],a:1,d:1,e:"SNC = encéfalo (cérebro + cerebelo + tronco) + medula espinal."},
+      {q:"O ENCÉFALO inclui:",o:["Cérebro, cerebelo e tronco encefálico","Apenas o cérebro","Cérebro e medula","Hipófise e tálamo"],a:0,d:1,e:"Encéfalo = cérebro + cerebelo + tronco encefálico."},
+      {q:"O encéfalo é protegido por:",o:["Pela coluna vertebral","Pelo crânio","Apenas pelas meninges","Pelas vértebras lombares"],a:1,d:1,e:"O crânio protege o encéfalo; a coluna protege a medula."},
+    ],
+    "Caixa Craniana e Meninges": [
+      {q:"Qual a ordem das meninges, da externa para a interna?",o:["Pia → Aracnoide → Dura","Aracnoide → Dura → Pia","Dura → Aracnoide → Pia","Dura → Pia → Aracnoide"],a:2,d:1,e:"Externa → interna: Dura-máter, Aracnoide, Pia-máter."},
+      {q:"A meninge MAIS RESISTENTE é:",o:["Pia-máter","Aracnoide","Dura-máter","Periósteo"],a:2,d:1,e:"Dura-máter — paquimeninge, espessa e resistente."},
+      {q:"A meninge SEM vasos e SEM nervos é:",o:["Dura-máter","Aracnoide","Pia-máter","Nenhuma"],a:1,d:2,e:"Aracnoide — delicada, com aspecto de teia de aranha."},
+      {q:"A meninge mais INTERNA, aderida ao tecido nervoso é:",o:["Dura-máter","Aracnoide","Pia-máter","Subdural"],a:2,d:1,e:"Pia-máter — fina, transparente e ricamente vascularizada."},
+      {q:"Aracnoide + pia-máter, em conjunto, são chamadas:",o:["Paquimeninge","Leptomeninges","Endósteo","Subdural"],a:1,d:3,e:"Leptomeninges (as 2 mais delicadas)."},
+      {q:"As 3 camadas do osso plano da caixa craniana são:",o:["Cortical, esponjosa e medular","Tábua externa, díploe e tábua interna","Tábua frontal, parietal e occipital","Endósteo, periósteo e medular"],a:1,d:2,e:"Tábua externa (compacta), díploe (esponjosa) e tábua interna (compacta)."},
+    ],
+    "Líquor (LCR)": [
+      {q:"O LCR é produzido principalmente por:",o:["Astrócitos","Plexos coroides (células ependimárias)","Micróglias","Schwann"],a:1,d:2,e:"Plexos coroides nos ventrículos, com células ependimárias especializadas."},
+      {q:"O LCR circula principalmente em:",o:["Espaço epidural","Espaço subdural","Espaço subaracnoide e ventrículos","Vasos sanguíneos"],a:2,d:2,e:"Espaço subaracnoide (entre aracnoide e pia) e ventrículos cerebrais."},
+      {q:"Volume normal do LCR num adulto:",o:["~50 ml","~150 ml","~500 ml","~2000 ml"],a:1,d:2,e:"~150 ml; produção/reabsorção contínua ~500 ml/dia."},
+      {q:"Pressão intracraniana normal:",o:["~10 mmHg","~50 mmHg","~120 mmHg","~200 mmHg"],a:0,d:3,e:"~10 mmHg, mantida pelo balanço produção/absorção."},
+      {q:"Composição básica do LCR:",o:["Sangue venoso","Cloreto de sódio e glicose (ultrafiltrado do sangue)","Linfa","Proteínas estruturais"],a:1,d:3,e:"É um ultrafiltrado do sangue — NaCl e glicose."},
+      {q:"Função principal do LCR:",o:["Conduzir o impulso nervoso","Barreira mecânica e imunológica","Produzir hormônios","Mielinizar axônios"],a:1,d:1,e:"Amortecer, proteger e transportar nutrientes."},
+    ],
+    "Cérebro": [
+      {q:"O cérebro constitui aproximadamente que % do encéfalo?",o:["20%","50%","80%","95%"],a:2,d:2,e:"Cerca de 80% da massa do encéfalo."},
+      {q:"Quais estruturas formam o cérebro?",o:["Apenas o telencéfalo","Telencéfalo e diencéfalo","Tronco e cerebelo","Apenas o córtex"],a:1,d:2,e:"Cérebro = telencéfalo + diencéfalo."},
+      {q:"Os 2 hemisférios cerebrais são conectados pelo:",o:["Fórnix","Corpo caloso","Tálamo","Cerebelo"],a:1,d:1,e:"Corpo caloso — imenso feixe de axônios."},
+      {q:"Os 4 lobos cerebrais são:",o:["Frontal, posterior, central, lateral","Frontal, parietal, temporal e occipital","Pré-central, pós-central, temporal e límbico","Anterior, médio, posterior e basal"],a:1,d:1,e:"Frontal, parietal, temporal e occipital."},
+      {q:"O CÓRTEX cerebral é:",o:["Camada profunda branca","Camada externa de substância cinzenta com corpos celulares","Camada de mielina","Estrutura límbica"],a:1,d:2,e:"Camada externa fina — substância cinzenta com corpos celulares de neurônios."},
+      {q:"A substância BRANCA é assim chamada porque:",o:["É feita de cálcio","É composta de axônios mielinizados","Não tem células","Tem só água"],a:1,d:2,e:"Axônios mielinizados — a mielina dá a cor branca."},
+      {q:"O giro PRÉ-CENTRAL controla:",o:["Audição","Visão","Movimentos voluntários","Sensação somática"],a:2,d:2,e:"Localizado no lobo frontal — controla movimentos voluntários."},
+      {q:"A AUDIÇÃO está principalmente relacionada a qual estrutura?",o:["Giro pré-central","Lobo occipital","Giro temporal superior","Lobo parietal"],a:2,d:3,e:"Giro temporal superior."},
+      {q:"A AMÍGDALA está relacionada com:",o:["Visão e olfato","Memória e regulação emocional (sistema límbico)","Apenas controle motor","Apenas produção de LCR"],a:1,d:2,e:"Sistema límbico — memória + estados emocionais."},
+      {q:"O HIPOCAMPO atua principalmente em:",o:["Visão","Audição","Aprendizado e memória","Controle motor"],a:2,d:1,e:"Aprendizado e formação de memórias."},
+    ],
+    "Diencéfalo e Hipófise": [
+      {q:"O TÁLAMO é responsável principalmente por:",o:["Controle motor fino","Recepção/transmissão de mensagens sensoriais ao córtex","Síntese de melatonina","Produção de LCR"],a:1,d:2,e:"Relé sensorial — atua na atenção e consciência também."},
+      {q:"O HIPOTÁLAMO regula:",o:["Apenas a visão","Sono, sede, fome, temperatura e SNA","Audição","Postura"],a:1,d:1,e:"Centro de regulação homeostática. Também comanda a hipófise."},
+      {q:"A HIPÓFISE fica localizada na:",o:["Calota craniana","Sela túrcica (no osso esfenoide)","Fossa anterior","Lobo temporal"],a:1,d:3,e:"Na sela túrcica do esfenoide — base do crânio."},
+      {q:"A ADENOIPÓFISE libera:",o:["Melatonina","Trofinas (TSH, FSH, LH, ACTH, GH, PRL)","Insulina","Adrenalina"],a:1,d:2,e:"Hormônios tróficos que estimulam outras glândulas."},
+      {q:"A NEUROIPÓFISE libera hormônios produzidos:",o:["No próprio lobo posterior","No hipotálamo","Na adrenal","No tálamo"],a:1,d:3,e:"Os hormônios são produzidos no hipotálamo e armazenados/liberados na neuroipófise."},
+      {q:"O CORPO PINEAL secreta:",o:["Melatonina","Cortisol","Insulina","Dopamina"],a:0,d:2,e:"Melatonina — relacionada com a regulação do sono."},
+      {q:"Lesão dos CORPOS MAMILARES causa:",o:["Surdez","Amnésia anterógrada","Cegueira","Ataxia"],a:1,d:3,e:"Comprometem memórias episódicas; visíveis em Alzheimer."},
+    ],
+    "Tronco Encefálico": [
+      {q:"Os 3 componentes do tronco encefálico são:",o:["Tálamo, hipotálamo, hipófise","Mesencéfalo, ponte, bulbo","Cérebro, cerebelo, medula","Frontal, parietal, occipital"],a:1,d:1,e:"Mesencéfalo (superior), ponte (intermediária), bulbo (inferior)."},
+      {q:"O segmento MAIS CURTO e mais SUPERIOR do tronco é:",o:["Mesencéfalo","Ponte","Bulbo","Cerebelo"],a:0,d:2,e:"Mesencéfalo — segmento mais curto, conecta a ponte/cerebelo ao telencéfalo."},
+      {q:"O BULBO controla principalmente:",o:["Visão","Funções vitais: frequência cardíaca, pressão arterial, respiração","Equilíbrio","Audição"],a:1,d:1,e:"Aloja os centros das funções vitais."},
+      {q:"A PONTE conecta:",o:["Cérebro à medula","Córtex cerebral ao cerebelo","Tálamo ao hipotálamo","Apenas hemisférios"],a:1,d:2,e:"Mais de 90% dos axônios descendentes passam pela ponte fazendo sinapse com neurônios pontinos."},
+      {q:"Os nervos cranianos IX, X, XI e XII se originam no:",o:["Mesencéfalo","Ponte","Bulbo","Cerebelo"],a:2,d:3,e:"Bulbo — núcleos dos 4 últimos nervos cranianos."},
+      {q:"Reflexos como TOSSE e ESPIRRO são controlados pelo:",o:["Mesencéfalo","Ponte","Bulbo","Cerebelo"],a:2,d:2,e:"Bulbo controla reflexos viscerais e funções autônomas."},
+    ],
+    "Cerebelo": [
+      {q:"Função principal do CEREBELO:",o:["Produzir LCR","Centro de controle do movimento — coordenação, equilíbrio, postura","Memória de longo prazo","Visão"],a:1,d:1,e:"Recebe info da medula e da ponte e calcula a sequência das contrações musculares."},
+      {q:"Lesão cerebelar tipicamente causa:",o:["Cegueira","Ataxia, tremores, hipotonia e disartria","Surdez","Hidrocefalia"],a:1,d:2,e:"Síndromes cerebelares — descoordenação motora."},
+      {q:"ATAXIA significa:",o:["Aumento do tônus muscular","Falta de coordenação motora e equilíbrio","Visão dupla","Tremores em repouso"],a:1,d:2,e:"Ataxia é a descoordenação motora típica de lesões cerebelares."},
+      {q:"Tremores cerebelares são tipicamente:",o:["De repouso (como no Parkinson)","De intenção (durante o movimento)","Constantes e simétricos","Apenas noturnos"],a:1,d:3,e:"Tremores de INTENÇÃO — aparecem ao realizar movimentos."},
+    ],
+    "Medula Espinhal": [
+      {q:"A medula espinhal se estende:",o:["Por toda a coluna vertebral","Do forame magno até L1-L2","Do crânio até o sacro","Apenas pela cervical"],a:1,d:2,e:"Termina entre L1-L2 no adulto; abaixo só existem as raízes nervosas (cauda equina)."},
+      {q:"Comprimento médio da medula em homens:",o:["~25 cm","~45 cm","~70 cm","~100 cm"],a:1,d:3,e:"Cerca de 45 cm em homens, ~42 cm em mulheres."},
+      {q:"A medula origina quantos pares de nervos espinhais?",o:["12","24","31","42"],a:2,d:2,e:"31 pares de nervos espinhais."},
+      {q:"No corte transversal da medula, a substância CINZENTA tem forma de:",o:["Círculo","Triângulo","Letra H","Estrela"],a:2,d:2,e:"A substância cinzenta interna tem forma de letra H."},
+      {q:"Na medula, a substância CINZENTA fica:",o:["Externa","Interna","Apenas na superfície","Não há cinzenta"],a:1,d:2,e:"Diferente do cérebro: cinzenta INTERNA, branca EXTERNA."},
+      {q:"A medula é responsável também por:",o:["Apenas conduzir info","Conduzir info e comandar atos reflexos","Apenas reflexos","Produzir hormônios"],a:1,d:1,e:"Conduz informações nas duas direções e comanda atos reflexos."},
+    ],
+  };
+
+  const STATS_KEY = 'quizStatsSNC';
+  let currentTheme = "Todos";
+  let currentQuiz = [];
+  let score = 0, answered = 0;
+  const stats = JSON.parse(localStorage.getItem(STATS_KEY) || '{}');
+
+  const tp = document.getElementById('themePicker');
+  const themes = ["Todos", ...Object.keys(QUIZ_BANK)];
+  themes.forEach(t => {
+    const b = document.createElement('button');
+    b.className = 'opt'; b.style.flex='0 0 auto'; b.style.padding='8px 14px';
+    b.textContent = t === "Todos" ? "🎲 Todos" : t;
+    b.onclick = () => {
+      currentTheme = t;
+      document.querySelectorAll('#themePicker .opt').forEach(x => x.classList.remove('correct'));
+      b.classList.add('correct');
+    };
+    if(t === "Todos") b.classList.add('correct');
+    tp.appendChild(b);
+  });
+
+  function getPool(){
+    const diff = document.getElementById('qDiff').value;
+    let pool = currentTheme === "Todos"
+      ? Object.entries(QUIZ_BANK).flatMap(([t,arr]) => arr.map(q => ({...q, theme:t})))
+      : QUIZ_BANK[currentTheme].map(q => ({...q, theme:currentTheme}));
+    if(diff !== "all") pool = pool.filter(q => q.d === +diff);
+    return pool;
+  }
+  function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+  function startQuiz(){
+    const pool = getPool();
+    if(pool.length===0){ alert("Nenhuma questão para esses filtros."); return; }
+    const n = Math.min(+document.getElementById('qCount').value, pool.length);
+    currentQuiz = shuffle(pool).slice(0,n).map(q => {
+      const idx = q.o.map((_,i) => i); const sh = shuffle(idx);
+      return {...q, o: sh.map(i => q.o[i]), a: sh.indexOf(q.a)};
+    });
+    renderQuiz();
+  }
+  function weakSpotsQuiz(){
+    const all = Object.entries(QUIZ_BANK).flatMap(([t,arr]) => arr.map(q => ({...q, theme:t})));
+    const ranked = all.map(q => {
+      const k = q.q; const s = stats[k] || {ok:0,err:0};
+      const total = s.ok+s.err; const errRate = total ? s.err/total : 0;
+      return {q, score: errRate*10 + (total === 0 ? 5 : 0)};
+    }).sort((a,b) => b.score - a.score);
+    const n = Math.min(+document.getElementById('qCount').value, ranked.length);
+    currentQuiz = ranked.slice(0,n).map(r => r.q).map(q => {
+      const idx = q.o.map((_,i) => i); const sh = shuffle(idx);
+      return {...q, o: sh.map(i => q.o[i]), a: sh.indexOf(q.a)};
+    });
+    renderQuiz();
+  }
+  function renderQuiz(){
+    const qc = document.getElementById('quizContainer');
+    qc.innerHTML=''; document.getElementById('quizResult').innerHTML='';
+    score=0; answered=0;
+    document.getElementById('score').textContent=0;
+    document.getElementById('total').textContent=currentQuiz.length;
+    const diffEmoji = {1:"🟢",2:"🟡",3:"🔴"};
+    currentQuiz.forEach((it,i) => {
+      const div = document.createElement('div'); div.className='quiz-q';
+      const themeTag = it.theme ? `<span class="pill">${it.theme}</span>` : '';
+      div.innerHTML = `<div class="q">${themeTag}<span class="pill warn">${diffEmoji[it.d]} ${it.d===1?'Fácil':it.d===2?'Médio':'Difícil'}</span><br>${i+1}. ${it.q}</div><div class="opts"></div><div class="feedback"></div>`;
+      const opts = div.querySelector('.opts');
+      it.o.forEach((opt,j) => {
+        const b = document.createElement('button'); b.className='opt'; b.textContent=opt;
+        b.onclick = () => answer(div,it,j,b); opts.appendChild(b);
+      });
+      qc.appendChild(div);
+    });
+    updateStatsLabel();
+    qc.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  function answer(div,it,j,btn){
+    const opts = div.querySelectorAll('.opt');
+    if([...opts].some(o => o.disabled)) return;
+    opts.forEach((o,k) => { o.disabled = true; if(k===it.a) o.classList.add('correct'); });
+    const fb = div.querySelector('.feedback');
+    const key = it.q;
+    stats[key] = stats[key] || {ok:0,err:0};
+    if(j === it.a){
+      score++; stats[key].ok++;
+      fb.className='feedback show ok'; fb.innerHTML='✅ <b>Correto!</b> '+it.e;
+    } else {
+      stats[key].err++; btn.classList.add('wrong');
+      fb.className='feedback show no'; fb.innerHTML='❌ <b>Não foi dessa vez.</b> '+it.e;
+    }
+    localStorage.setItem(STATS_KEY, JSON.stringify(stats));
+    answered++; document.getElementById('score').textContent=score;
+    if(answered === currentQuiz.length) showResult();
+    updateStatsLabel();
+  }
+  function showResult(){
+    const pct = Math.round(100*score/currentQuiz.length);
+    let msg = pct===100 ? "🏆 Perfeito!" : pct>=80 ? "🌟 Muito bem!" : pct>=60 ? "👍 Bom! Revise os erros." : pct>=40 ? "📚 Está pegando o jeito — refaça!" : "💪 Hora de revisar a teoria!";
+    document.getElementById('quizResult').innerHTML =
+      `<div class="card highlight" style="text-align:center"><h3 style="margin-top:0">Resultado: ${score}/${currentQuiz.length} (${pct}%)</h3><p>${msg}</p>
+      <button class="btn" onclick="startQuiz()">🔄 Novo quiz embaralhado</button>
+      <button class="btn" style="background:var(--accent);color:#0a0f1c;margin-left:8px" onclick="weakSpotsQuiz()">🎯 Focar nos meus erros</button></div>`;
+  }
+  function updateStatsLabel(){
+    const total = Object.values(stats).reduce((s,x) => s+x.ok+x.err, 0);
+    const oks = Object.values(stats).reduce((s,x) => s+x.ok, 0);
+    const pct = total ? Math.round(100*oks/total) : 0;
+    document.getElementById('quizStats').innerHTML =
+      `📊 Histórico geral: <b>${oks}/${total}</b> (${pct}%) — <a href="#" onclick="event.preventDefault();if(confirm('Apagar histórico?')){localStorage.removeItem('${STATS_KEY}');location.reload()}" style="color:var(--accent)">limpar histórico</a>`;
+  }
+  updateStatsLabel();
+  startQuiz();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aprenda — Ossos do Crânio e Coluna Vertebral</title>
+<style>
+  :root{
+    --bg:#0a0f1c; --bg2:#1a1f2e; --card:#1e2438; --border:#2d3650;
+    --primary:#ec4899; --primary2:#f472b6; --accent:#a78bfa;
+    --good:#10b981; --bad:#ef4444; --warn:#f59e0b; --pink:#ec4899;
+    --text:#e2e8f0; --muted:#94a3b8;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:Georgia,'Times New Roman',serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:17px}
+  .hero{min-height:60vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:60px 24px;background:radial-gradient(ellipse at top,#831843 0%,#0a0f1c 70%);position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 20% 30%,rgba(236,72,153,.18) 0,transparent 50%),radial-gradient(circle at 80% 70%,rgba(167,139,250,.12) 0,transparent 50%)}
+  .hero-content{position:relative;z-index:1;max-width:800px}
+  .hero h1{font-size:3.2em;margin:0 0 12px;background:linear-gradient(135deg,#f472b6,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
+  .hero .subtitle{font-size:1.3em;color:var(--muted);font-style:italic;margin-bottom:30px}
+  .hero .meta{display:flex;justify-content:center;gap:30px;flex-wrap:wrap;color:var(--muted);font-size:.9em;font-family:sans-serif}
+  #progressBar{position:fixed;top:0;left:0;height:4px;background:linear-gradient(90deg,var(--primary),var(--accent));z-index:1000;transition:width .1s;width:0%}
+  .toc{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:30px;margin:40px auto;max-width:900px}
+  .toc h2{margin-top:0;color:var(--primary2);font-family:sans-serif}
+  .toc ol{padding-left:24px;font-family:sans-serif}
+  .toc li{margin:10px 0}
+  .toc a{color:var(--text);text-decoration:none;border-bottom:1px dashed transparent;transition:all .2s}
+  .toc a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+  main{max-width:880px;margin:0 auto;padding:40px 24px 80px}
+  .chapter{margin:80px 0;padding-top:40px;border-top:1px solid var(--border)}
+  .chapter:first-child{border-top:none}
+  .chapter-num{display:inline-block;font-family:sans-serif;color:var(--accent);font-size:.85em;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px}
+  .chapter h2{font-size:2.4em;margin:0 0 24px;color:var(--text);line-height:1.2;font-weight:700}
+  .chapter h3{font-size:1.5em;color:var(--primary2);margin:40px 0 12px;font-family:sans-serif}
+  .chapter h4{color:var(--accent);margin:24px 0 8px;font-family:sans-serif;font-size:1.1em}
+  .chapter p{margin:18px 0}
+  .lead{font-size:1.2em;color:var(--muted);font-style:italic;border-left:3px solid var(--primary);padding:8px 0 8px 20px;margin:24px 0}
+  .analogy,.example,.warning,.deep,.story,.def{margin:28px 0;padding:20px 24px;border-radius:12px;font-family:sans-serif;font-size:.95em;line-height:1.7}
+  .analogy{background:linear-gradient(135deg,rgba(236,72,153,.12),rgba(236,72,153,.04));border-left:4px solid var(--pink)}
+  .analogy::before{content:'🎭 Analogia';display:block;font-weight:700;color:var(--pink);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .example{background:linear-gradient(135deg,rgba(167,139,250,.12),rgba(167,139,250,.02));border-left:4px solid var(--accent)}
+  .example::before{content:'💡 Exemplo';display:block;font-weight:700;color:var(--accent);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .warning{background:linear-gradient(135deg,rgba(245,158,11,.12),rgba(245,158,11,.02));border-left:4px solid var(--warn)}
+  .warning::before{content:'⚠️ Cuidado';display:block;font-weight:700;color:var(--warn);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .deep{background:linear-gradient(135deg,rgba(236,72,153,.12),rgba(236,72,153,.02));border-left:4px solid var(--primary)}
+  .deep::before{content:'🔍 Aprofundando';display:block;font-weight:700;color:var(--primary2);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .def{background:var(--bg2);border:1px solid var(--border);border-radius:8px}
+  .def::before{content:'📌 Definição';display:block;font-weight:700;color:var(--primary2);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  table{width:100%;border-collapse:collapse;margin:24px 0;background:var(--card);border-radius:12px;overflow:hidden;font-family:sans-serif;font-size:.95em}
+  th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+  th{background:linear-gradient(135deg,var(--primary),#9333ea);color:white;font-weight:700}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:rgba(236,72,153,.05)}
+  .key{background:rgba(236,72,153,.15);color:var(--primary2);padding:2px 8px;border-radius:4px;font-weight:600;font-family:sans-serif}
+  .selfcheck{background:var(--card);border:2px dashed var(--primary);border-radius:12px;padding:20px;margin:30px 0;font-family:sans-serif}
+  .selfcheck-q{font-weight:600;color:var(--primary2);margin-bottom:12px}
+  .selfcheck-q::before{content:'🤔 Pergunta para você: ';font-weight:700;color:var(--accent)}
+  details summary{cursor:pointer;color:var(--accent);font-weight:600;outline:none;list-style:none}
+  details summary::before{content:'👁️ Mostrar resposta ▼';font-size:.9em}
+  details[open] summary::before{content:'🙈 Esconder ▲'}
+  details[open] .answer{margin-top:12px;padding:14px;background:var(--bg2);border-radius:8px;border-left:3px solid var(--good);font-style:italic;color:var(--text);font-weight:normal}
+  .floating{position:fixed;right:24px;bottom:24px;display:flex;flex-direction:column;gap:8px;z-index:50}
+  .floating button,.floating a{background:var(--card);border:1px solid var(--border);color:var(--text);width:48px;height:48px;border-radius:50%;cursor:pointer;font-size:1.2em;transition:all .2s;box-shadow:0 4px 12px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;text-decoration:none}
+  .floating button:hover,.floating a:hover{background:var(--primary);transform:scale(1.1)}
+  .end{text-align:center;padding:60px 24px;background:radial-gradient(ellipse at center,rgba(236,72,153,.15),transparent);margin-top:80px;border-top:1px solid var(--border)}
+  .end h2{font-size:2em;color:var(--primary2)}
+  .cta{display:inline-block;margin-top:20px;padding:14px 28px;background:linear-gradient(135deg,var(--primary),var(--accent));color:white;border-radius:99px;text-decoration:none;font-family:sans-serif;font-weight:600;transition:transform .2s}
+  .cta:hover{transform:scale(1.05)}
+
+  figure.pdf-fig{margin:28px 0;text-align:center;font-family:sans-serif}
+  figure.pdf-fig img{max-width:100%;border-radius:14px;border:1px solid var(--border);background:white;box-shadow:0 12px 32px -10px rgba(0,0,0,.6);transition:transform .3s, box-shadow .3s;cursor:zoom-in}
+  figure.pdf-fig img:hover{transform:translateY(-2px) scale(1.01);box-shadow:0 20px 44px -10px rgba(236,72,153,.25)}
+  figure.pdf-fig figcaption{font-size:.84em;color:var(--muted);margin-top:10px;font-style:italic;padding:0 12px}
+  .img-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:24px 0}
+  .img-grid figure{margin:0}
+  .img-grid img{width:100%;height:200px;object-fit:cover;border-radius:12px;border:1px solid var(--border);background:white;cursor:zoom-in;transition:transform .2s}
+  .img-grid img:hover{transform:scale(1.03)}
+  .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;z-index:200;padding:20px;cursor:zoom-out}
+  .lightbox.open{display:flex}
+  .lightbox img{max-width:96vw;max-height:92vh;border-radius:10px}
+  .lightbox .close{position:absolute;top:18px;right:22px;background:rgba(255,255,255,.1);border:none;color:white;width:44px;height:44px;border-radius:50%;font-size:1.4em;cursor:pointer}
+
+  @media (max-width: 720px){
+    body{font-size:16px;line-height:1.7}
+    .hero{padding:48px 18px;min-height:auto}
+    .hero h1{font-size:clamp(1.8em,7vw,2.4em)}
+    .hero .subtitle{font-size:1em;margin-bottom:18px}
+    .hero .meta{gap:10px 14px;font-size:.82em}
+    .toc{padding:20px;margin:24px 14px;border-radius:12px}
+    main{padding:24px 16px 60px}
+    .chapter{margin:56px 0;padding-top:28px}
+    .chapter h2{font-size:1.7em}
+    .chapter h3{font-size:1.2em;margin:28px 0 10px}
+    .analogy,.example,.warning,.deep,.def{padding:14px 16px;font-size:.93em}
+    .lead{font-size:1.02em;padding:6px 0 6px 14px;margin:18px 0}
+    table{display:block;overflow-x:auto;white-space:nowrap;font-size:.86em}
+    th,td{padding:9px 11px}
+    .floating{right:14px;bottom:14px}
+    .floating button,.floating a{width:44px;height:44px;font-size:1.05em}
+    .end{padding:40px 18px;margin-top:48px}
+    .end h2{font-size:1.5em}
+    .img-grid{grid-template-columns:1fr 1fr;gap:10px}
+    .img-grid img{height:140px}
+    .selfcheck{padding:16px}
+  }
+  @media (max-width: 420px){
+    .hero h1{font-size:1.7em}
+    .chapter h2{font-size:1.45em}
+    .img-grid{grid-template-columns:1fr}
+    .img-grid img{height:auto}
+  }
+</style>
+</head>
+<body>
+
+<div id="progressBar"></div>
+
+<div class="hero">
+  <div class="hero-content">
+    <h1>Ossos do Crânio<br>e Coluna Vertebral</h1>
+    <p class="subtitle">"O esqueleto que protege o sistema nervoso — caixa, pilar e armadura."</p>
+    <div class="meta">
+      <span>📚 Guia com imagens</span>
+      <span>⏱️ ~20 minutos</span>
+      <span>🦴 Osteologia da cabeça e coluna</span>
+    </div>
+  </div>
+</div>
+
+<div class="toc" id="top">
+  <h2>📑 Sumário</h2>
+  <ol>
+    <li><a href="#cap1">O crânio — 22 ossos e duas divisões</a></li>
+    <li><a href="#cap2">Neurocrânio — os 8 ossos da caixa craniana</a></li>
+    <li><a href="#cap3">Esqueleto facial — os 14 ossos da face</a></li>
+    <li><a href="#cap4">Calota, base e fossas cranianas</a></li>
+    <li><a href="#cap5">Coluna vertebral — visão geral e regiões</a></li>
+    <li><a href="#cap6">Diferenças entre as vértebras</a></li>
+  </ol>
+</div>
+
+<main>
+
+<article class="chapter" id="cap1">
+  <div class="chapter-num">Capítulo 1</div>
+  <h2>O crânio — 22 ossos e duas divisões</h2>
+
+  <p class="lead">A cabeça óssea humana é uma das estruturas anatômicas mais complexas do corpo: 22 ossos articulados que protegem o cérebro, estruturam a face e abrigam órgãos dos sentidos.</p>
+
+  <div class="def">
+    O <b>crânio</b> é composto por <b>22 ossos</b>, divididos em:
+    <ul>
+      <li><b>Neurocrânio</b> — 8 ossos que envolvem o cérebro.</li>
+      <li><b>Esqueleto facial (viscerocrânio)</b> — 14 ossos que formam a face.</li>
+    </ul>
+  </div>
+
+  <figure class="pdf-fig">
+    <img src="assets/img/cranio/p04.png" alt="Crânio anterior e lateral com ossos coloridos" loading="lazy">
+    <figcaption>Crânio em visões anterior e lateral. Cada cor representa um osso distinto.</figcaption>
+  </figure>
+
+  <h3>Cabeça óssea — crânio vs face</h3>
+  <figure class="pdf-fig">
+    <img src="assets/img/cranio/p06.png" alt="Cabeça óssea: crânio (A), face (B), calota craniana (C), base do crânio (D)" loading="lazy">
+    <figcaption>Cabeça óssea: A − Crânio (parte que envolve o cérebro), B − Face; C − Calota Craniana, D − Base do Crânio.</figcaption>
+  </figure>
+</article>
+
+<article class="chapter" id="cap2">
+  <div class="chapter-num">Capítulo 2</div>
+  <h2>Neurocrânio — os 8 ossos da caixa craniana</h2>
+
+  <p class="lead">O neurocrânio é a "caixa-forte" do cérebro — 8 ossos articulados por suturas praticamente imóveis.</p>
+
+  <figure class="pdf-fig">
+    <img src="assets/img/cranio/p09.png" alt="Ossos do crânio em visão lateral: frontal, parietal, temporal, occipital, esfenoide, etmoide" loading="lazy">
+    <figcaption>Ossos do crânio em visão lateral. Frontal, parietal, temporal, occipital, esfenoide e etmoide.</figcaption>
+  </figure>
+
+  <table>
+    <thead><tr><th>Osso</th><th>Quantidade</th><th>Característica</th></tr></thead>
+    <tbody>
+      <tr><td><b>Frontal</b></td><td>1</td><td>Testa e teto das órbitas. Único ímpar anterior.</td></tr>
+      <tr><td><b>Parietal</b></td><td>2</td><td>Lateral e teto do crânio. Suturados na linha média.</td></tr>
+      <tr><td><b>Temporal</b></td><td>2</td><td>Lateral inferior. Contém o ouvido interno.</td></tr>
+      <tr><td><b>Occipital</b></td><td>1</td><td>Posterior. Tem o <b>forame magno</b> (passagem da medula).</td></tr>
+      <tr><td><b>Esfenoide</b></td><td>1</td><td>Forma a base do crânio (formato de borboleta).</td></tr>
+      <tr><td><b>Etmoide</b></td><td>1</td><td>Entre as órbitas, atrás do nariz; participa do teto da cavidade nasal.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="example">
+    Para memorizar: <b>"FPTOcESEt"</b> — Frontal, Parietais (2), Temporais (2), Occipital, Esfenoide, Etmoide. Total: 1+2+2+1+1+1 = <b>8</b>.
+  </div>
+
+  <figure class="pdf-fig">
+    <img src="assets/img/cranio/p11.png" alt="Crânio e face - ossos numerados com legenda" loading="lazy">
+    <figcaption>Ossos do crânio e da face, numerados. Crânio: 1-5. Face: 6-10.</figcaption>
+  </figure>
+</article>
+
+<article class="chapter" id="cap3">
+  <div class="chapter-num">Capítulo 3</div>
+  <h2>Esqueleto facial — os 14 ossos da face</h2>
+
+  <p class="lead">A face é formada por 14 ossos que dão suporte aos sentidos especiais (visão, olfato, paladar) e à mastigação.</p>
+
+  <figure class="pdf-fig">
+    <img src="assets/img/cranio/p08.png" alt="Crânio - ossos anotados em visão anterior" loading="lazy">
+    <figcaption>Ossos do crânio em visão anterior, anotados.</figcaption>
+  </figure>
+
+  <table>
+    <thead><tr><th>Osso</th><th>Quantidade</th><th>Localização</th></tr></thead>
+    <tbody>
+      <tr><td><b>Maxila</b></td><td>2</td><td>Parte superior da boca. Forma a maxila superior, palato duro e órbitas.</td></tr>
+      <tr><td><b>Mandíbula</b></td><td>1</td><td>Único osso móvel do crânio. Forma a maxila inferior.</td></tr>
+      <tr><td><b>Zigomático</b></td><td>2</td><td>Maçãs do rosto.</td></tr>
+      <tr><td><b>Nasal</b></td><td>2</td><td>Forma a ponte do nariz.</td></tr>
+      <tr><td><b>Lacrimal</b></td><td>2</td><td>Pequenos ossos na parede medial das órbitas.</td></tr>
+      <tr><td><b>Palatino</b></td><td>2</td><td>Forma a parte posterior do palato duro.</td></tr>
+      <tr><td><b>Concha nasal inferior</b></td><td>2</td><td>Cavidade nasal.</td></tr>
+      <tr><td><b>Vômer</b></td><td>1</td><td>Forma a parte inferior do septo nasal.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="deep">
+    A <b>mandíbula</b> é o único osso móvel do crânio — articula-se com os temporais nas ATMs (articulações temporomandibulares).
+  </div>
+</article>
+
+<article class="chapter" id="cap4">
+  <div class="chapter-num">Capítulo 4</div>
+  <h2>Calota, base e fossas cranianas</h2>
+
+  <p class="lead">Por dentro, a caixa craniana se divide em duas partes: a <span class="key">calota craniana</span> (teto) e a <span class="key">base do crânio</span> (assoalho).</p>
+
+  <figure class="pdf-fig">
+    <img src="assets/img/cranio/p07.png" alt="Base do crânio - fossa anterior, média e posterior" loading="lazy">
+    <figcaption>Base do crânio vista de cima — três fossas que acomodam diferentes partes do encéfalo.</figcaption>
+  </figure>
+
+  <h3>As 3 fossas da base</h3>
+  <table>
+    <thead><tr><th>Fossa</th><th>O que acomoda</th><th>Formada principalmente por</th></tr></thead>
+    <tbody>
+      <tr><td><b>Anterior</b></td><td>Lobos frontais do cérebro</td><td>Frontal e etmoide</td></tr>
+      <tr><td><b>Média</b></td><td>Lobos temporais e hipófise (sela túrcica)</td><td>Esfenoide e temporais</td></tr>
+      <tr><td><b>Posterior</b></td><td>Cerebelo e tronco encefálico</td><td>Occipital e temporais</td></tr>
+    </tbody>
+  </table>
+</article>
+
+<article class="chapter" id="cap5">
+  <div class="chapter-num">Capítulo 5</div>
+  <h2>Coluna vertebral — visão geral e regiões</h2>
+
+  <p class="lead">A coluna vertebral é o pilar central do corpo. Sustenta o tronco, protege a medula espinhal e permite a movimentação do esqueleto axial.</p>
+
+  <figure class="pdf-fig">
+    <img src="assets/img/cranio/p13.png" alt="Coluna vertebral - regiões e vértebras representativas" loading="lazy">
+    <figcaption>Regiões da coluna vertebral: cervical (Atlas, Axis), torácica, lombar, sacro e cóccix.</figcaption>
+  </figure>
+
+  <h3>Divisões e número de vértebras</h3>
+  <table>
+    <thead><tr><th>Região</th><th>Vértebras</th><th>Observação</th></tr></thead>
+    <tbody>
+      <tr><td><b>Cervical</b></td><td>7</td><td>C1 = Atlas, C2 = Axis. Pescoço.</td></tr>
+      <tr><td><b>Torácica</b></td><td>12</td><td>Articulam-se com as costelas.</td></tr>
+      <tr><td><b>Lombar</b></td><td>5</td><td>Região lombar (parte baixa das costas).</td></tr>
+      <tr><td><b>Sacro</b></td><td>5 fundidas</td><td>Forma um único osso triangular.</td></tr>
+      <tr><td><b>Cóccix</b></td><td>3-4 fundidas</td><td>Cauda residual.</td></tr>
+    </tbody>
+  </table>
+
+  <figure class="pdf-fig">
+    <img src="assets/img/cranio/p18.png" alt="Sacro e cóccix" loading="lazy">
+    <figcaption>Sacro (1) e cóccix (2) — porção terminal da coluna.</figcaption>
+  </figure>
+</article>
+
+<article class="chapter" id="cap6">
+  <div class="chapter-num">Capítulo 6</div>
+  <h2>Diferenças entre as vértebras</h2>
+
+  <p class="lead">Embora todas as vértebras compartilhem um plano básico (corpo, arco, processos), as três regiões principais têm características específicas que refletem suas funções.</p>
+
+  <figure class="pdf-fig">
+    <img src="assets/img/cranio/p14.png" alt="Vértebras cervical, torácica e lombar - diferenças" loading="lazy">
+    <figcaption>Diferenças entre vértebras cervical, torácica e lombar.</figcaption>
+  </figure>
+
+  <table>
+    <thead><tr><th>Característica</th><th>Cervical</th><th>Torácica</th><th>Lombar</th></tr></thead>
+    <tbody>
+      <tr><td>Corpo</td><td>Pequeno</td><td>Médio</td><td>Grande</td></tr>
+      <tr><td>Processo espinhoso</td><td>Bifurcado</td><td>Pontiagudo</td><td>Quadrangular</td></tr>
+      <tr><td>Característica única</td><td>Forame transverso</td><td>Fóveas costais (articulam com costelas)</td><td>—</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Atlas e Axis — as cervicais especiais</h3>
+  <figure class="pdf-fig">
+    <img src="assets/img/cranio/p15.png" alt="Atlas e Axis - C1 e C2 da coluna cervical" loading="lazy">
+    <figcaption>Atlas (C1) sustenta a cabeça; Axis (C2) permite a rotação ("dizer não").</figcaption>
+  </figure>
+
+  <ul>
+    <li><b>Atlas (C1)</b> — sem corpo vertebral. Articula-se com o occipital, sustentando a cabeça. Permite o movimento de "sim" (flexão/extensão).</li>
+    <li><b>Axis (C2)</b> — possui o processo odontoide (dens) que se projeta verticalmente. Permite a rotação da cabeça ("dizer não").</li>
+  </ul>
+
+  <div class="img-grid">
+    <figure><img src="assets/img/cranio/p16.png" alt="Vértebra torácica - visão superior e lateral"></figure>
+    <figure><img src="assets/img/cranio/p17.png" alt="Coluna lombar"></figure>
+  </div>
+
+  <div class="selfcheck">
+    <div class="selfcheck-q">Por que o processo espinhoso das vértebras cervicais é bifurcado?</div>
+    <details><summary></summary><div class="answer">Para fornecer pontos de inserção a múltiplos ligamentos e músculos do pescoço, especialmente o ligamento nucal e músculos cervicais profundos. A forma bifurcada distribui melhor a carga sobre uma região muito móvel.</div></details>
+  </div>
+</article>
+
+</main>
+
+<div class="end">
+  <h2>Pronto para o quiz?</h2>
+  <p style="color:var(--muted);font-family:sans-serif">Banco com temas, dificuldade e modo "focar nos erros".</p>
+  <a class="cta" href="revisao-cranio.html">✅ Ir para o Quiz</a>
+</div>
+
+<div class="floating">
+  <a href="index.html" title="Hub">🏠</a>
+  <button onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Topo">↑</button>
+</div>
+
+<div class="lightbox" id="lightbox">
+  <button class="close" onclick="closeLightbox()">×</button>
+  <img id="lightboxImg" alt="">
+</div>
+
+<script>
+  const bar = document.getElementById('progressBar');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const scrolled = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    bar.style.width = scrolled + '%';
+  });
+
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightboxImg');
+  document.querySelectorAll('figure.pdf-fig img, .img-grid img').forEach(img => {
+    img.addEventListener('click', () => { lbImg.src = img.src; lb.classList.add('open'); });
+  });
+  lb.addEventListener('click', e => { if(e.target === lb) closeLightbox(); });
+  function closeLightbox(){ lb.classList.remove('open'); lbImg.src = ''; }
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') closeLightbox(); });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aprenda — Tecido Nervoso / Sistema Nervoso</title>
+<style>
+  :root{
+    --bg:#0a0f1c; --bg2:#1a1f2e; --card:#1e2438; --border:#2d3650;
+    --primary:#ec4899; --primary2:#f472b6; --accent:#a78bfa;
+    --good:#10b981; --bad:#ef4444; --warn:#f59e0b; --pink:#ec4899;
+    --text:#e2e8f0; --muted:#94a3b8;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:Georgia,'Times New Roman',serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:17px}
+  .hero{min-height:60vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:60px 24px;background:radial-gradient(ellipse at top,#831843 0%,#0a0f1c 70%);position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 20% 30%,rgba(236,72,153,.18) 0,transparent 50%),radial-gradient(circle at 80% 70%,rgba(167,139,250,.12) 0,transparent 50%)}
+  .hero-content{position:relative;z-index:1;max-width:800px}
+  .hero h1{font-size:3.2em;margin:0 0 12px;background:linear-gradient(135deg,#f472b6,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
+  .hero .subtitle{font-size:1.3em;color:var(--muted);font-style:italic;margin-bottom:30px}
+  .hero .meta{display:flex;justify-content:center;gap:30px;flex-wrap:wrap;color:var(--muted);font-size:.9em;font-family:sans-serif}
+  #progressBar{position:fixed;top:0;left:0;height:4px;background:linear-gradient(90deg,var(--primary),var(--accent));z-index:1000;transition:width .1s;width:0%}
+  .toc{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:30px;margin:40px auto;max-width:900px}
+  .toc h2{margin-top:0;color:var(--primary2);font-family:sans-serif}
+  .toc ol{padding-left:24px;font-family:sans-serif}
+  .toc li{margin:10px 0}
+  .toc a{color:var(--text);text-decoration:none;border-bottom:1px dashed transparent;transition:all .2s}
+  .toc a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+  main{max-width:880px;margin:0 auto;padding:40px 24px 80px}
+  .chapter{margin:80px 0;padding-top:40px;border-top:1px solid var(--border)}
+  .chapter:first-child{border-top:none}
+  .chapter-num{display:inline-block;font-family:sans-serif;color:var(--accent);font-size:.85em;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px}
+  .chapter h2{font-size:2.4em;margin:0 0 24px;color:var(--text);line-height:1.2;font-weight:700}
+  .chapter h3{font-size:1.5em;color:var(--primary2);margin:40px 0 12px;font-family:sans-serif}
+  .chapter h4{color:var(--accent);margin:24px 0 8px;font-family:sans-serif;font-size:1.1em}
+  .chapter p{margin:18px 0}
+  .lead{font-size:1.2em;color:var(--muted);font-style:italic;border-left:3px solid var(--primary);padding:8px 0 8px 20px;margin:24px 0}
+  .analogy,.example,.warning,.deep,.story,.def{margin:28px 0;padding:20px 24px;border-radius:12px;font-family:sans-serif;font-size:.95em;line-height:1.7}
+  .analogy{background:linear-gradient(135deg,rgba(236,72,153,.12),rgba(236,72,153,.04));border-left:4px solid var(--pink)}
+  .analogy::before{content:'🎭 Analogia';display:block;font-weight:700;color:var(--pink);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .example{background:linear-gradient(135deg,rgba(167,139,250,.12),rgba(167,139,250,.02));border-left:4px solid var(--accent)}
+  .example::before{content:'💡 Exemplo';display:block;font-weight:700;color:var(--accent);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .warning{background:linear-gradient(135deg,rgba(245,158,11,.12),rgba(245,158,11,.02));border-left:4px solid var(--warn)}
+  .warning::before{content:'⚠️ Cuidado';display:block;font-weight:700;color:var(--warn);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .deep{background:linear-gradient(135deg,rgba(236,72,153,.12),rgba(236,72,153,.02));border-left:4px solid var(--primary)}
+  .deep::before{content:'🔍 Aprofundando';display:block;font-weight:700;color:var(--primary2);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .story{background:linear-gradient(135deg,rgba(16,185,129,.1),rgba(16,185,129,.02));border-left:4px solid var(--good)}
+  .story::before{content:'📖 Contexto';display:block;font-weight:700;color:var(--good);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .def{background:var(--bg2);border:1px solid var(--border);border-radius:8px}
+  .def::before{content:'📌 Definição';display:block;font-weight:700;color:var(--primary2);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  table{width:100%;border-collapse:collapse;margin:24px 0;background:var(--card);border-radius:12px;overflow:hidden;font-family:sans-serif;font-size:.95em}
+  th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+  th{background:linear-gradient(135deg,var(--primary),#9333ea);color:white;font-weight:700}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:rgba(236,72,153,.05)}
+  .key{background:rgba(236,72,153,.15);color:var(--primary2);padding:2px 8px;border-radius:4px;font-weight:600;font-family:sans-serif}
+  blockquote{border-left:4px solid var(--accent);padding:8px 24px;margin:24px 0;font-style:italic;color:var(--muted);background:rgba(167,139,250,.05);border-radius:0 8px 8px 0}
+  .selfcheck{background:var(--card);border:2px dashed var(--primary);border-radius:12px;padding:20px;margin:30px 0;font-family:sans-serif}
+  .selfcheck-q{font-weight:600;color:var(--primary2);margin-bottom:12px}
+  .selfcheck-q::before{content:'🤔 Pergunta para você: ';font-weight:700;color:var(--accent)}
+  details summary{cursor:pointer;color:var(--accent);font-weight:600;outline:none;list-style:none}
+  details summary::before{content:'👁️ Mostrar resposta ▼';font-size:.9em}
+  details[open] summary::before{content:'🙈 Esconder ▲'}
+  details[open] .answer{margin-top:12px;padding:14px;background:var(--bg2);border-radius:8px;border-left:3px solid var(--good);font-style:italic;color:var(--text);font-weight:normal}
+  .floating{position:fixed;right:24px;bottom:24px;display:flex;flex-direction:column;gap:8px;z-index:50}
+  .floating button,.floating a{background:var(--card);border:1px solid var(--border);color:var(--text);width:48px;height:48px;border-radius:50%;cursor:pointer;font-size:1.2em;transition:all .2s;box-shadow:0 4px 12px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;text-decoration:none}
+  .floating button:hover,.floating a:hover{background:var(--primary);transform:scale(1.1)}
+  .end{text-align:center;padding:60px 24px;background:radial-gradient(ellipse at center,rgba(236,72,153,.15),transparent);margin-top:80px;border-top:1px solid var(--border)}
+  .end h2{font-size:2em;color:var(--primary2)}
+  .cta{display:inline-block;margin-top:20px;padding:14px 28px;background:linear-gradient(135deg,var(--primary),var(--accent));color:white;border-radius:99px;text-decoration:none;font-family:sans-serif;font-weight:600;transition:transform .2s}
+  .cta:hover{transform:scale(1.05)}
+
+  /* Image from PDF */
+  figure.pdf-fig{margin:28px 0;text-align:center;font-family:sans-serif}
+  figure.pdf-fig img{max-width:100%;border-radius:14px;border:1px solid var(--border);background:white;box-shadow:0 12px 32px -10px rgba(0,0,0,.6);transition:transform .3s, box-shadow .3s;cursor:zoom-in}
+  figure.pdf-fig img:hover{transform:translateY(-2px) scale(1.01);box-shadow:0 20px 44px -10px rgba(236,72,153,.25)}
+  figure.pdf-fig figcaption{font-size:.84em;color:var(--muted);margin-top:10px;font-style:italic;padding:0 12px}
+  .img-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:24px 0}
+  .img-grid figure{margin:0}
+  .img-grid img{width:100%;height:200px;object-fit:cover;border-radius:12px;border:1px solid var(--border);background:white;cursor:zoom-in;transition:transform .2s}
+  .img-grid img:hover{transform:scale(1.03)}
+
+  /* Lightbox */
+  .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;z-index:200;padding:20px;cursor:zoom-out}
+  .lightbox.open{display:flex}
+  .lightbox img{max-width:96vw;max-height:92vh;border-radius:10px}
+  .lightbox .close{position:absolute;top:18px;right:22px;background:rgba(255,255,255,.1);border:none;color:white;width:44px;height:44px;border-radius:50%;font-size:1.4em;cursor:pointer;backdrop-filter:blur(8px)}
+
+  /* ===== Mobile responsiveness ===== */
+  @media (max-width: 720px){
+    body{font-size:16px;line-height:1.7}
+    .hero{padding:48px 18px;min-height:auto}
+    .hero h1{font-size:clamp(1.8em,7vw,2.4em)}
+    .hero .subtitle{font-size:1em;margin-bottom:18px}
+    .hero .meta{gap:10px 14px;font-size:.82em}
+    .toc{padding:20px;margin:24px 14px;border-radius:12px}
+    .toc h2{font-size:1.3em}
+    main{padding:24px 16px 60px}
+    .chapter{margin:56px 0;padding-top:28px}
+    .chapter h2{font-size:1.7em}
+    .chapter h3{font-size:1.2em;margin:28px 0 10px}
+    .chapter h4{font-size:1.02em}
+    .analogy,.example,.warning,.deep,.story,.def{padding:14px 16px;font-size:.93em}
+    .lead{font-size:1.02em;padding:6px 0 6px 14px;margin:18px 0}
+    table{display:block;overflow-x:auto;white-space:nowrap;font-size:.86em}
+    th,td{padding:9px 11px}
+    .floating{right:14px;bottom:14px}
+    .floating button,.floating a{width:44px;height:44px;font-size:1.05em}
+    .end{padding:40px 18px;margin-top:48px}
+    .end h2{font-size:1.5em}
+    .cta{padding:12px 22px;font-size:.95em}
+    blockquote{padding:8px 16px;margin:18px 0}
+    .selfcheck{padding:16px}
+    .img-grid{grid-template-columns:1fr 1fr;gap:10px}
+    .img-grid img{height:140px}
+    figure.pdf-fig{margin:20px 0}
+    figure.pdf-fig figcaption{font-size:.8em}
+  }
+  @media (max-width: 420px){
+    .hero h1{font-size:1.7em}
+    .chapter h2{font-size:1.45em}
+    .toc{margin:20px 12px;padding:16px}
+    .img-grid{grid-template-columns:1fr}
+    .img-grid img{height:auto}
+  }
+</style>
+</head>
+<body>
+
+<div id="progressBar"></div>
+
+<div class="hero">
+  <div class="hero-content">
+    <h1>Tecido Nervoso</h1>
+    <p class="subtitle">"Toda sensação, decisão e movimento começa numa célula que recebe, processa e transmite."</p>
+    <div class="meta">
+      <span>📚 Guia com imagens</span>
+      <span>⏱️ ~28 minutos</span>
+      <span>🧠 Aula da Profa. Isabele Alcoforado</span>
+    </div>
+  </div>
+</div>
+
+<div class="toc" id="top">
+  <h2>📑 Sumário</h2>
+  <ol>
+    <li><a href="#cap1">Visão geral do Sistema Nervoso</a></li>
+    <li><a href="#cap2">Classificação anatômica e funcional</a></li>
+    <li><a href="#cap3">Neurônios — estrutura e tipos</a></li>
+    <li><a href="#cap4">Células da Glia (neuroglia)</a></li>
+    <li><a href="#cap5">Impulso Nervoso — potencial de repouso e ação</a></li>
+    <li><a href="#cap6">Sinapses e neurotransmissores</a></li>
+  </ol>
+</div>
+
+<main>
+
+<article class="chapter" id="cap1">
+  <div class="chapter-num">Capítulo 1</div>
+  <h2>Visão geral do Sistema Nervoso</h2>
+
+  <p class="lead">O sistema nervoso é o sistema de comando do corpo — controla todos os outros sistemas, interpreta estímulos e desencadeia respostas. É o que conecta o ser ao mundo.</p>
+
+  <div class="def">
+    O <b>sistema nervoso</b> é o conjunto de órgãos do corpo humano que capta mensagens e estímulos do ambiente, os "interpreta" e "arquiva", elaborando respostas na forma de <b>movimentos, sensações ou constatações</b>.
+  </div>
+
+  <h3>O que ele faz?</h3>
+  <ul>
+    <li><b>Integração</b> do ser com o meio ambiente.</li>
+    <li><b>Controle e coordenação</b> das funções de todos os sistemas do organismo.</li>
+    <li><b>Interpretação</b> de estímulos e desencadeamento de respostas.</li>
+    <li>Controle de atos <b>voluntários</b> (conscientes) e <b>involuntários</b> (inconscientes).</li>
+  </ul>
+
+  <div class="analogy">
+    Pense no sistema nervoso como a central de operações de uma cidade: ele recebe relatórios de cada bairro (sensores), toma decisões (cérebro) e envia ordens para o trânsito, a iluminação, a água — tudo em milissegundos.
+  </div>
+</article>
+
+<article class="chapter" id="cap2">
+  <div class="chapter-num">Capítulo 2</div>
+  <h2>Classificação anatômica e funcional</h2>
+
+  <p class="lead">O sistema nervoso se divide, anatomicamente, em <span class="key">Central</span> e <span class="key">Periférico</span>. E funcionalmente, em <span class="key">Somático</span> e <span class="key">Visceral</span>.</p>
+
+  <figure class="pdf-fig">
+    <img src="assets/img/tecido/p03.png" alt="Classificação anatômica do sistema nervoso" loading="lazy">
+    <figcaption>Classificação anatômica: SNC (encéfalo + medula) e SNP (nervos, gânglios, receptores).</figcaption>
+  </figure>
+
+  <h3>Classificação anatômica</h3>
+  <table>
+    <thead><tr><th>Divisão</th><th>Componentes</th></tr></thead>
+    <tbody>
+      <tr><td><b>Central (SNC)</b></td><td>Encéfalo (cérebro, cerebelo, tronco encefálico) e medula espinal.</td></tr>
+      <tr><td><b>Periférico (SNP)</b></td><td>Nervos (cranianos e espinais), gânglios e receptores.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Classificação funcional</h3>
+  <figure class="pdf-fig">
+    <img src="assets/img/tecido/p04.png" alt="Classificação funcional do SNC" loading="lazy">
+    <figcaption>Divisão funcional em somático (relação com o corpo) e visceral (controle das vísceras, via SNA).</figcaption>
+  </figure>
+
+  <table>
+    <thead><tr><th>Divisão</th><th>Aferente (sensitivo)</th><th>Eferente (motor)</th></tr></thead>
+    <tbody>
+      <tr><td><b>Somático</b></td><td>Traz informações do corpo</td><td>Ordens de contração/movimento</td></tr>
+      <tr><td><b>Visceral</b></td><td>Sensibilidade visceral</td><td>Controle das vísceras (Sistema Nervoso Autônomo: simpático + parassimpático)</td></tr>
+    </tbody>
+  </table>
+
+  <div class="deep">
+    <b>Aferente x Eferente</b>:
+    <ul>
+      <li><b>Aferente</b> (do latim <em>ad-ferre</em>, "trazer para") — leva a informação <em>até</em> o SNC.</li>
+      <li><b>Eferente</b> (de <em>ex-ferre</em>, "levar para fora") — leva a ordem do SNC <em>para</em> os efetuadores (músculos, glândulas).</li>
+    </ul>
+  </div>
+</article>
+
+<article class="chapter" id="cap3">
+  <div class="chapter-num">Capítulo 3</div>
+  <h2>Neurônios — estrutura e tipos</h2>
+
+  <p class="lead">O neurônio é a <b>unidade morfofuncional</b> do sistema nervoso. Tem duas propriedades fundamentais: <span class="key">irritabilidade</span> (capacidade de reagir a estímulos) e <span class="key">condutibilidade</span> (transmitir o impulso).</p>
+
+  <figure class="pdf-fig">
+    <img src="assets/img/tecido/p05.png" alt="Design básico do neurônio" loading="lazy">
+    <figcaption>Tecido nervoso = neurônios + células da glia. O neurônio recebe, processa e envia informações.</figcaption>
+  </figure>
+
+  <h3>Partes do neurônio</h3>
+  <figure class="pdf-fig">
+    <img src="assets/img/tecido/p08.png" alt="Estrutura básica do neurônio com bainha de mielina e células de Schwann" loading="lazy">
+    <figcaption>Estrutura básica: corpo celular, dendritos, axônio, bainha de mielina, célula de Schwann e nódulo de Ranvier.</figcaption>
+  </figure>
+
+  <table>
+    <thead><tr><th>Estrutura</th><th>Função</th></tr></thead>
+    <tbody>
+      <tr><td><b>Corpo celular (pericário)</b></td><td>Contém o núcleo e a maioria das organelas. Integra os sinais recebidos.</td></tr>
+      <tr><td><b>Dendritos</b></td><td>Ramificações curtas do corpo celular. <b>Captam estímulos</b>.</td></tr>
+      <tr><td><b>Axônio</b></td><td>O maior prolongamento. Conduz o impulso ao terminal. Tem <b>vesículas com neurotransmissores</b> na porção terminal.</td></tr>
+      <tr><td><b>Bainha de mielina</b></td><td>Células de Schwann (SNP) ou oligodendrócitos (SNC) que se enrolam no axônio. Funciona como <b>isolante elétrico</b>.</td></tr>
+      <tr><td><b>Nódulo de Ranvier</b></td><td>Regiões do axônio não recobertas por mielina. Permitem a <b>condução saltatória</b>.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Tipos morfológicos</h3>
+  <figure class="pdf-fig">
+    <img src="assets/img/tecido/p10.png" alt="Tipos de neurônios: multipolares, bipolares, pseudo-unipolares" loading="lazy">
+    <figcaption>Classificação morfológica conforme a forma e número de prolongamentos.</figcaption>
+  </figure>
+
+  <ul>
+    <li><b>Multipolares</b> — vários dendritos e um axônio. Maioria dos neurônios.</li>
+    <li><b>Bipolares</b> — um dendrito e um axônio. Ex: interneurônios da retina.</li>
+    <li><b>Pseudo-unipolares</b> — aparentam ter um único prolongamento. Ex: gânglios espinhais.</li>
+  </ul>
+
+  <h3>Tipos funcionais</h3>
+  <figure class="pdf-fig">
+    <img src="assets/img/tecido/p14.png" alt="Tipos de neurônios funcionais: sensorial, associativo, motor" loading="lazy">
+    <figcaption>Neurônio sensorial → associativo → motor — direção típica da condução do estímulo.</figcaption>
+  </figure>
+
+  <ul>
+    <li><b>Aferentes (sensitivos)</b>: levam informações dos receptores ao SNC.</li>
+    <li><b>Eferentes (motores)</b>: conduzem informações do SNC ao órgão efetuador (músculo ou glândula).</li>
+    <li><b>Interneurônios (associativos)</b>: conectam aferentes e eferentes dentro do SNC.</li>
+  </ul>
+
+  <div class="selfcheck">
+    <div class="selfcheck-q">Qual a função dos nódulos de Ranvier?</div>
+    <details><summary></summary><div class="answer">São pequenas regiões do axônio sem bainha de mielina. Permitem a <b>condução saltatória</b>: o impulso nervoso "salta" de nódulo em nódulo, aumentando muito a velocidade de transmissão.</div></details>
+  </div>
+</article>
+
+<article class="chapter" id="cap4">
+  <div class="chapter-num">Capítulo 4</div>
+  <h2>Células da Glia (neuroglia)</h2>
+
+  <p class="lead">Por muito tempo achou-se que apenas neurônios "fizessem o trabalho". Hoje sabemos: <b>as células da glia são mais numerosas que os neurônios</b> e sem elas o sistema nervoso simplesmente não funciona.</p>
+
+  <div class="def">
+    As <b>células da glia (neuroglia)</b> participam da atividade neural, da nutrição, de processos de defesa e da função de sustentação. Possuem função estrutural e metabólica.
+  </div>
+
+  <h3>Funções principais</h3>
+  <ul>
+    <li>Fornecem <b>suporte físico</b> aos neurônios (o SN tem pouca matriz extracelular).</li>
+    <li><b>Suporte metabólico</b> — mantêm a composição do fluido extracelular.</li>
+    <li>Induzem o <b>crescimento</b> dos neurônios durante desenvolvimento e reparo.</li>
+    <li>Defesa imunológica e fagocitose de restos celulares.</li>
+  </ul>
+
+  <figure class="pdf-fig">
+    <img src="assets/img/tecido/p17.png" alt="Células da glia rodeando um neurônio: astrócito, oligodendrócito" loading="lazy">
+    <figcaption>Astrócitos e oligodendrócitos em ação no SNC — sustentação, mielinização e suporte.</figcaption>
+  </figure>
+
+  <h3>Os 5 tipos principais</h3>
+  <table>
+    <thead><tr><th>Célula</th><th>Localização</th><th>Função</th></tr></thead>
+    <tbody>
+      <tr><td><b>Astrócitos</b></td><td>SNC</td><td>Sustentação, nutrição, formam a <b>barreira hematoencefálica</b> (relação com vasos sanguíneos).</td></tr>
+      <tr><td><b>Oligodendrócitos</b></td><td>SNC</td><td>Formam a bainha de mielina. <b>Um único oligodendrócito mieliniza vários axônios</b>.</td></tr>
+      <tr><td><b>Células de Schwann</b></td><td>SNP</td><td>Formam a bainha de mielina no SNP. Cada uma mieliniza apenas um trecho.</td></tr>
+      <tr><td><b>Micróglias</b></td><td>SNC</td><td><b>Defesa imunológica</b> — fagocitam restos celulares e patógenos. Tipo especializado de macrófago.</td></tr>
+      <tr><td><b>Células ependimárias</b></td><td>Ventrículos do encéfalo, canal central da medula</td><td>Epiteliais ciliadas. Produzem e movimentam o <b>líquido cefalorraquidiano (LCR)</b> nos plexos coroides.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="img-grid">
+    <figure><img src="assets/img/tecido/p19.png" alt="Astrócito protoplasmático, astrócito fibroso, microglia e oligodendrócito" loading="lazy"></figure>
+    <figure><img src="assets/img/tecido/p29.png" alt="Astrócito - microscopia mostrando relação com vaso sanguíneo" loading="lazy"></figure>
+    <figure><img src="assets/img/tecido/p30.png" alt="Micróglia - microscopia" loading="lazy"></figure>
+    <figure><img src="assets/img/tecido/p25.png" alt="Oligodendrócito mielinizando vários axônios" loading="lazy"></figure>
+  </div>
+
+  <h3>Bainha de mielina — quem faz onde?</h3>
+  <div class="example">
+    <b>No SNC</b> — oligodendrócitos (cada um mieliniza até vários axônios).<br>
+    <b>No SNP</b> — células de Schwann (cada uma mieliniza apenas um trecho de um axônio).<br><br>
+    A bainha é formada por <b>camadas múltiplas concêntricas de fosfolipídios</b> (em alguns neurônios chegam a ~150 camadas) e funciona como isolante elétrico — permite a <b>condução saltatória</b>.
+  </div>
+
+  <h3>LCR — Líquido Cefalorraquidiano</h3>
+  <figure class="pdf-fig">
+    <img src="assets/img/tecido/p28.png" alt="Líquido cefalorraquidiano nos ventrículos cerebrais" loading="lazy">
+    <figcaption>O LCR é secretado pelas células ependimárias dos plexos coroides, localizados no sistema ventricular.</figcaption>
+  </figure>
+
+  <div class="warning">
+    <b>Astrócitos × barreira hematoencefálica</b>: os prolongamentos astrocitários se conectam aos vasos sanguíneos e induzem modificações nas células endoteliais, regulando a permeabilidade. É essa "filtragem" que protege o cérebro de toxinas e patógenos no sangue.
+  </div>
+</article>
+
+<article class="chapter" id="cap5">
+  <div class="chapter-num">Capítulo 5</div>
+  <h2>Impulso Nervoso — potencial de repouso e ação</h2>
+
+  <p class="lead">O sinal que viaja pelo neurônio é, no fundo, uma <em>onda elétrica</em> baseada na troca de íons sódio (Na⁺) e potássio (K⁺) através da membrana.</p>
+
+  <h3>Potencial de Repouso vs Potencial de Ação</h3>
+  <figure class="pdf-fig">
+    <img src="assets/img/tecido/p32.png" alt="Propagação do impulso nervoso" loading="lazy">
+    <figcaption>Propagação do impulso — inversão de cargas ao longo da membrana do axônio.</figcaption>
+  </figure>
+
+  <div class="def">
+    <b>Potencial de repouso:</b> diferença de potencial entre a superfície externa e interna da membrana, mantida pela <b>bomba Na⁺/K⁺</b>. Carga interna ≈ −70 mV.<br><br>
+    <b>Potencial de ação:</b> inversão (despolarização) transitória do potencial de repouso, causada pela mudança temporária na permeabilidade da membrana aos íons Na⁺ e K⁺.
+  </div>
+
+  <h3>As 3 fases elétricas</h3>
+  <figure class="pdf-fig">
+    <img src="assets/img/tecido/p37.png" alt="Gráfico do potencial de ação - polarização, despolarização, repolarização" loading="lazy">
+    <figcaption>Eventos elétricos: canais de Na⁺ abrem → despolarização (+30 mV) → canais de Na⁺ fecham → canais de K⁺ abrem → repolarização (volta a −70 mV).</figcaption>
+  </figure>
+
+  <ol>
+    <li><b>Polarização (repouso)</b>: ≈ −70 mV. Fora há mais Na⁺ (positivo); dentro há mais K⁺ + proteínas negativas.</li>
+    <li><b>Despolarização</b>: canais de Na⁺ se abrem; Na⁺ entra; a carga interna sobe rapidamente até cerca de <b>+30 mV</b>.</li>
+    <li><b>Repolarização</b>: canais de Na⁺ se fecham; canais de K⁺ se abrem; K⁺ sai; a carga volta a ficar negativa.</li>
+  </ol>
+
+  <h3>Bomba Na⁺/K⁺</h3>
+  <div class="deep">
+    Para manter o equilíbrio entre disparos, a célula gasta ATP movendo <b>3 Na⁺ para fora</b> e <b>2 K⁺ para dentro</b> a cada ciclo. Sem essa bomba, depois de alguns disparos o gradiente se esgotaria e o neurônio pararia de funcionar.
+  </div>
+
+  <h3>Condução saltatória</h3>
+  <figure class="pdf-fig">
+    <img src="assets/img/tecido/p35.png" alt="Condução saltatória ao longo do axônio mielinizado" loading="lazy">
+    <figcaption>Em axônios mielinizados, o potencial "pula" entre os nódulos de Ranvier — muito mais rápido.</figcaption>
+  </figure>
+
+  <p>Em axônios com bainha de mielina, o impulso não precisa despolarizar toda a membrana ponto a ponto. Ele <b>"salta" de nódulo de Ranvier em nódulo de Ranvier</b> — daí o nome <em>saltatória</em>. O resultado é uma condução muito mais rápida e econômica.</p>
+
+  <div class="warning">
+    Doenças <b>desmielinizantes</b>, como a esclerose múltipla, atacam a bainha de mielina. Sem ela, a condução fica lenta, errática ou bloqueia — o que explica os sintomas neurológicos típicos.
+  </div>
+
+  <div class="selfcheck">
+    <div class="selfcheck-q">Por que o potencial de repouso é negativo do lado de dentro?</div>
+    <details><summary></summary><div class="answer">Porque a bomba Na⁺/K⁺ exporta 3 Na⁺ e importa apenas 2 K⁺ por ciclo (saldo: 1 carga positiva sai por ciclo), e porque há proteínas e ânions presos dentro da célula. Isso deixa o meio intracelular ≈ 70 mV mais negativo que o extracelular.</div></details>
+  </div>
+</article>
+
+<article class="chapter" id="cap6">
+  <div class="chapter-num">Capítulo 6</div>
+  <h2>Sinapses e neurotransmissores</h2>
+
+  <p class="lead">Os neurônios <em>não se tocam</em>. Eles se comunicam através de uma fenda microscópica onde substâncias químicas (neurotransmissores) levam a mensagem de um lado para o outro.</p>
+
+  <figure class="pdf-fig">
+    <img src="assets/img/tecido/p43.png" alt="Estrutura completa de um neurônio com sinapse, organelas e bainha de mielina" loading="lazy">
+    <figcaption>Neurônio completo — organelas no soma, axônio mielinizado e detalhe da sinapse.</figcaption>
+  </figure>
+
+  <div class="def">
+    <b>Sinapse:</b> região de conexão (sem contato físico direto) entre dois neurônios — ou entre neurônio e outra célula efetora. A transmissão ocorre via <b>neurotransmissores</b> (ou diretamente, no caso da sinapse elétrica).
+  </div>
+
+  <h3>Tipos de sinapse</h3>
+  <table>
+    <thead><tr><th>Tipo</th><th>Como funciona</th><th>Onde ocorre</th></tr></thead>
+    <tbody>
+      <tr><td><b>Elétrica</b></td><td>O impulso passa de uma célula para outra <em>diretamente</em> via junções comunicantes. Muito mais rápida.</td><td>Músculo liso e cardíaco — contração acontece como um todo.</td></tr>
+      <tr><td><b>Química</b></td><td>O impulso é transmitido via <b>neurotransmissores</b> liberados na fenda sináptica. Mais lenta, mas modulável.</td><td>Maioria das sinapses, especialmente no SNC.</td></tr>
+    </tbody>
+  </table>
+
+  <p style="color:var(--accent);font-weight:600;text-align:center">⚡ <em>Quase todas as sinapses do SNC são químicas.</em></p>
+
+  <h3>Estrutura da sinapse química</h3>
+  <figure class="pdf-fig">
+    <img src="assets/img/tecido/p47.png" alt="Sinapse química detalhada com axônio, vesículas, fenda sináptica e receptores" loading="lazy">
+    <figcaption>Botões terminais com vesículas de neurotransmissor → fenda sináptica → receptores na membrana pós-sináptica.</figcaption>
+  </figure>
+
+  <h4>Passos da sinapse química</h4>
+  <ol>
+    <li>Potencial de ação chega ao <b>terminal axônico</b>.</li>
+    <li>A entrada de <b>Ca²⁺</b> dispara a fusão das vesículas com a membrana pré-sináptica.</li>
+    <li>Neurotransmissores são liberados na <b>fenda sináptica</b>.</li>
+    <li>Eles se ligam às <b>proteínas receptoras</b> na membrana pós-sináptica.</li>
+    <li>Isso gera novo potencial (excitatório ou inibitório).</li>
+    <li>Os neurotransmissores são <b>removidos</b> da fenda — por enzimas (degradação) ou por agentes que impedem a remoção.</li>
+  </ol>
+
+  <h3>Principais neurotransmissores</h3>
+  <p>Existem mais de 60, agrupados em 4 famílias:</p>
+  <table>
+    <thead><tr><th>Grupo</th><th>Exemplos</th></tr></thead>
+    <tbody>
+      <tr><td><b>Colinas</b></td><td>Acetilcolina</td></tr>
+      <tr><td><b>Aminas biogênicas</b></td><td>Adrenalina, noradrenalina, dopamina, serotonina, DOPA</td></tr>
+      <tr><td><b>Aminoácidos</b></td><td>Glutamato, aspartato, glicina, taurina</td></tr>
+      <tr><td><b>Neuropeptídeos</b></td><td>Mais de 50, formados por cadeias mais longas de aminoácidos (encefalina, endorfina…)</td></tr>
+    </tbody>
+  </table>
+
+  <h4>O que cada um faz?</h4>
+  <ul>
+    <li><b>Acetilcolina</b> — atenção, aprendizagem, memória. Baixa em <b>Alzheimer</b>. Liberada pelo SNA <em>parassimpático</em>.</li>
+    <li><b>Dopamina</b> — estimulação e controle motor. Baixa em <b>Parkinson</b>.</li>
+    <li><b>Serotonina</b> — humor, memória, aprendizado. Alimentação + exercício aumentam seus níveis.</li>
+    <li><b>Noradrenalina</b> — excitação física e mental, bom humor. Principal NT do SNA <em>simpático</em>.</li>
+    <li><b>Glutamato</b> — principal neurotransmissor <b>excitatório</b> do SN.</li>
+    <li><b>GABA</b> — principal neurotransmissor <b>inibitório</b> do SN.</li>
+    <li><b>Encefalina e endorfina</b> — opiáceos endógenos; modulam a dor e o estresse.</li>
+  </ul>
+
+  <h3>Tipos de sinapses (por quem se conecta)</h3>
+  <ul>
+    <li><b>Interneuronais</b> — neurônio com neurônio.</li>
+    <li><b>Neuromusculares</b> — neurônio com fibra muscular (a <b>placa motora</b>).</li>
+    <li><b>Neuroglandulares</b> — neurônio com célula glandular.</li>
+  </ul>
+
+  <figure class="pdf-fig">
+    <img src="assets/img/tecido/p54.png" alt="Placa motora - junção neuromuscular" loading="lazy">
+    <figcaption>Placa motora — junção entre o axônio do motoneurônio e a fibra muscular. Liberação de acetilcolina dispara contração.</figcaption>
+  </figure>
+
+  <div class="selfcheck">
+    <div class="selfcheck-q">Qual íon dispara a liberação dos neurotransmissores no terminal pré-sináptico?</div>
+    <details><summary></summary><div class="answer">O <strong>cálcio (Ca²⁺)</strong>. Quando o potencial de ação chega ao terminal, canais de Ca²⁺ se abrem; o cálcio que entra faz as vesículas se fundirem à membrana pré-sináptica e despejarem os neurotransmissores na fenda.</div></details>
+  </div>
+</article>
+
+</main>
+
+<div class="end">
+  <h2>Pronto para o quiz?</h2>
+  <p style="color:var(--muted);font-family:sans-serif">Banco de questões por tema, com dificuldade variável, embaralhamento e modo "focar nos erros".</p>
+  <a class="cta" href="revisao-tecido.html">✅ Ir para o Quiz</a>
+</div>
+
+<div class="floating">
+  <a href="index.html" title="Hub">🏠</a>
+  <button onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Topo">↑</button>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <button class="close" onclick="closeLightbox()" aria-label="Fechar">×</button>
+  <img id="lightboxImg" alt="">
+</div>
+
+<script>
+  const bar = document.getElementById('progressBar');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const scrolled = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    bar.style.width = scrolled + '%';
+  });
+
+  // Lightbox for PDF images
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightboxImg');
+  document.querySelectorAll('figure.pdf-fig img, .img-grid img').forEach(img => {
+    img.addEventListener('click', () => {
+      lbImg.src = img.src;
+      lb.classList.add('open');
+    });
+  });
+  lb.addEventListener('click', e => { if(e.target === lb) closeLightbox(); });
+  function closeLightbox(){ lb.classList.remove('open'); lbImg.src = ''; }
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') closeLightbox(); });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Revisão — Ossos do Crânio e Coluna</title>
+<style>
+  :root{
+    --bg:#0a0f1c; --bg2:#1a1f2e; --card:#1e2438; --border:#2d3650;
+    --primary:#ec4899; --primary2:#f472b6; --accent:#a78bfa;
+    --good:#10b981; --bad:#ef4444; --warn:#f59e0b;
+    --text:#e2e8f0; --muted:#94a3b8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+  header{background:linear-gradient(135deg,#831843,#ec4899);padding:32px 24px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.3)}
+  header h1{margin:0;font-size:2em}
+  header p{margin:8px 0 0;color:#fce7f3}
+  nav{position:sticky;top:0;background:rgba(10,15,28,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:12px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;z-index:100}
+  nav button{background:var(--card);color:var(--text);border:1px solid var(--border);padding:8px 14px;border-radius:8px;cursor:pointer;font-size:.9em;transition:all .2s}
+  nav button:hover,nav button.active{background:var(--primary);border-color:var(--primary)}
+  main{max-width:1100px;margin:0 auto;padding:24px}
+  section{display:none;animation:fadeIn .4s}
+  section.active{display:block}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  h2{color:var(--primary2);border-bottom:2px solid var(--primary);padding-bottom:8px;margin-top:0}
+  h3{color:var(--accent);margin-top:24px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:16px 0;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+  .card.highlight{border-left:4px solid var(--primary)}
+  table{width:100%;border-collapse:collapse;margin:12px 0;background:var(--bg2);border-radius:8px;overflow:hidden}
+  th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+  th{background:var(--primary);color:white}
+  tr:last-child td{border-bottom:none}
+  .pill{display:inline-block;background:var(--primary);color:white;padding:2px 10px;border-radius:99px;font-size:.8em;margin-right:6px}
+  .pill.good{background:var(--good)} .pill.bad{background:var(--bad)} .pill.warn{background:var(--warn)}
+  .flash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+  .flash{background:var(--card);border:1px solid var(--border);border-radius:12px;height:180px;perspective:1000px;cursor:pointer}
+  .flash-inner{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+  .flash.flipped .flash-inner{transform:rotateY(180deg)}
+  .flash-front,.flash-back{position:absolute;inset:0;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;text-align:center;padding:16px;border-radius:12px}
+  .flash-front{background:linear-gradient(135deg,#831843,#ec4899);font-weight:600;font-size:1.05em}
+  .flash-back{background:var(--bg2);transform:rotateY(180deg);font-size:.95em;color:var(--muted)}
+  .quiz-q{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:16px 0}
+  .quiz-q .q{font-weight:600;margin-bottom:12px}
+  .opts{display:flex;flex-direction:column;gap:8px}
+  .opt{background:var(--bg2);border:1px solid var(--border);padding:12px;border-radius:8px;cursor:pointer;transition:all .2s;text-align:left;color:var(--text);font-size:.95em}
+  .opt:hover:not(:disabled){border-color:var(--primary);background:#2a2540}
+  .opt.correct{background:rgba(16,185,129,.2);border-color:var(--good);color:#a7f3d0}
+  .opt.wrong{background:rgba(239,68,68,.2);border-color:var(--bad);color:#fecaca}
+  .feedback{margin-top:12px;padding:10px 14px;border-radius:8px;font-size:.9em;display:none}
+  .feedback.show{display:block}
+  .feedback.ok{background:rgba(16,185,129,.15);border-left:3px solid var(--good)}
+  .feedback.no{background:rgba(239,68,68,.15);border-left:3px solid var(--bad)}
+  .progress{position:fixed;bottom:20px;right:20px;background:var(--card);border:1px solid var(--border);padding:12px 18px;border-radius:99px;font-size:.9em;box-shadow:0 4px 20px rgba(0,0,0,.4)}
+  .progress span{color:var(--accent);font-weight:700}
+  .tip{background:rgba(236,72,153,.1);border-left:3px solid var(--primary);padding:10px 14px;border-radius:6px;margin:10px 0;font-size:.92em}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:700px){.grid2{grid-template-columns:1fr}}
+  ul{padding-left:20px} li{margin:4px 0}
+  code{background:var(--bg2);padding:2px 6px;border-radius:4px;font-size:.9em;color:var(--accent)}
+  .btn{background:var(--primary);color:white;border:none;padding:10px 18px;border-radius:8px;cursor:pointer;font-size:.95em;margin-top:10px}
+  .btn:hover{filter:brightness(1.1)}
+  .pdf-thumbs{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:14px 0}
+  .pdf-thumbs img{width:100%;height:140px;object-fit:cover;border-radius:8px;border:1px solid var(--border);background:white;cursor:zoom-in;transition:transform .2s}
+  .pdf-thumbs img:hover{transform:scale(1.04)}
+  .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;z-index:200;padding:20px;cursor:zoom-out}
+  .lightbox.open{display:flex}
+  .lightbox img{max-width:96vw;max-height:92vh;border-radius:10px}
+  .lightbox .close{position:absolute;top:18px;right:22px;background:rgba(255,255,255,.1);border:none;color:white;width:44px;height:44px;border-radius:50%;font-size:1.4em;cursor:pointer}
+
+  @media (max-width: 720px){
+    body{font-size:15.5px;overflow-x:hidden}
+    header{padding:22px 16px}
+    header h1{font-size:1.35em}
+    header p{font-size:.88em}
+    nav{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;padding:10px 12px;gap:6px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+    nav::-webkit-scrollbar{display:none}
+    nav button, nav a{flex:0 0 auto;font-size:.82em;padding:8px 12px;white-space:nowrap;min-height:38px}
+    main{padding:16px 14px 100px}
+    h2{font-size:1.3em;padding-bottom:6px}
+    h3{font-size:1.1em;margin-top:20px}
+    .card{padding:14px;border-radius:10px;margin:12px 0}
+    table{display:block;overflow-x:auto;font-size:.86em}
+    th,td{padding:9px 11px}
+    .flash-grid{grid-template-columns:1fr;gap:12px}
+    .flash{height:160px}
+    .quiz-q{padding:14px}
+    .opt{padding:12px;font-size:.92em;min-height:44px;line-height:1.45}
+    .progress{bottom:14px;right:14px;left:14px;text-align:center;padding:10px 14px;font-size:.85em;border-radius:14px}
+    .btn{padding:11px 16px;font-size:.92em;min-height:42px}
+    .pdf-thumbs img{height:110px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🦴 Ossos do Crânio e Coluna</h1>
+  <p>Revisão Interativa — Neurocrânio · Face · Coluna Vertebral</p>
+</header>
+
+<nav>
+  <a href="index.html" style="background:var(--accent);color:#0a0f1c;border:1px solid var(--accent);padding:8px 14px;border-radius:8px;font-size:.9em;text-decoration:none;font-weight:600">🏠 Hub</a>
+  <button onclick="show('intro',this)" class="active">📖 Intro</button>
+  <button onclick="show('neurocranio',this)">🧠 Neurocrânio</button>
+  <button onclick="show('face',this)">👤 Face</button>
+  <button onclick="show('fossas',this)">📦 Fossas</button>
+  <button onclick="show('coluna',this)">🦴 Coluna</button>
+  <button onclick="show('flash',this)">🃏 Flashcards</button>
+  <button onclick="show('quiz',this)">✅ Quiz</button>
+</nav>
+
+<main>
+
+<section id="intro" class="active">
+  <h2>📖 Visão Geral</h2>
+  <div class="card highlight">
+    <p>O crânio tem <b>22 ossos</b>: <b>8 do neurocrânio</b> (envolvem o cérebro) e <b>14 da face</b>. A coluna vertebral tem ~33 vértebras divididas em 5 regiões.</p>
+  </div>
+  <div class="pdf-thumbs">
+    <img src="assets/img/cranio/p04.png" alt="Crânio colorido">
+    <img src="assets/img/cranio/p06.png" alt="Cabeça óssea - crânio e face">
+    <img src="assets/img/cranio/p13.png" alt="Coluna vertebral">
+  </div>
+</section>
+
+<section id="neurocranio">
+  <h2>🧠 Neurocrânio — 8 ossos</h2>
+  <div class="card highlight">
+    <p>São os ossos que formam a caixa que protege o cérebro.</p>
+  </div>
+  <div class="pdf-thumbs">
+    <img src="assets/img/cranio/p09.png" alt="Ossos do crânio">
+    <img src="assets/img/cranio/p11.png" alt="Crânio e face numerados">
+  </div>
+  <table>
+    <thead><tr><th>Osso</th><th>Qtd</th><th>Localização/Característica</th></tr></thead>
+    <tbody>
+      <tr><td>Frontal</td><td>1</td><td>Testa, teto das órbitas</td></tr>
+      <tr><td>Parietal</td><td>2</td><td>Lateral e teto</td></tr>
+      <tr><td>Temporal</td><td>2</td><td>Lateral inferior, contém o ouvido interno</td></tr>
+      <tr><td>Occipital</td><td>1</td><td>Posterior, tem o forame magno</td></tr>
+      <tr><td>Esfenoide</td><td>1</td><td>Base do crânio (forma de borboleta)</td></tr>
+      <tr><td>Etmoide</td><td>1</td><td>Entre as órbitas, atrás do nariz</td></tr>
+    </tbody>
+  </table>
+  <div class="tip">📍 1+2+2+1+1+1 = <b>8 ossos</b></div>
+</section>
+
+<section id="face">
+  <h2>👤 Esqueleto Facial — 14 ossos</h2>
+  <div class="pdf-thumbs">
+    <img src="assets/img/cranio/p08.png" alt="Crânio anterior anotado">
+    <img src="assets/img/cranio/p10.png" alt="Esqueleto do crânio - duas vistas">
+  </div>
+  <table>
+    <thead><tr><th>Osso</th><th>Qtd</th><th>Notas</th></tr></thead>
+    <tbody>
+      <tr><td>Maxila</td><td>2</td><td>Forma maxila superior, palato duro, órbitas</td></tr>
+      <tr><td>Mandíbula</td><td>1</td><td><b>Único osso móvel</b> do crânio</td></tr>
+      <tr><td>Zigomático</td><td>2</td><td>Maçãs do rosto</td></tr>
+      <tr><td>Nasal</td><td>2</td><td>Ponte do nariz</td></tr>
+      <tr><td>Lacrimal</td><td>2</td><td>Parede medial das órbitas</td></tr>
+      <tr><td>Palatino</td><td>2</td><td>Parte posterior do palato duro</td></tr>
+      <tr><td>Concha nasal inferior</td><td>2</td><td>Cavidade nasal</td></tr>
+      <tr><td>Vômer</td><td>1</td><td>Parte inferior do septo nasal</td></tr>
+    </tbody>
+  </table>
+  <div class="tip">🔢 2+1+2+2+2+2+2+1 = <b>14 ossos</b></div>
+</section>
+
+<section id="fossas">
+  <h2>📦 Calota, Base e Fossas</h2>
+  <div class="card highlight">
+    <p>Por dentro, o crânio tem duas grandes partes: <b>calota</b> (teto) e <b>base</b> (assoalho). A base tem <b>3 fossas</b>.</p>
+  </div>
+  <div class="pdf-thumbs">
+    <img src="assets/img/cranio/p07.png" alt="Base do crânio - fossas">
+    <img src="assets/img/cranio/p06.png" alt="Cabeça óssea">
+  </div>
+  <table>
+    <thead><tr><th>Fossa</th><th>Acomoda</th><th>Ossos principais</th></tr></thead>
+    <tbody>
+      <tr><td>Anterior</td><td>Lobos frontais</td><td>Frontal, etmoide</td></tr>
+      <tr><td>Média</td><td>Lobos temporais, hipófise</td><td>Esfenoide, temporais</td></tr>
+      <tr><td>Posterior</td><td>Cerebelo, tronco encefálico</td><td>Occipital, temporais</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="coluna">
+  <h2>🦴 Coluna Vertebral</h2>
+  <div class="card highlight">
+    <p>Pilar do corpo. Protege a medula espinhal. ~33 vértebras em 5 regiões.</p>
+  </div>
+  <div class="pdf-thumbs">
+    <img src="assets/img/cranio/p12.png" alt="Coluna vertebral - 3 vistas">
+    <img src="assets/img/cranio/p13.png" alt="Coluna com vértebras representativas">
+    <img src="assets/img/cranio/p14.png" alt="Diferenças entre vértebras">
+    <img src="assets/img/cranio/p15.png" alt="Atlas e Axis">
+    <img src="assets/img/cranio/p18.png" alt="Sacro e cóccix">
+  </div>
+  <h3>Regiões e número</h3>
+  <table>
+    <thead><tr><th>Região</th><th>Vértebras</th><th>Observação</th></tr></thead>
+    <tbody>
+      <tr><td>Cervical</td><td>7</td><td>C1 = Atlas, C2 = Axis</td></tr>
+      <tr><td>Torácica</td><td>12</td><td>Articulam com costelas</td></tr>
+      <tr><td>Lombar</td><td>5</td><td>Maiores corpos</td></tr>
+      <tr><td>Sacro</td><td>5 fundidas</td><td>Forma único osso triangular</td></tr>
+      <tr><td>Cóccix</td><td>3-4 fundidas</td><td>"Caudal"</td></tr>
+    </tbody>
+  </table>
+  <h3>Diferenças entre vértebras</h3>
+  <table>
+    <thead><tr><th>Característica</th><th>Cervical</th><th>Torácica</th><th>Lombar</th></tr></thead>
+    <tbody>
+      <tr><td>Corpo</td><td>Pequeno</td><td>Médio</td><td>Grande</td></tr>
+      <tr><td>Processo espinhoso</td><td>Bifurcado</td><td>Pontiagudo</td><td>Quadrangular</td></tr>
+      <tr><td>Especial</td><td>Forame transverso</td><td>Fóveas costais</td><td>—</td></tr>
+    </tbody>
+  </table>
+  <div class="tip">🧠 <b>Atlas</b> sustenta o "globo" (a cabeça). <b>Axis</b> tem o "dens" — pivô para rotação do "não".</div>
+</section>
+
+<section id="flash">
+  <h2>🃏 Flashcards</h2>
+  <p>Clique para virar.</p>
+  <div class="flash-grid" id="flashGrid"></div>
+</section>
+
+<section id="quiz">
+  <h2>✅ Quiz Interativo — Escolha o tema</h2>
+  <p>Cada quiz embaralha perguntas e alternativas.</p>
+
+  <div class="card">
+    <h3 style="margin-top:0">🎯 Escolha o tema</h3>
+    <div id="themePicker" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px"></div>
+    <label style="display:flex;align-items:center;gap:10px;margin-top:10px">
+      Quantidade:
+      <select id="qCount" style="background:var(--bg2);color:var(--text);border:1px solid var(--border);padding:6px 10px;border-radius:6px">
+        <option value="5">5</option>
+        <option value="10" selected>10</option>
+        <option value="15">15</option>
+        <option value="20">20</option>
+        <option value="999">Todas</option>
+      </select>
+    </label>
+    <label style="display:flex;align-items:center;gap:10px;margin-top:10px">
+      Dificuldade:
+      <select id="qDiff" style="background:var(--bg2);color:var(--text);border:1px solid var(--border);padding:6px 10px;border-radius:6px">
+        <option value="all" selected>Todas</option>
+        <option value="1">🟢 Fácil</option>
+        <option value="2">🟡 Médio</option>
+        <option value="3">🔴 Difícil</option>
+      </select>
+    </label>
+    <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn" onclick="startQuiz()">🎲 Iniciar / Embaralhar</button>
+      <button class="btn" style="background:var(--accent);color:#0a0f1c" onclick="weakSpotsQuiz()">🎯 Focar nos meus erros</button>
+    </div>
+    <div id="quizStats" style="margin-top:12px;color:var(--muted);font-size:.9em"></div>
+  </div>
+
+  <div id="quizContainer"></div>
+  <div id="quizResult"></div>
+</section>
+
+</main>
+
+<div class="progress">📊 Acertos: <span id="score">0</span>/<span id="total">0</span></div>
+
+<div class="lightbox" id="lightbox">
+  <button class="close" onclick="closeLightbox()">×</button>
+  <img id="lightboxImg" alt="">
+</div>
+
+<script>
+  function show(id, btn){
+    document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightboxImg');
+  document.querySelectorAll('.pdf-thumbs img').forEach(img => {
+    img.addEventListener('click', () => { lbImg.src = img.src; lb.classList.add('open'); });
+  });
+  lb.addEventListener('click', e => { if(e.target === lb) closeLightbox(); });
+  function closeLightbox(){ lb.classList.remove('open'); lbImg.src = ''; }
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') closeLightbox(); });
+
+  // Flashcards
+  const FLASH = [
+    ['22 ossos do crânio','8 do neurocrânio + 14 da face.'],
+    ['8 ossos do neurocrânio','1 frontal, 2 parietais, 2 temporais, 1 occipital, 1 esfenoide, 1 etmoide.'],
+    ['Forame magno','Abertura do occipital — passagem da medula espinhal.'],
+    ['Esfenoide','Osso da base do crânio — formato de borboleta.'],
+    ['Etmoide','Entre as órbitas, atrás do nariz.'],
+    ['Único osso móvel do crânio','Mandíbula.'],
+    ['Calota Craniana','Teto da caixa craniana.'],
+    ['Base do Crânio','Assoalho — dividido em 3 fossas.'],
+    ['Fossa anterior','Lobos frontais; formada por frontal e etmoide.'],
+    ['Fossa média','Lobos temporais e sela túrcica (hipófise).'],
+    ['Fossa posterior','Cerebelo e tronco encefálico.'],
+    ['Coluna vertebral - 5 regiões','Cervical, torácica, lombar, sacro e cóccix.'],
+    ['Atlas (C1)','Sustenta a cabeça — movimento de "sim".'],
+    ['Axis (C2)','Tem o dens — rotação ("dizer não").'],
+    ['Vértebra cervical','Corpo pequeno, forame transverso, processo bifurcado.'],
+    ['Vértebra torácica','Corpo médio, fóveas costais, processo pontiagudo.'],
+    ['Vértebra lombar','Corpo grande, processo quadrangular.'],
+    ['Sacro','5 vértebras fundidas — único osso triangular.'],
+  ];
+  const fg = document.getElementById('flashGrid');
+  FLASH.forEach(([f,b]) => {
+    const c = document.createElement('div');
+    c.className = 'flash';
+    c.innerHTML = `<div class="flash-inner"><div class="flash-front">${f}</div><div class="flash-back">${b}</div></div>`;
+    c.onclick = () => c.classList.toggle('flipped');
+    fg.appendChild(c);
+  });
+
+  const QUIZ_BANK = {
+    "Visão Geral": [
+      {q:"Quantos ossos formam o crânio humano (no total)?",o:["8","14","22","33"],a:2,d:1,e:"22 ossos: 8 do neurocrânio + 14 do esqueleto facial."},
+      {q:"O neurocrânio é composto por quantos ossos?",o:["6","7","8","12"],a:2,d:1,e:"8 ossos: 1 frontal, 2 parietais, 2 temporais, 1 occipital, 1 esfenoide, 1 etmoide."},
+      {q:"O esqueleto facial é formado por quantos ossos?",o:["10","12","14","16"],a:2,d:2,e:"14 ossos: maxila (2), mandíbula (1), zigomático (2), nasal (2), lacrimal (2), palatino (2), concha nasal inferior (2), vômer (1)."},
+      {q:"O crânio se divide em duas grandes partes:",o:["Frontal e occipital","Cabeça e pescoço","Crânio (neurocrânio) e Face","Calota e mandíbula"],a:2,d:1,e:"Cabeça óssea = crânio (neurocrânio, envolve o cérebro) + face."},
+    ],
+    "Neurocrânio": [
+      {q:"O forame magno está em qual osso?",o:["Frontal","Esfenoide","Occipital","Temporal"],a:2,d:2,e:"O forame magno é uma abertura do occipital, por onde passa a medula."},
+      {q:"Qual osso forma a base do crânio com formato de borboleta?",o:["Etmoide","Esfenoide","Temporal","Occipital"],a:1,d:2,e:"O esfenoide forma a base do crânio e tem formato de borboleta."},
+      {q:"Osso ÍMPAR que forma a testa:",o:["Parietal","Frontal","Temporal","Etmoide"],a:1,d:1,e:"O frontal é único (ímpar) e forma a testa e o teto das órbitas."},
+      {q:"Qual osso fica entre as órbitas e atrás do nariz?",o:["Esfenoide","Etmoide","Vômer","Lacrimal"],a:1,d:3,e:"O etmoide. Participa do teto da cavidade nasal."},
+      {q:"Qual osso PAR forma o teto e laterais do crânio?",o:["Frontal","Parietal","Occipital","Temporal"],a:1,d:1,e:"Os 2 parietais formam o teto e parte das laterais."},
+      {q:"O osso TEMPORAL contém:",o:["O ouvido interno","O olho","A hipófise","A mandíbula"],a:0,d:2,e:"O ouvido interno está alojado no osso temporal."},
+    ],
+    "Face": [
+      {q:"Qual é o único osso MÓVEL do crânio?",o:["Maxila","Zigomático","Mandíbula","Vômer"],a:2,d:1,e:"A mandíbula — único osso móvel; articula-se nas ATMs."},
+      {q:"Quantas maxilas existem no crânio?",o:["1","2","3","4"],a:1,d:2,e:"São 2 maxilas (uma direita, uma esquerda), que se unem na linha média."},
+      {q:"O osso ZIGOMÁTICO forma:",o:["A ponte do nariz","As maçãs do rosto","O palato","O septo nasal"],a:1,d:1,e:"O zigomático forma as maçãs do rosto (proeminência malar)."},
+      {q:"O VÔMER é um osso:",o:["Par, do nariz","Ímpar, da face — forma parte do septo nasal","Móvel, da mandíbula","Da órbita"],a:1,d:3,e:"Vômer é ímpar e forma a parte inferior do septo nasal."},
+      {q:"Quais ossos formam a ponte do nariz?",o:["Lacrimais","Nasais","Vômer","Palatinos"],a:1,d:2,e:"Os 2 ossos nasais."},
+    ],
+    "Calota, Base e Fossas": [
+      {q:"A base do crânio tem quantas fossas principais?",o:["2","3","4","5"],a:1,d:1,e:"Três: anterior, média e posterior."},
+      {q:"A fossa MÉDIA acomoda:",o:["Os lobos frontais","Os lobos temporais e a hipófise","O cerebelo","A medula espinal"],a:1,d:2,e:"Lobos temporais e a hipófise (na sela túrcica)."},
+      {q:"O CEREBELO se aloja na:",o:["Fossa anterior","Fossa média","Fossa posterior","Sela túrcica"],a:2,d:2,e:"Cerebelo e tronco encefálico ficam na fossa posterior."},
+      {q:"A fossa ANTERIOR é formada principalmente por:",o:["Esfenoide e temporais","Frontal e etmoide","Occipital e temporais","Apenas etmoide"],a:1,d:3,e:"Frontal e etmoide formam a maior parte da fossa anterior."},
+      {q:"\"Calota craniana\" se refere a:",o:["A base do crânio","A maxila","O teto da caixa craniana","A face anterior"],a:2,d:1,e:"Calota = teto da caixa craniana; base é o assoalho."},
+    ],
+    "Coluna Vertebral": [
+      {q:"Quantas vértebras CERVICAIS existem?",o:["5","7","12","10"],a:1,d:1,e:"7 vértebras cervicais (C1-C7)."},
+      {q:"Quantas vértebras TORÁCICAS existem?",o:["5","7","12","10"],a:2,d:1,e:"12 vértebras torácicas (T1-T12), articulam com as costelas."},
+      {q:"Quantas vértebras LOMBARES existem?",o:["3","5","7","10"],a:1,d:1,e:"5 vértebras lombares (L1-L5)."},
+      {q:"O SACRO é formado por:",o:["3 vértebras móveis","5 vértebras fundidas","12 vértebras articuladas","Apenas o cóccix"],a:1,d:2,e:"5 vértebras sacrais fundidas, formando um osso triangular."},
+      {q:"A primeira vértebra cervical é chamada:",o:["Axis","Atlas","Sacro","Áxio"],a:1,d:2,e:"C1 = Atlas — sustenta a cabeça (do mito grego)."},
+      {q:"O AXIS (C2) é caracterizado pelo:",o:["Forame magno","Processo odontoide (dens)","Tubérculo de Lister","Sela túrcica"],a:1,d:3,e:"O Axis tem o dens, um processo que se projeta para cima e permite rotação."},
+      {q:"O movimento de \"dizer NÃO\" (rotação da cabeça) acontece principalmente entre:",o:["Atlas e occipital","Atlas e Axis","C7 e T1","Sacro e cóccix"],a:1,d:3,e:"Articulação atlanto-axial (entre C1 e C2) — o dens do Axis serve de pivô."},
+    ],
+    "Diferenças entre Vértebras": [
+      {q:"Característica EXCLUSIVA da vértebra cervical:",o:["Fóveas costais","Forame transverso","Corpo grande","Processo quadrangular"],a:1,d:2,e:"Forame transverso — passagem da artéria vertebral."},
+      {q:"Característica EXCLUSIVA da vértebra torácica:",o:["Forame transverso","Fóveas costais (articulação com costelas)","Corpo muito grande","Processo bifurcado"],a:1,d:2,e:"Fóveas costais para articulação com as costelas."},
+      {q:"Vértebra com CORPO GRANDE e processo espinhoso quadrangular:",o:["Cervical","Torácica","Lombar","Sacro"],a:2,d:1,e:"Lombar — suporta mais peso, daí o corpo grande."},
+      {q:"O processo espinhoso BIFURCADO é típico de:",o:["Cervicais","Torácicas","Lombares","Sacrais"],a:0,d:2,e:"Cervicais — pontos de inserção para múltiplos ligamentos."},
+      {q:"O processo espinhoso PONTIAGUDO é típico de:",o:["Cervicais","Torácicas","Lombares","Sacrais"],a:1,d:3,e:"Torácicas — pontiagudo e dirigido para baixo."},
+    ],
+  };
+
+  const STATS_KEY = 'quizStatsCranio';
+  let currentTheme = "Todos";
+  let currentQuiz = [];
+  let score = 0, answered = 0;
+  const stats = JSON.parse(localStorage.getItem(STATS_KEY) || '{}');
+
+  const tp = document.getElementById('themePicker');
+  const themes = ["Todos", ...Object.keys(QUIZ_BANK)];
+  themes.forEach(t => {
+    const b = document.createElement('button');
+    b.className = 'opt'; b.style.flex='0 0 auto'; b.style.padding='8px 14px';
+    b.textContent = t === "Todos" ? "🎲 Todos" : t;
+    b.onclick = () => {
+      currentTheme = t;
+      document.querySelectorAll('#themePicker .opt').forEach(x => x.classList.remove('correct'));
+      b.classList.add('correct');
+    };
+    if(t === "Todos") b.classList.add('correct');
+    tp.appendChild(b);
+  });
+
+  function getPool(){
+    const diff = document.getElementById('qDiff').value;
+    let pool = currentTheme === "Todos"
+      ? Object.entries(QUIZ_BANK).flatMap(([t,arr]) => arr.map(q => ({...q, theme:t})))
+      : QUIZ_BANK[currentTheme].map(q => ({...q, theme:currentTheme}));
+    if(diff !== "all") pool = pool.filter(q => q.d === +diff);
+    return pool;
+  }
+  function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+  function startQuiz(){
+    const pool = getPool();
+    if(pool.length===0){ alert("Nenhuma questão para esses filtros."); return; }
+    const n = Math.min(+document.getElementById('qCount').value, pool.length);
+    currentQuiz = shuffle(pool).slice(0,n).map(q => {
+      const idx = q.o.map((_,i) => i); const sh = shuffle(idx);
+      return {...q, o: sh.map(i => q.o[i]), a: sh.indexOf(q.a)};
+    });
+    renderQuiz();
+  }
+  function weakSpotsQuiz(){
+    const all = Object.entries(QUIZ_BANK).flatMap(([t,arr]) => arr.map(q => ({...q, theme:t})));
+    const ranked = all.map(q => {
+      const k = q.q; const s = stats[k] || {ok:0,err:0};
+      const total = s.ok+s.err; const errRate = total ? s.err/total : 0;
+      return {q, score: errRate*10 + (total === 0 ? 5 : 0)};
+    }).sort((a,b) => b.score - a.score);
+    const n = Math.min(+document.getElementById('qCount').value, ranked.length);
+    currentQuiz = ranked.slice(0,n).map(r => r.q).map(q => {
+      const idx = q.o.map((_,i) => i); const sh = shuffle(idx);
+      return {...q, o: sh.map(i => q.o[i]), a: sh.indexOf(q.a)};
+    });
+    renderQuiz();
+  }
+  function renderQuiz(){
+    const qc = document.getElementById('quizContainer');
+    qc.innerHTML=''; document.getElementById('quizResult').innerHTML='';
+    score=0; answered=0;
+    document.getElementById('score').textContent=0;
+    document.getElementById('total').textContent=currentQuiz.length;
+    const diffEmoji = {1:"🟢",2:"🟡",3:"🔴"};
+    currentQuiz.forEach((it,i) => {
+      const div = document.createElement('div'); div.className='quiz-q';
+      const themeTag = it.theme ? `<span class="pill">${it.theme}</span>` : '';
+      div.innerHTML = `<div class="q">${themeTag}<span class="pill warn">${diffEmoji[it.d]} ${it.d===1?'Fácil':it.d===2?'Médio':'Difícil'}</span><br>${i+1}. ${it.q}</div><div class="opts"></div><div class="feedback"></div>`;
+      const opts = div.querySelector('.opts');
+      it.o.forEach((opt,j) => {
+        const b = document.createElement('button'); b.className='opt'; b.textContent=opt;
+        b.onclick = () => answer(div,it,j,b); opts.appendChild(b);
+      });
+      qc.appendChild(div);
+    });
+    updateStatsLabel();
+    qc.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  function answer(div,it,j,btn){
+    const opts = div.querySelectorAll('.opt');
+    if([...opts].some(o => o.disabled)) return;
+    opts.forEach((o,k) => { o.disabled = true; if(k===it.a) o.classList.add('correct'); });
+    const fb = div.querySelector('.feedback');
+    const key = it.q;
+    stats[key] = stats[key] || {ok:0,err:0};
+    if(j === it.a){
+      score++; stats[key].ok++;
+      fb.className='feedback show ok'; fb.innerHTML='✅ <b>Correto!</b> '+it.e;
+    } else {
+      stats[key].err++; btn.classList.add('wrong');
+      fb.className='feedback show no'; fb.innerHTML='❌ <b>Não foi dessa vez.</b> '+it.e;
+    }
+    localStorage.setItem(STATS_KEY, JSON.stringify(stats));
+    answered++; document.getElementById('score').textContent=score;
+    if(answered === currentQuiz.length) showResult();
+    updateStatsLabel();
+  }
+  function showResult(){
+    const pct = Math.round(100*score/currentQuiz.length);
+    let msg = pct===100 ? "🏆 Perfeito!" : pct>=80 ? "🌟 Muito bem!" : pct>=60 ? "👍 Bom! Revise os erros." : pct>=40 ? "📚 Está pegando o jeito — refaça!" : "💪 Hora de revisar a teoria!";
+    document.getElementById('quizResult').innerHTML =
+      `<div class="card highlight" style="text-align:center"><h3 style="margin-top:0">Resultado: ${score}/${currentQuiz.length} (${pct}%)</h3><p>${msg}</p>
+      <button class="btn" onclick="startQuiz()">🔄 Novo quiz embaralhado</button>
+      <button class="btn" style="background:var(--accent);color:#0a0f1c;margin-left:8px" onclick="weakSpotsQuiz()">🎯 Focar nos meus erros</button></div>`;
+  }
+  function updateStatsLabel(){
+    const total = Object.values(stats).reduce((s,x) => s+x.ok+x.err, 0);
+    const oks = Object.values(stats).reduce((s,x) => s+x.ok, 0);
+    const pct = total ? Math.round(100*oks/total) : 0;
+    document.getElementById('quizStats').innerHTML =
+      `📊 Histórico geral: <b>${oks}/${total}</b> (${pct}%) — <a href="#" onclick="event.preventDefault();if(confirm('Apagar histórico?')){localStorage.removeItem('${STATS_KEY}');location.reload()}" style="color:var(--accent)">limpar histórico</a>`;
+  }
+  updateStatsLabel();
+  startQuiz();
+</script>
+
+</body>
+</html>
