@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Revisão — Estratégia e Plano de Negócio</title>
+<style>
+  :root{--bg:#021114;--bg2:#0f2227;--card:#11272d;--border:#1f3a40;--primary:#0d9488;--primary2:#14b8a6;--accent:#f59e0b;--good:#10b981;--bad:#ef4444;--warn:#fbbf24;--text:#e6f7f5;--muted:#94aeae}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+  header{background:linear-gradient(135deg,#0d4f4a,#0d9488);padding:32px 24px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.3)}
+  header h1{margin:0;font-size:2em}header p{margin:8px 0 0;color:#a7f3d0}
+  nav{position:sticky;top:0;background:rgba(2,17,20,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:12px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;z-index:100}
+  nav button{background:var(--card);color:var(--text);border:1px solid var(--border);padding:8px 14px;border-radius:8px;cursor:pointer;font-size:.9em;transition:all .2s}
+  nav button:hover,nav button.active{background:var(--primary);border-color:var(--primary)}
+  main{max-width:1100px;margin:0 auto;padding:24px}
+  section{display:none;animation:fadeIn .4s}section.active{display:block}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  h2{color:var(--primary2);border-bottom:2px solid var(--primary);padding-bottom:8px;margin-top:0}h3{color:var(--accent);margin-top:24px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:16px 0;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+  .card.highlight{border-left:4px solid var(--primary)}
+  table{width:100%;border-collapse:collapse;margin:12px 0;background:var(--bg2);border-radius:8px;overflow:hidden}
+  th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+  th{background:var(--primary);color:white}tr:last-child td{border-bottom:none}
+  .pill{display:inline-block;background:var(--primary);color:white;padding:2px 10px;border-radius:99px;font-size:.8em;margin-right:6px}
+  .pill.warn{background:var(--warn);color:#1f2937}
+  .flash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+  .flash{background:var(--card);border:1px solid var(--border);border-radius:12px;height:180px;perspective:1000px;cursor:pointer}
+  .flash-inner{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+  .flash.flipped .flash-inner{transform:rotateY(180deg)}
+  .flash-front,.flash-back{position:absolute;inset:0;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;text-align:center;padding:16px;border-radius:12px}
+  .flash-front{background:linear-gradient(135deg,#0d4f4a,#0d9488);font-weight:600;font-size:1.05em}
+  .flash-back{background:var(--bg2);transform:rotateY(180deg);font-size:.95em;color:var(--muted)}
+  .quiz-q{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:16px 0}
+  .quiz-q .q{font-weight:600;margin-bottom:12px}.opts{display:flex;flex-direction:column;gap:8px}
+  .opt{background:var(--bg2);border:1px solid var(--border);padding:12px;border-radius:8px;cursor:pointer;transition:all .2s;text-align:left;color:var(--text);font-size:.95em}
+  .opt:hover:not(:disabled){border-color:var(--primary);background:#1a3f3a}
+  .opt.correct{background:rgba(16,185,129,.2);border-color:var(--good);color:#a7f3d0}
+  .opt.wrong{background:rgba(239,68,68,.2);border-color:var(--bad);color:#fecaca}
+  .feedback{margin-top:12px;padding:10px 14px;border-radius:8px;font-size:.9em;display:none}.feedback.show{display:block}
+  .feedback.ok{background:rgba(16,185,129,.15);border-left:3px solid var(--good)}
+  .feedback.no{background:rgba(239,68,68,.15);border-left:3px solid var(--bad)}
+  .progress{position:fixed;bottom:20px;right:20px;background:var(--card);border:1px solid var(--border);padding:12px 18px;border-radius:99px;font-size:.9em;box-shadow:0 4px 20px rgba(0,0,0,.4)}
+  .progress span{color:var(--accent);font-weight:700}
+  .tip{background:rgba(13,148,136,.1);border-left:3px solid var(--primary);padding:10px 14px;border-radius:6px;margin:10px 0;font-size:.92em}
+  ul{padding-left:20px}li{margin:4px 0}
+  .btn{background:var(--primary);color:white;border:none;padding:10px 18px;border-radius:8px;cursor:pointer;font-size:.95em;margin-top:10px}.btn:hover{filter:brightness(1.1)}
+  .pdf-thumbs{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:14px 0}
+  .pdf-thumbs img{width:100%;height:140px;object-fit:cover;border-radius:8px;border:1px solid var(--border);background:white;cursor:zoom-in;transition:transform .2s}
+  .pdf-thumbs img:hover{transform:scale(1.04)}
+  .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;z-index:200;padding:20px;cursor:zoom-out}
+  .lightbox.open{display:flex}.lightbox img{max-width:96vw;max-height:92vh;border-radius:10px}
+  .lightbox .close{position:absolute;top:18px;right:22px;background:rgba(255,255,255,.1);border:none;color:white;width:44px;height:44px;border-radius:50%;font-size:1.4em;cursor:pointer}
+  @media (max-width: 720px){
+    body{font-size:15.5px;overflow-x:hidden}
+    header{padding:22px 16px}header h1{font-size:1.35em}header p{font-size:.88em}
+    nav{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;padding:10px 12px;gap:6px;scrollbar-width:none}
+    nav::-webkit-scrollbar{display:none}
+    nav button,nav a{flex:0 0 auto;font-size:.82em;padding:8px 12px;white-space:nowrap;min-height:38px}
+    main{padding:16px 14px 100px}h2{font-size:1.3em;padding-bottom:6px}h3{font-size:1.1em;margin-top:20px}
+    .card{padding:14px;border-radius:10px;margin:12px 0}
+    table{display:block;overflow-x:auto;font-size:.86em}th,td{padding:9px 11px}
+    .flash-grid{grid-template-columns:1fr;gap:12px}.flash{height:160px}
+    .quiz-q{padding:14px}.opt{padding:12px;font-size:.92em;min-height:44px;line-height:1.45}
+    .progress{bottom:14px;right:14px;left:14px;text-align:center;padding:10px 14px;font-size:.85em;border-radius:14px}
+    .btn{padding:11px 16px;font-size:.92em;min-height:42px}.pdf-thumbs img{height:110px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎯 Estratégia e Plano de Negócio</h1>
+  <p>Revisão — Módulo 3 · Aulas 7, 9 e 10</p>
+</header>
+
+<nav>
+  <a href="index.html" style="background:var(--accent);color:#021114;border:1px solid var(--accent);padding:8px 14px;border-radius:8px;font-size:.9em;text-decoration:none;font-weight:600">🏠 Hub</a>
+  <button onclick="show('intro',this)" class="active">📖 Intro</button>
+  <button onclick="show('mv',this)">🧭 Missão/Visão</button>
+  <button onclick="show('porter',this)">⚔️ Porter</button>
+  <button onclick="show('plano',this)">📋 Plano</button>
+  <button onclick="show('mercado',this)">🔍 Mercado</button>
+  <button onclick="show('flash',this)">🃏 Flashcards</button>
+  <button onclick="show('quiz',this)">✅ Quiz</button>
+</nav>
+
+<main>
+
+<section id="intro" class="active">
+  <h2>📖 Visão Geral</h2>
+  <div class="card highlight">
+    <p>Missão (por que) + Visão (onde) + Objetivos (o que alcançar) + Estratégia (Porter) + Plano de Negócios estruturado + Estudo de Mercado.</p>
+  </div>
+  <div class="pdf-thumbs">
+    <img src="assets/img/emp/aula7/p06.png" alt="Missão">
+    <img src="assets/img/emp/aula7/p09.png" alt="Estratégias Porter">
+    <img src="assets/img/emp/aula9/p10.png" alt="Plano negócios">
+  </div>
+</section>
+
+<section id="mv">
+  <h2>🧭 Missão, Visão e Objetivos</h2>
+  <table>
+    <thead><tr><th>Elemento</th><th>Pergunta</th><th>Característica</th></tr></thead>
+    <tbody>
+      <tr><td><b>Missão</b></td><td>Por que existimos?</td><td>Duradoura; valor gerado, público, problema (Collins & Porras)</td></tr>
+      <tr><td><b>Visão</b></td><td>Onde queremos chegar?</td><td>BHAG — 5/10/20 anos, escala, ambição</td></tr>
+      <tr><td><b>Objetivos</b></td><td>O que alcançar?</td><td>Mensuráveis, com prazo, alinhados (Kaplan & Norton)</td></tr>
+    </tbody>
+  </table>
+  <div class="tip">⚠️ Missão "ser o melhor" é genérica e não orienta nada.</div>
+</section>
+
+<section id="porter">
+  <h2>⚔️ Estratégia Competitiva (Porter)</h2>
+  <div class="pdf-thumbs">
+    <img src="assets/img/emp/aula7/p09.png" alt="3 estratégias">
+    <img src="assets/img/emp/aula7/p11.png" alt="Trade-offs e Fit">
+  </div>
+  <table>
+    <thead><tr><th>Estratégia</th><th>Como</th><th>Exemplo</th></tr></thead>
+    <tbody>
+      <tr><td>Diferenciação</td><td>Oferta única, prêmio de preço</td><td>Apple, Tesla</td></tr>
+      <tr><td>Liderança em Custo</td><td>Operação enxuta, escala</td><td>Amazon, Ryanair</td></tr>
+      <tr><td>Foco</td><td>Servir nicho específico</td><td>Especialistas verticais</td></tr>
+    </tbody>
+  </table>
+  <div class="tip">🔑 <b>"A essência da estratégia é escolher o que NÃO fazer"</b> — Porter (1996).</div>
+  <h3>Fit estratégico</h3>
+  <p>Vantagem sustentável = <b>encaixe sistêmico</b> entre atividades — difícil de copiar porque é um sistema, não uma peça.</p>
+</section>
+
+<section id="plano">
+  <h2>📋 Plano de Negócios — 8 seções</h2>
+  <div class="pdf-thumbs">
+    <img src="assets/img/emp/aula9/p10.png" alt="Estrutura">
+    <img src="assets/img/emp/aula9/p15.png" alt="Plano financeiro">
+  </div>
+  <ol>
+    <li>Sumário Executivo (escreva por último)</li>
+    <li>Descrição do Negócio (problema, solução, valor)</li>
+    <li>Análise de Mercado</li>
+    <li>Plano de Marketing</li>
+    <li>Plano Operacional</li>
+    <li>Plano Financeiro</li>
+    <li>Análise de Viabilidade</li>
+    <li>Aspectos Legais</li>
+  </ol>
+  <h3>Plano financeiro — o coração</h3>
+  <ul>
+    <li>Investimento inicial + capital de giro (3-6 meses)</li>
+    <li>Custos fixos × variáveis</li>
+    <li>Projeção de receitas (3 cenários)</li>
+    <li>Fluxo de caixa — pode ser lucrativo no papel e quebrar por liquidez</li>
+  </ul>
+  <div class="tip">📊 Sem números, é ficção. Com números errados, é ilusão.</div>
+</section>
+
+<section id="mercado">
+  <h2>🔍 Estudo de Mercado e Concorrência</h2>
+  <div class="pdf-thumbs">
+    <img src="assets/img/emp/aula10/p06.png" alt="3 dimensões">
+    <img src="assets/img/emp/aula10/p10.png" alt="Concorrência">
+  </div>
+  <h3>3 dimensões</h3>
+  <table>
+    <thead><tr><th>Dimensão</th><th>Foco</th></tr></thead>
+    <tbody>
+      <tr><td>Clientes</td><td>Quem, o que precisam, quanto pagariam</td></tr>
+      <tr><td>Concorrentes</td><td>Quem atende, como compete, lacunas</td></tr>
+      <tr><td>Fornecedores</td><td>Quem viabiliza, custos, prazos, dependência</td></tr>
+    </tbody>
+  </table>
+  <h3>Tipos de concorrentes</h3>
+  <ul>
+    <li><b>Diretos</b> — solução semelhante ao mesmo público</li>
+    <li><b>Indiretos</b> — resolvem o mesmo problema de outra forma</li>
+    <li><b>Potenciais</b> — podem entrar no mercado</li>
+  </ul>
+  <h3>Segmentação</h3>
+  <ul>
+    <li>Geográficos · Demográficos · Psicográficos · Comportamentais</li>
+  </ul>
+  <div class="tip">💬 "Mercado é evidência, não opinião." Concorrente é parâmetro, não inimigo.</div>
+</section>
+
+<section id="flash">
+  <h2>🃏 Flashcards</h2>
+  <p>Clique para virar.</p>
+  <div class="flash-grid" id="flashGrid"></div>
+</section>
+
+<section id="quiz">
+  <h2>✅ Quiz Interativo — Escolha o tema</h2>
+  <p>Cada quiz embaralha perguntas e alternativas.</p>
+  <div class="card">
+    <h3 style="margin-top:0">🎯 Escolha o tema</h3>
+    <div id="themePicker" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px"></div>
+    <label style="display:flex;align-items:center;gap:10px;margin-top:10px">Quantidade:
+      <select id="qCount" style="background:var(--bg2);color:var(--text);border:1px solid var(--border);padding:6px 10px;border-radius:6px">
+        <option value="5">5</option><option value="10" selected>10</option><option value="15">15</option><option value="20">20</option><option value="999">Todas</option>
+      </select>
+    </label>
+    <label style="display:flex;align-items:center;gap:10px;margin-top:10px">Dificuldade:
+      <select id="qDiff" style="background:var(--bg2);color:var(--text);border:1px solid var(--border);padding:6px 10px;border-radius:6px">
+        <option value="all" selected>Todas</option><option value="1">🟢 Fácil</option><option value="2">🟡 Médio</option><option value="3">🔴 Difícil</option>
+      </select>
+    </label>
+    <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn" onclick="startQuiz()">🎲 Iniciar / Embaralhar</button>
+      <button class="btn" style="background:var(--accent);color:#021114" onclick="weakSpotsQuiz()">🎯 Focar nos meus erros</button>
+    </div>
+    <div id="quizStats" style="margin-top:12px;color:var(--muted);font-size:.9em"></div>
+  </div>
+  <div id="quizContainer"></div>
+  <div id="quizResult"></div>
+</section>
+
+</main>
+
+<div class="progress">📊 Acertos: <span id="score">0</span>/<span id="total">0</span></div>
+
+<div class="lightbox" id="lightbox"><button class="close" onclick="closeLightbox()">×</button><img id="lightboxImg" alt=""></div>
+
+<script>
+  function show(id, btn){
+    document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightboxImg');
+  document.querySelectorAll('.pdf-thumbs img').forEach(img => {
+    img.addEventListener('click', () => { lbImg.src = img.src; lb.classList.add('open'); });
+  });
+  lb.addEventListener('click', e => { if(e.target === lb) closeLightbox(); });
+  function closeLightbox(){ lb.classList.remove('open'); lbImg.src = ''; }
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') closeLightbox(); });
+
+  const FLASH = [
+    ['Missão','Por que existimos? Propósito duradouro (Collins & Porras).'],
+    ['Visão','Onde queremos chegar? BHAG — Big Hairy Audacious Goal.'],
+    ['Objetivos','O que alcançar? Mensuráveis + prazo + alinhados.'],
+    ['3 estratégias de Porter','Diferenciação, Liderança em Custo, Foco.'],
+    ['Diferenciação','Oferta única + prêmio de preço (Apple, Tesla).'],
+    ['Liderança em Custo','Operação enxuta + escala (Amazon, Ryanair).'],
+    ['Foco','Servir nicho específico melhor que qualquer concorrente.'],
+    ['Frase de Porter','"A essência da estratégia é escolher o que NÃO fazer."'],
+    ['Fit estratégico','Encaixe sistêmico entre atividades — difícil de copiar.'],
+    ['Plano de Negócios','Ferramenta viva de gestão; reduz risco, não elimina.'],
+    ['8 seções do plano','Sumário, Descrição, Mercado, Marketing, Operacional, Financeiro, Viabilidade, Legal.'],
+    ['Sumário Executivo','Escreva por último; será lido primeiro.'],
+    ['Fluxo de caixa','Negócio pode ser lucrativo no papel e quebrar por falta de caixa.'],
+    ['3 dimensões do estudo de mercado','Clientes, concorrentes, fornecedores.'],
+    ['Segmentação','Geográfica, demográfica, psicográfica, comportamental.'],
+    ['Tipos de concorrentes','Diretos, indiretos e potenciais.'],
+    ['Mercado é evidência','Não é opinião — exige dados.'],
+    ['Lean × Tradicional','Combinar os dois: planejar o suficiente para agir e aprender rápido.'],
+  ];
+  const fg = document.getElementById('flashGrid');
+  FLASH.forEach(([f,b]) => {
+    const c = document.createElement('div'); c.className = 'flash';
+    c.innerHTML = `<div class="flash-inner"><div class="flash-front">${f}</div><div class="flash-back">${b}</div></div>`;
+    c.onclick = () => c.classList.toggle('flipped');
+    fg.appendChild(c);
+  });
+
+  const QUIZ_BANK = {
+    "Missão, Visão, Objetivos": [
+      {q:"O que define a MISSÃO de uma organização (Collins & Porras)?",o:["Onde queremos chegar","Por que existimos — propósito duradouro","Quanto faturar este ano","Qual o organograma"],a:1,d:1,e:"Missão = propósito; Visão = futuro; Objetivos = resultados a alcançar."},
+      {q:"VISÃO é, segundo Collins & Porras (BHAG):",o:["Plano mensal","Estado futuro desejado e ambicioso","Lista de tarefas","Organograma"],a:1,d:2,e:"BHAG = Big Hairy Audacious Goal — meta de longo prazo que mobiliza."},
+      {q:"Objetivos estratégicos devem ser:",o:["Vagos e flexíveis","Mensuráveis, com prazo e alinhados ao modelo","Apenas qualitativos","Iguais à missão"],a:1,d:2,e:"Kaplan & Norton (Balanced Scorecard) — KPIs com horizonte temporal."},
+      {q:"\"Ser o melhor\" é exemplo de:",o:["Missão excelente","Missão genérica e ineficaz","Visão clara","Objetivo SMART"],a:1,d:1,e:"Sem público, problema ou transformação específica, não orienta decisões."},
+    ],
+    "Estratégia (Porter)": [
+      {q:"Quantas estratégias competitivas GENÉRICAS Porter (1980) identificou?",o:["2","3","5","8"],a:1,d:1,e:"Diferenciação, Liderança em Custo e Foco."},
+      {q:"Estratégia de DIFERENCIAÇÃO se caracteriza por:",o:["Menor preço do setor","Oferta única que justifica prêmio de preço","Servir apenas um nicho","Cópia de concorrentes"],a:1,d:2,e:"Sustentada por inovação e marca forte (Apple, Tesla)."},
+      {q:"Liderança em CUSTO requer:",o:["Marca de luxo","Estrutura de custos mais eficiente, escala e operações enxutas","Atendimento individualizado","Diferenciação extrema"],a:1,d:2,e:"Amazon, Ryanair — eficiência operacional é o motor."},
+      {q:"Estratégia de FOCO significa:",o:["Atender todos os clientes","Servir um segmento específico melhor que qualquer concorrente","Diversificar ao máximo","Reduzir preços agressivamente"],a:1,d:1,e:"Pode combinar diferenciação OU custo, mas em nicho definido."},
+      {q:"\"A essência da estratégia é escolher o que NÃO fazer\" é de:",o:["Schumpeter","Drucker","Porter","Cantillon"],a:2,d:2,e:"Michael Porter (1996), What is Strategy?"},
+      {q:"FIT estratégico significa:",o:["Roupa do empreendedor","Encaixe sistêmico entre atividades — difícil de imitar","Apenas eficiência interna","Alinhamento com fornecedores"],a:1,d:3,e:"Concorrentes podem copiar uma atividade, mas não o sistema completo."},
+    ],
+    "Plano de Negócios": [
+      {q:"O Plano de Negócios:",o:["Garante o sucesso","Elimina o risco","Reduz incertezas e torna o risco analisável; não garante sucesso","É apenas burocracia"],a:2,d:2,e:"Ferramenta viva de gestão — reduz risco, não o elimina."},
+      {q:"Quantas seções principais tem um plano de negócios típico?",o:["3","5","8","12"],a:2,d:2,e:"Sumário, Descrição, Mercado, Marketing, Operacional, Financeiro, Viabilidade, Legal."},
+      {q:"O SUMÁRIO EXECUTIVO deve ser:",o:["A última seção lida","Escrito por último, lido primeiro","Apenas dados financeiros","O mais longo do plano"],a:1,d:2,e:"Sintetiza tudo em poucas linhas — escrito após o plano completo."},
+      {q:"O Plano FINANCEIRO inclui obrigatoriamente:",o:["Apenas projeção de receitas","Investimento inicial, custos fixos/variáveis, projeção, fluxo de caixa","Apenas balanço","Apenas o lucro líquido"],a:1,d:2,e:"Sem todos esses elementos, o plano fica incompleto."},
+      {q:"Por que um negócio LUCRATIVO pode quebrar?",o:["Não pode — se é lucrativo, não quebra","Por falta de FLUXO DE CAIXA (liquidez); lucro contábil ≠ caixa","Apenas se o produto for ruim","Apenas se o sócio for incompetente"],a:1,d:3,e:"Receita futura não paga conta presente — gestão de caixa é estratégica."},
+      {q:"Capital de GIRO deve provisionar:",o:["Apenas 1 mês de operação","3 a 6 meses de operação inicial","Apenas o aluguel","O salário do CEO"],a:1,d:3,e:"Cobre o ciclo operacional inicial até a receita estabilizar."},
+    ],
+    "Mercado e Concorrência": [
+      {q:"O estudo de mercado tem 3 dimensões principais:",o:["Marketing, Vendas, RH","Clientes, Concorrentes, Fornecedores","Local, Estadual, Federal","Online, Offline, Híbrido"],a:1,d:1,e:"Compreender o ambiente competitivo exige analisar os três."},
+      {q:"Mercado NÃO é \"todo mundo\". É preciso:",o:["Vender a qualquer preço","Segmentar (geográfico, demográfico, psicográfico, comportamental)","Apenas reduzir custos","Apenas anunciar mais"],a:1,d:1,e:"Segmentação focada gera tração."},
+      {q:"Concorrentes INDIRETOS:",o:["Vendem o mesmo produto","Resolvem o mesmo problema de forma diferente","Não existem","Estão em outro país"],a:1,d:2,e:"Ex: cafeteria local × delivery de bebidas."},
+      {q:"Fontes PRIMÁRIAS de informação são:",o:["Sites e relatórios","Entrevistas, questionários, observação direta","IBGE","Pesquisas publicadas"],a:1,d:2,e:"Primárias = você coleta direto; secundárias = já existem (IBGE, Sebrae)."},
+      {q:"\"Mercado é evidência, não opinião\" significa que:",o:["Opiniões são banidas","Decisões devem se basear em dados verificáveis","Empreendedor decide sozinho","Concorrência não importa"],a:1,d:2,e:"Pesquisa primária e secundária são essenciais."},
+      {q:"Concorrência é:",o:["Apenas ameaça","Fonte de aprendizado estratégico — revela padrões, lacunas e diferenciais","Inimigo a ser destruído","Irrelevante"],a:1,d:2,e:"Concorrente é parâmetro, não inimigo."},
+    ],
+    "Lean × Tradicional": [
+      {q:"Limitações do plano de negócios incluem:",o:["É sempre certo","Previsões falham e mercado é dinâmico","Não tem limitações","É apenas papelada"],a:1,d:2,e:"Mercado muda; um plano bonito não é garantia."},
+      {q:"Lean / Ágil enfatiza:",o:["Documentos extensos","Velocidade, validação, adaptação contínua","Apenas redução de custos","Atendimento ao acionista"],a:1,d:2,e:"Validar com cliente real e iterar é o motor do lean."},
+      {q:"Qual é a melhor abordagem para o empreendedor moderno?",o:["Apenas plano tradicional","Apenas Lean","Combinar os dois — planejar o suficiente para agir e iterar","Improvisar"],a:2,d:3,e:"Planeje o suficiente para agir. Aja rápido o suficiente para aprender."},
+    ],
+  };
+
+  const STATS_KEY = 'quizStatsEmp3';
+  let currentTheme = "Todos"; let currentQuiz = []; let score = 0, answered = 0;
+  const stats = JSON.parse(localStorage.getItem(STATS_KEY) || '{}');
+
+  const tp = document.getElementById('themePicker');
+  const themes = ["Todos", ...Object.keys(QUIZ_BANK)];
+  themes.forEach(t => {
+    const b = document.createElement('button');
+    b.className = 'opt'; b.style.flex='0 0 auto'; b.style.padding='8px 14px';
+    b.textContent = t === "Todos" ? "🎲 Todos" : t;
+    b.onclick = () => {
+      currentTheme = t;
+      document.querySelectorAll('#themePicker .opt').forEach(x => x.classList.remove('correct'));
+      b.classList.add('correct');
+    };
+    if(t === "Todos") b.classList.add('correct');
+    tp.appendChild(b);
+  });
+
+  function getPool(){
+    const diff = document.getElementById('qDiff').value;
+    let pool = currentTheme === "Todos"
+      ? Object.entries(QUIZ_BANK).flatMap(([t,arr]) => arr.map(q => ({...q, theme:t})))
+      : QUIZ_BANK[currentTheme].map(q => ({...q, theme:currentTheme}));
+    if(diff !== "all") pool = pool.filter(q => q.d === +diff);
+    return pool;
+  }
+  function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+  function startQuiz(){
+    const pool = getPool();
+    if(pool.length===0){ alert("Nenhuma questão para esses filtros."); return; }
+    const n = Math.min(+document.getElementById('qCount').value, pool.length);
+    currentQuiz = shuffle(pool).slice(0,n).map(q => {
+      const idx = q.o.map((_,i) => i); const sh = shuffle(idx);
+      return {...q, o: sh.map(i => q.o[i]), a: sh.indexOf(q.a)};
+    });
+    renderQuiz();
+  }
+  function weakSpotsQuiz(){
+    const all = Object.entries(QUIZ_BANK).flatMap(([t,arr]) => arr.map(q => ({...q, theme:t})));
+    const ranked = all.map(q => {
+      const k = q.q; const s = stats[k] || {ok:0,err:0};
+      const total = s.ok+s.err; const errRate = total ? s.err/total : 0;
+      return {q, score: errRate*10 + (total === 0 ? 5 : 0)};
+    }).sort((a,b) => b.score - a.score);
+    const n = Math.min(+document.getElementById('qCount').value, ranked.length);
+    currentQuiz = ranked.slice(0,n).map(r => r.q).map(q => {
+      const idx = q.o.map((_,i) => i); const sh = shuffle(idx);
+      return {...q, o: sh.map(i => q.o[i]), a: sh.indexOf(q.a)};
+    });
+    renderQuiz();
+  }
+  function renderQuiz(){
+    const qc = document.getElementById('quizContainer');
+    qc.innerHTML=''; document.getElementById('quizResult').innerHTML='';
+    score=0; answered=0;
+    document.getElementById('score').textContent=0;
+    document.getElementById('total').textContent=currentQuiz.length;
+    const diffEmoji = {1:"🟢",2:"🟡",3:"🔴"};
+    currentQuiz.forEach((it,i) => {
+      const div = document.createElement('div'); div.className='quiz-q';
+      const themeTag = it.theme ? `<span class="pill">${it.theme}</span>` : '';
+      div.innerHTML = `<div class="q">${themeTag}<span class="pill warn">${diffEmoji[it.d]} ${it.d===1?'Fácil':it.d===2?'Médio':'Difícil'}</span><br>${i+1}. ${it.q}</div><div class="opts"></div><div class="feedback"></div>`;
+      const opts = div.querySelector('.opts');
+      it.o.forEach((opt,j) => {
+        const b = document.createElement('button'); b.className='opt'; b.textContent=opt;
+        b.onclick = () => answer(div,it,j,b); opts.appendChild(b);
+      });
+      qc.appendChild(div);
+    });
+    updateStatsLabel();
+    qc.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  function answer(div,it,j,btn){
+    const opts = div.querySelectorAll('.opt');
+    if([...opts].some(o => o.disabled)) return;
+    opts.forEach((o,k) => { o.disabled = true; if(k===it.a) o.classList.add('correct'); });
+    const fb = div.querySelector('.feedback');
+    const key = it.q;
+    stats[key] = stats[key] || {ok:0,err:0};
+    if(j === it.a){
+      score++; stats[key].ok++;
+      fb.className='feedback show ok'; fb.innerHTML='✅ <b>Correto!</b> '+it.e;
+    } else {
+      stats[key].err++; btn.classList.add('wrong');
+      fb.className='feedback show no'; fb.innerHTML='❌ <b>Não foi dessa vez.</b> '+it.e;
+    }
+    localStorage.setItem(STATS_KEY, JSON.stringify(stats));
+    answered++; document.getElementById('score').textContent=score;
+    if(answered === currentQuiz.length) showResult();
+    updateStatsLabel();
+  }
+  function showResult(){
+    const pct = Math.round(100*score/currentQuiz.length);
+    let msg = pct===100 ? "🏆 Perfeito!" : pct>=80 ? "🌟 Muito bem!" : pct>=60 ? "👍 Bom! Revise os erros." : pct>=40 ? "📚 Está pegando o jeito — refaça!" : "💪 Hora de revisar a teoria!";
+    document.getElementById('quizResult').innerHTML =
+      `<div class="card highlight" style="text-align:center"><h3 style="margin-top:0">Resultado: ${score}/${currentQuiz.length} (${pct}%)</h3><p>${msg}</p>
+      <button class="btn" onclick="startQuiz()">🔄 Novo quiz</button>
+      <button class="btn" style="background:var(--accent);color:#021114;margin-left:8px" onclick="weakSpotsQuiz()">🎯 Focar nos meus erros</button></div>`;
+  }
+  function updateStatsLabel(){
+    const total = Object.values(stats).reduce((s,x) => s+x.ok+x.err, 0);
+    const oks = Object.values(stats).reduce((s,x) => s+x.ok, 0);
+    const pct = total ? Math.round(100*oks/total) : 0;
+    document.getElementById('quizStats').innerHTML =
+      `📊 Histórico: <b>${oks}/${total}</b> (${pct}%) — <a href="#" onclick="event.preventDefault();if(confirm('Apagar histórico?')){localStorage.removeItem('${STATS_KEY}');location.reload()}" style="color:var(--accent)">limpar</a>`;
+  }
+  updateStatsLabel();
+  startQuiz();
+</script>
+
+</body>
+</html>

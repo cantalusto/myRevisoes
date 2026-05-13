@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aprenda — Da Ideia ao Negócio</title>
+<style>
+  :root{--bg:#021114;--bg2:#0f2227;--card:#11272d;--border:#1f3a40;--primary:#0d9488;--primary2:#14b8a6;--accent:#f59e0b;--good:#10b981;--bad:#ef4444;--warn:#fbbf24;--pink:#34d399;--text:#e6f7f5;--muted:#94aeae}
+  *{box-sizing:border-box}html{scroll-behavior:smooth}
+  body{margin:0;font-family:Georgia,'Times New Roman',serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:17px}
+  .hero{min-height:60vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:60px 24px;background:radial-gradient(ellipse at top,#0d4f4a 0%,#021114 70%);position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 20% 30%,rgba(13,148,136,.22) 0,transparent 50%),radial-gradient(circle at 80% 70%,rgba(245,158,11,.1) 0,transparent 50%)}
+  .hero-content{position:relative;z-index:1;max-width:800px}
+  .hero h1{font-size:3.2em;margin:0 0 12px;background:linear-gradient(135deg,#14b8a6,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
+  .hero .subtitle{font-size:1.3em;color:var(--muted);font-style:italic;margin-bottom:30px}
+  .hero .meta{display:flex;justify-content:center;gap:30px;flex-wrap:wrap;color:var(--muted);font-size:.9em;font-family:sans-serif}
+  #progressBar{position:fixed;top:0;left:0;height:4px;background:linear-gradient(90deg,var(--primary),var(--accent));z-index:1000;transition:width .1s;width:0%}
+  .toc{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:30px;margin:40px auto;max-width:900px}
+  .toc h2{margin-top:0;color:var(--primary2);font-family:sans-serif}
+  .toc ol{padding-left:24px;font-family:sans-serif}
+  .toc li{margin:10px 0}
+  .toc a{color:var(--text);text-decoration:none;border-bottom:1px dashed transparent;transition:all .2s}
+  .toc a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+  main{max-width:880px;margin:0 auto;padding:40px 24px 80px}
+  .chapter{margin:80px 0;padding-top:40px;border-top:1px solid var(--border)}
+  .chapter:first-child{border-top:none}
+  .chapter-num{display:inline-block;font-family:sans-serif;color:var(--accent);font-size:.85em;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px}
+  .chapter h2{font-size:2.4em;margin:0 0 24px;color:var(--text);line-height:1.2;font-weight:700}
+  .chapter h3{font-size:1.5em;color:var(--primary2);margin:40px 0 12px;font-family:sans-serif}
+  .chapter h4{color:var(--accent);margin:24px 0 8px;font-family:sans-serif;font-size:1.1em}
+  .chapter p{margin:18px 0}
+  .lead{font-size:1.2em;color:var(--muted);font-style:italic;border-left:3px solid var(--primary);padding:8px 0 8px 20px;margin:24px 0}
+  .analogy,.example,.warning,.deep,.story,.def{margin:28px 0;padding:20px 24px;border-radius:12px;font-family:sans-serif;font-size:.95em;line-height:1.7}
+  .analogy{background:linear-gradient(135deg,rgba(52,211,153,.12),rgba(52,211,153,.04));border-left:4px solid var(--pink)}
+  .analogy::before{content:'🎭 Analogia';display:block;font-weight:700;color:var(--pink);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .example{background:linear-gradient(135deg,rgba(245,158,11,.12),rgba(245,158,11,.02));border-left:4px solid var(--accent)}
+  .example::before{content:'💡 Exemplo';display:block;font-weight:700;color:var(--accent);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .warning{background:linear-gradient(135deg,rgba(251,191,36,.12),rgba(251,191,36,.02));border-left:4px solid var(--warn)}
+  .warning::before{content:'⚠️ Atenção';display:block;font-weight:700;color:var(--warn);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .deep{background:linear-gradient(135deg,rgba(13,148,136,.12),rgba(13,148,136,.02));border-left:4px solid var(--primary)}
+  .deep::before{content:'🔍 Aprofundando';display:block;font-weight:700;color:var(--primary2);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .story{background:linear-gradient(135deg,rgba(16,185,129,.1),rgba(16,185,129,.02));border-left:4px solid var(--good)}
+  .story::before{content:'📖 Contexto';display:block;font-weight:700;color:var(--good);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .def{background:var(--bg2);border:1px solid var(--border);border-radius:8px}
+  .def::before{content:'📌 Definição';display:block;font-weight:700;color:var(--primary2);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  table{width:100%;border-collapse:collapse;margin:24px 0;background:var(--card);border-radius:12px;overflow:hidden;font-family:sans-serif;font-size:.95em}
+  th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+  th{background:linear-gradient(135deg,var(--primary),#0f766e);color:white;font-weight:700}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:rgba(13,148,136,.05)}
+  .key{background:rgba(13,148,136,.15);color:var(--primary2);padding:2px 8px;border-radius:4px;font-weight:600;font-family:sans-serif}
+  blockquote{border-left:4px solid var(--accent);padding:8px 24px;margin:24px 0;font-style:italic;color:var(--muted);background:rgba(245,158,11,.05);border-radius:0 8px 8px 0}
+  .selfcheck{background:var(--card);border:2px dashed var(--primary);border-radius:12px;padding:20px;margin:30px 0;font-family:sans-serif}
+  .selfcheck-q{font-weight:600;color:var(--primary2);margin-bottom:12px}
+  .selfcheck-q::before{content:'🤔 Pergunta para você: ';font-weight:700;color:var(--accent)}
+  details summary{cursor:pointer;color:var(--accent);font-weight:600;outline:none;list-style:none}
+  details summary::before{content:'👁️ Mostrar resposta ▼';font-size:.9em}
+  details[open] summary::before{content:'🙈 Esconder ▲'}
+  details[open] .answer{margin-top:12px;padding:14px;background:var(--bg2);border-radius:8px;border-left:3px solid var(--good);font-style:italic;color:var(--text);font-weight:normal}
+  .floating{position:fixed;right:24px;bottom:24px;display:flex;flex-direction:column;gap:8px;z-index:50}
+  .floating button,.floating a{background:var(--card);border:1px solid var(--border);color:var(--text);width:48px;height:48px;border-radius:50%;cursor:pointer;font-size:1.2em;transition:all .2s;box-shadow:0 4px 12px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;text-decoration:none}
+  .floating button:hover,.floating a:hover{background:var(--primary);transform:scale(1.1)}
+  .end{text-align:center;padding:60px 24px;background:radial-gradient(ellipse at center,rgba(13,148,136,.15),transparent);margin-top:80px;border-top:1px solid var(--border)}
+  .end h2{font-size:2em;color:var(--primary2)}
+  .cta{display:inline-block;margin-top:20px;padding:14px 28px;background:linear-gradient(135deg,var(--primary),var(--accent));color:white;border-radius:99px;text-decoration:none;font-family:sans-serif;font-weight:600;transition:transform .2s}
+  .cta:hover{transform:scale(1.05)}
+  figure.pdf-fig{margin:28px 0;text-align:center;font-family:sans-serif}
+  figure.pdf-fig img{max-width:100%;border-radius:14px;border:1px solid var(--border);background:white;box-shadow:0 12px 32px -10px rgba(0,0,0,.6);transition:transform .3s, box-shadow .3s;cursor:zoom-in}
+  figure.pdf-fig img:hover{transform:translateY(-2px) scale(1.01);box-shadow:0 20px 44px -10px rgba(13,148,136,.25)}
+  figure.pdf-fig figcaption{font-size:.84em;color:var(--muted);margin-top:10px;font-style:italic;padding:0 12px}
+  .img-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:24px 0}
+  .img-grid figure{margin:0}
+  .img-grid img{width:100%;height:200px;object-fit:cover;border-radius:12px;border:1px solid var(--border);background:white;cursor:zoom-in;transition:transform .2s}
+  .img-grid img:hover{transform:scale(1.03)}
+  .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;z-index:200;padding:20px;cursor:zoom-out}
+  .lightbox.open{display:flex}
+  .lightbox img{max-width:96vw;max-height:92vh;border-radius:10px}
+  .lightbox .close{position:absolute;top:18px;right:22px;background:rgba(255,255,255,.1);border:none;color:white;width:44px;height:44px;border-radius:50%;font-size:1.4em;cursor:pointer}
+  @media (max-width: 720px){
+    body{font-size:16px;line-height:1.7}
+    .hero{padding:48px 18px;min-height:auto}
+    .hero h1{font-size:clamp(1.8em,7vw,2.4em)}
+    .hero .subtitle{font-size:1em;margin-bottom:18px}
+    .hero .meta{gap:10px 14px;font-size:.82em}
+    .toc{padding:20px;margin:24px 14px;border-radius:12px}
+    main{padding:24px 16px 60px}
+    .chapter{margin:56px 0;padding-top:28px}
+    .chapter h2{font-size:1.7em}
+    .chapter h3{font-size:1.2em;margin:28px 0 10px}
+    .analogy,.example,.warning,.deep,.story,.def{padding:14px 16px;font-size:.93em}
+    .lead{font-size:1.02em;padding:6px 0 6px 14px;margin:18px 0}
+    table{display:block;overflow-x:auto;font-size:.86em}
+    th,td{padding:9px 11px}
+    .floating{right:14px;bottom:14px}
+    .floating button,.floating a{width:44px;height:44px;font-size:1.05em}
+    .end{padding:40px 18px;margin-top:48px}
+    .end h2{font-size:1.5em}
+    .img-grid{grid-template-columns:1fr 1fr;gap:10px}
+    .img-grid img{height:140px}
+    .selfcheck{padding:16px}
+  }
+  @media (max-width: 420px){.hero h1{font-size:1.7em}.chapter h2{font-size:1.45em}.img-grid{grid-template-columns:1fr}.img-grid img{height:auto}}
+</style>
+</head>
+<body>
+
+<div id="progressBar"></div>
+
+<div class="hero">
+  <div class="hero-content">
+    <h1>Da Ideia ao Negócio</h1>
+    <p class="subtitle">"Empreendedores não são apenas geradores de ideias — são identificadores e exploradores de oportunidades."</p>
+    <div class="meta">
+      <span>📚 Módulo 2 · Aulas 4, 5 e 6</span>
+      <span>⏱️ ~30 minutos</span>
+      <span>💡 Criatividade · Inovação · BMC</span>
+    </div>
+  </div>
+</div>
+
+<div class="toc" id="top">
+  <h2>📑 Sumário</h2>
+  <ol>
+    <li><a href="#cap1">Criatividade no empreendedorismo</a></li>
+    <li><a href="#cap2">Inovação — tipos e processo</a></li>
+    <li><a href="#cap3">Ideia × Oportunidade</a></li>
+    <li><a href="#cap4">Avaliação de oportunidades</a></li>
+    <li><a href="#cap5">Definição do negócio — O que / Para quem / Como</a></li>
+    <li><a href="#cap6">Proposta de Valor</a></li>
+    <li><a href="#cap7">Business Model Canvas — 9 blocos</a></li>
+  </ol>
+</div>
+
+<main>
+
+<article class="chapter" id="cap1">
+  <div class="chapter-num">Capítulo 1</div>
+  <h2>Criatividade no empreendedorismo</h2>
+
+  <p class="lead">Novos negócios raramente começam com capital. Começam com <em>ideias e percepções</em>. Criatividade é a matéria-prima do empreendedor.</p>
+
+  <figure class="pdf-fig">
+    <img src="assets/img/emp/aula4/p04.png" alt="Três conceitos: criatividade, inovação, oportunidade" loading="lazy">
+    <figcaption>Base do processo de criação de novos negócios (Dornelas, 2015; Kuratko et al., 2016).</figcaption>
+  </figure>
+
+  <div class="def">
+    <b>Criatividade</b> — capacidade de gerar ideias novas, úteis ou inesperadas pela combinação de conhecimentos existentes.<br>
+    <b>Inovação</b> — transformação de ideias em soluções que criam valor.<br>
+    <b>Oportunidade empreendedora</b> — situação em que uma inovação pode ser explorada econômica ou socialmente.
+  </div>
+
+  <h3>O que envolve criatividade empreendedora?</h3>
+  <ul>
+    <li><b>Percepção de problemas</b> — identificar necessidades não resolvidas.</li>
+    <li><b>Conexão de conhecimentos</b> — integrar áreas distintas.</li>
+    <li><b>Imaginação de soluções</b> — gerar respostas inovadoras.</li>
+    <li><b>Combinação de tecnologias</b> — integrar saberes em domínios diferentes.</li>
+  </ul>
+
+  <div class="story">
+    Criatividade é uma <b>competência desenvolvível</b>, não um dom inato. Empreendedores criativos transformam insatisfação com o status quo em inovação.
+  </div>
+
+  <h3>Barreiras à criatividade</h3>
+  <table>
+    <thead><tr><th>Barreira</th><th>Efeito</th></tr></thead>
+    <tbody>
+      <tr><td>Medo do erro</td><td>Punir fracasso inibe experimentação</td></tr>
+      <tr><td>Burocracia excessiva</td><td>Normas rígidas sufocam o pensamento divergente</td></tr>
+      <tr><td>Pressão por respostas imediatas</td><td>Urgência elimina espaço para reflexão criativa</td></tr>
+      <tr><td>Pensamento excessivamente lógico</td><td>Racionalidade sem intuição limita novas conexões</td></tr>
+      <tr><td>Cultura conservadora</td><td>Organizações que valorizam só o previsível</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Fatores que estimulam a criatividade</h3>
+  <ul>
+    <li><b>Diversidade de experiências</b></li>
+    <li><b>Interação entre pessoas</b> — trocas catalisam ideias</li>
+    <li><b>Curiosidade intelectual</b> — questionar como motor</li>
+    <li><b>Experimentação e tolerância ao erro</b></li>
+  </ul>
+</article>
+
+<article class="chapter" id="cap2">
+  <div class="chapter-num">Capítulo 2</div>
+  <h2>Inovação — tipos e processo</h2>
+
+  <p class="lead">Nem toda ideia criativa vira inovação. O diferencial está na <em>execução</em> e na <em>geração de valor</em>.</p>
+
+  <div class="def">
+    <b>Inovação</b> é a introdução de novos produtos, processos, serviços ou modelos de negócio capazes de gerar valor econômico ou social. É o motor do desenvolvimento econômico (Schumpeter).
+  </div>
+
+  <h3>Tipos de inovação (Schumpeter / Manual de Oslo)</h3>
+  <table>
+    <thead><tr><th>Tipo</th><th>Definição</th><th>Exemplo</th></tr></thead>
+    <tbody>
+      <tr><td><b>Produto</b></td><td>Novo bem ou serviço com características inéditas</td><td>iPhone</td></tr>
+      <tr><td><b>Processo</b></td><td>Nova forma de produzir ou entregar</td><td>Linha de montagem Ford</td></tr>
+      <tr><td><b>Modelo de negócio</b></td><td>Nova forma de capturar valor no mercado</td><td>Netflix (streaming)</td></tr>
+      <tr><td><b>Mercado</b></td><td>Abertura de mercado novo</td><td>Tesla criando o EV mainstream</td></tr>
+      <tr><td><b>Insumos/organização</b></td><td>Novas fontes ou estruturas</td><td>Just-in-time Toyota</td></tr>
+    </tbody>
+  </table>
+
+  <figure class="pdf-fig">
+    <img src="assets/img/emp/aula4/p13.png" alt="Inovações que reconfiguraram mercados: Netflix, Uber, Airbnb, Nubank" loading="lazy">
+    <figcaption>Casos que redefiniram setores inteiros pela inovação de modelo de negócio.</figcaption>
+  </figure>
+
+  <h3>O processo de inovação</h3>
+  <ol>
+    <li><b>Geração de ideias</b></li>
+    <li><b>Seleção das melhores</b></li>
+    <li><b>Desenvolvimento da solução</b></li>
+    <li><b>Implementação no mercado</b></li>
+  </ol>
+
+  <div class="warning">
+    O processo é <b>iterativo e experimental</b> — raramente linear. Erros e reajustes fazem parte do caminho.
+  </div>
+
+  <h3>Fontes de oportunidades (Drucker, 1986)</h3>
+  <ul>
+    <li>Problemas cotidianos — frustrações revelam lacunas</li>
+    <li>Mudanças tecnológicas — abrem espaços inéditos</li>
+    <li>Mudanças sociais — transformações demográficas/culturais</li>
+    <li>Mudanças regulatórias — novas regras criam mercados</li>
+    <li>Falhas de mercado — desequilíbrios oferta/demanda</li>
+  </ul>
+
+  <h3>Tendências geradoras de oportunidades</h3>
+  <table>
+    <thead><tr><th>Tendência</th><th>Oportunidade</th></tr></thead>
+    <tbody>
+      <tr><td>🌐 Transformação digital</td><td>Digitalização em todos os setores</td></tr>
+      <tr><td>🔗 Economia de plataformas</td><td>Conexão oferta-demanda em escala</td></tr>
+      <tr><td>♻️ Sustentabilidade</td><td>Soluções ambientalmente responsáveis</td></tr>
+      <tr><td>🤖 Inteligência artificial</td><td>IA redefine produtos e modelos</td></tr>
+      <tr><td>👴 Envelhecimento populacional</td><td>Economia do cuidado, saúde, longevidade</td></tr>
+    </tbody>
+  </table>
+</article>
+
+<article class="chapter" id="cap3">
+  <div class="chapter-num">Capítulo 3</div>
+  <h2>Ideia × Oportunidade</h2>
+
+  <p class="lead">Confundir ideia com oportunidade é um dos erros mais caros do empreendedor iniciante. Toda boa oportunidade nasce de uma ideia, mas <b>nem toda ideia vira oportunidade</b>.</p>
+
+  <figure class="pdf-fig">
+    <img src="assets/img/emp/aula5/p08.png" alt="Ideia vs Oportunidade" loading="lazy">
+    <figcaption>Transição de ideia para oportunidade exige pesquisa, validação e análise sistemática.</figcaption>
+  </figure>
+
+  <table>
+    <thead><tr><th>Ideia</th><th>Oportunidade</th></tr></thead>
+    <tbody>
+      <tr><td>Percepção inicial, não validada</td><td>Resolve necessidade real</td></tr>
+      <tr><td>Surge de insights pessoais</td><td>Possui demanda de mercado</td></tr>
+      <tr><td>Pode não ter viabilidade</td><td>Gera valor sustentável</td></tr>
+      <tr><td>Pensamento criativo bruto</td><td>Solução viável + cliente disposto a pagar</td></tr>
+    </tbody>
+  </table>
+
+  <blockquote>"Uma ideia só tem valor quando existe mercado disposto a pagar por ela." — Degen (2009)</blockquote>
+
+  <h3>Exemplo prático</h3>
+  <div class="example">
+    <b>❌ Ideia vaga</b>: "Aplicativo de agenda genérico" — solução ampla, sem foco, mercado saturado.<br><br>
+    <b>✅ Oportunidade precisa</b>: "Aplicativo de agenda <em>para médicos</em>" com gestão de consultas, prontuários digitais e pagamentos — resolve dor específica, mercado vertical, cliente disposto a pagar.<br><br>
+    <b>Especificidade</b> é o que transforma uma ideia genérica em oportunidade de negócio.
+  </div>
+
+  <h3>Fontes de ideias de negócio</h3>
+  <ul>
+    <li><b>Experiência pessoal</b> — conhecimento profundo de um setor</li>
+    <li><b>Problemas cotidianos</b> — dores recorrentes sem solução</li>
+    <li><b>Mudanças tecnológicas</b> — novas tecnologias habilitando soluções</li>
+    <li><b>Tendências de mercado</b> — comportamentos emergentes</li>
+  </ul>
+
+  <h3>Tipos de demanda (Drucker, 1985)</h3>
+  <ul>
+    <li><b>Demanda não atendida</b> — existe necessidade, ninguém resolve.</li>
+    <li><b>Demanda mal atendida</b> — solução existe, mas é cara/lenta/ruim.</li>
+    <li><b>Demanda latente</b> — cliente ainda não sabe que tem a necessidade (criada por inovação disruptiva).</li>
+  </ul>
+</article>
+
+<article class="chapter" id="cap4">
+  <div class="chapter-num">Capítulo 4</div>
+  <h2>Avaliação de oportunidades</h2>
+
+  <p class="lead">Antes de investir tempo e dinheiro, qualquer oportunidade precisa passar por filtros sistemáticos de avaliação.</p>
+
+  <h3>5 critérios essenciais (Timmons & Spinelli, 2008)</h3>
+  <table>
+    <thead><tr><th>Critério</th><th>Peso (%)</th><th>O que avaliar</th></tr></thead>
+    <tbody>
+      <tr><td><b>Problema relevante</b></td><td>~25</td><td>Dor intensa, frequente, sem boa solução atual</td></tr>
+      <tr><td><b>Mercado significativo</b></td><td>~25</td><td>Tamanho, crescimento, acessibilidade (TAM, SAM, SOM)</td></tr>
+      <tr><td><b>Diferencial competitivo</b></td><td>~20</td><td>Vantagem única, difícil de copiar</td></tr>
+      <tr><td><b>Modelo de receita</b></td><td>~15</td><td>Como e quanto o cliente vai pagar</td></tr>
+      <tr><td><b>Capacidade de execução</b></td><td>~15</td><td>Time, recursos, tecnologia, competências</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5 perguntas de validação (Steve Blank, 2013)</h3>
+  <ol>
+    <li>Qual problema está sendo resolvido? (intensidade, frequência, impacto)</li>
+    <li>Quem são os clientes? (segmento, comportamento, poder de compra)</li>
+    <li>Existe demanda real? (pesquisa primária e secundária)</li>
+    <li>O cliente pagaria? (<em>willingness to pay</em> e precificação)</li>
+    <li>Qual a posição competitiva? (concorrência, substitutos)</li>
+  </ol>
+
+  <h3>Características de uma oportunidade genuína</h3>
+  <ul>
+    <li><b>Clareza do problema</b> — bem definido e relevante</li>
+    <li><b>Potencial de mercado</b> — demanda e tamanho suficientes</li>
+    <li><b>Diferenciação</b> — solução única, superior</li>
+    <li><b>Viabilidade técnica</b> — pode ser feita com os recursos</li>
+    <li><b>Potencial de valor</b> — retorno econômico, social ou ambos</li>
+  </ul>
+
+  <div class="warning">
+    <b>Erros comuns</b>:
+    <ul>
+      <li>🚫 Ignorar o mercado (não pesquisar)</li>
+      <li>🚫 Não validar o cliente (assumir que sabe)</li>
+      <li>🚫 Subestimar concorrentes e substitutos</li>
+      <li>🚫 Ignorar custos e estrutura financeira</li>
+    </ul>
+  </div>
+</article>
+
+<article class="chapter" id="cap5">
+  <div class="chapter-num">Capítulo 5</div>
+  <h2>Definição do negócio — O que / Para quem / Como</h2>
+
+  <p class="lead">"Ideias não estruturadas não são negócios" — Dornelas. Toda definição precisa caber em <b>três dimensões</b>.</p>
+
+  <div class="def">
+    <b>A equação do negócio</b>: <code>O que + Para quem + Como</code>. Clareza nessas três dimensões define estratégia, posicionamento e vantagem competitiva.
+  </div>
+
+  <h3>Três dimensões fundamentais (Degen, 2009)</h3>
+  <table>
+    <thead><tr><th>Dimensão</th><th>Pergunta</th><th>Conteúdo</th></tr></thead>
+    <tbody>
+      <tr><td>O que ofereço</td><td>Qual produto/serviço?</td><td>Funcional ou emocional</td></tr>
+      <tr><td>Para quem</td><td>Qual segmento de cliente?</td><td>Necessidade específica</td></tr>
+      <tr><td>Como compito</td><td>Qual diferencial?</td><td>Vantagem competitiva sustentável</td></tr>
+    </tbody>
+  </table>
+
+  <figure class="pdf-fig">
+    <img src="assets/img/emp/aula6/p07.png" alt="Da ideia genérica ao negócio definido" loading="lazy">
+    <figcaption>Da vagueza à precisão — definição clara orienta toda a estratégia.</figcaption>
+  </figure>
+
+  <div class="example">
+    <b>❌ Definição vaga</b>: "Aplicativo de delivery" — sem foco, sem diferencial, sem cliente claro.<br><br>
+    <b>✅ Definição precisa</b>:
+    <ul>
+      <li><b>O que</b>: Refeições saudáveis e balanceadas</li>
+      <li><b>Para quem</b>: Profissionais urbanos sem tempo</li>
+      <li><b>Como</b>: Entrega rápida + cardápio personalizado</li>
+    </ul>
+  </div>
+
+  <div class="story">
+    Sem clareza, o empreendedor opera sem bússola. Por que muitos negócios falham? <b>Falta de foco</b>, valor vago, incoerência entre os blocos do modelo.
+  </div>
+</article>
+
+<article class="chapter" id="cap6">
+  <div class="chapter-num">Capítulo 6</div>
+  <h2>Proposta de Valor</h2>
+
+  <p class="lead">A proposta de valor é o <em>benefício percebido pelo cliente</em> — não o que a empresa declara, mas o que o cliente realmente experimenta.</p>
+
+  <figure class="pdf-fig">
+    <img src="assets/img/emp/aula6/p08.png" alt="Proposta de valor - problema, solução, benefício, diferencial" loading="lazy">
+    <figcaption>O valor é co-criado com o cliente, não unilateralmente declarado.</figcaption>
+  </figure>
+
+  <h3>Estrutura da proposta de valor</h3>
+  <ol>
+    <li><b>Problema relevante</b> — identificado por pesquisa, não por intuição</li>
+    <li><b>Solução clara</b> — resposta direta ao problema</li>
+    <li><b>Benefício concreto</b> — mensurável (tempo, dinheiro, status, conforto)</li>
+    <li><b>Diferencial competitivo</b> — difícil de copiar, fácil de comunicar</li>
+  </ol>
+
+  <h3>Erros comuns</h3>
+  <ul>
+    <li><b>🎯 Público genérico</b> — "Nosso cliente é todo mundo" → sem segmentação, sem tração.</li>
+    <li><b>💬 Diferenciais vazios</b> — "qualidade", "inovação", "excelência" — atributos que todos declaram.</li>
+    <li><b>📦 Foco no produto</b> em vez do benefício — cliente compra resultado, não <em>feature</em>.</li>
+  </ul>
+
+  <div class="warning">
+    <b>Sintoma diagnóstico</b>: se ninguém consegue explicar o negócio em <em>uma frase</em>, a proposta de valor ainda não está clara (Dornelas).
+  </div>
+</article>
+
+<article class="chapter" id="cap7">
+  <div class="chapter-num">Capítulo 7</div>
+  <h2>Business Model Canvas — 9 blocos</h2>
+
+  <p class="lead">Ferramenta visual desenvolvida por Osterwalder & Pigneur (2011) que organiza o modelo de negócio em <b>9 blocos interdependentes</b> em uma única página.</p>
+
+  <div class="def">
+    <b>Modelo de Negócio</b> — descreve a lógica de como uma organização <em>cria, entrega e captura</em> valor (Osterwalder & Pigneur, 2011).
+  </div>
+
+  <figure class="pdf-fig">
+    <img src="assets/img/emp/aula6/p13.png" alt="Business Model Canvas - 9 blocos" loading="lazy">
+    <figcaption>Os 9 blocos do Canvas organizam o modelo de negócio em uma única visão sistêmica.</figcaption>
+  </figure>
+
+  <h3>Os 9 blocos</h3>
+  <table>
+    <thead><tr><th>Bloco</th><th>Conteúdo</th></tr></thead>
+    <tbody>
+      <tr><td><b>1. Segmentos de Clientes</b></td><td>Quem queremos atender — qual grupo de pessoas/empresas?</td></tr>
+      <tr><td><b>2. Proposta de Valor</b></td><td>Que valor entregamos? Que problemas resolvemos? <em>Centro do Canvas</em>.</td></tr>
+      <tr><td><b>3. Canais</b></td><td>Como entregamos a proposta? Quais canais de venda/comunicação?</td></tr>
+      <tr><td><b>4. Relacionamento com Clientes</b></td><td>Que tipo de relação mantemos (pessoal, automatizada, comunidade)?</td></tr>
+      <tr><td><b>5. Fontes de Receita</b></td><td>Como ganhamos dinheiro? (venda, assinatura, comissão, licença...)</td></tr>
+      <tr><td><b>6. Recursos Principais</b></td><td>O que precisamos ter? (físicos, intelectuais, humanos, financeiros)</td></tr>
+      <tr><td><b>7. Atividades Principais</b></td><td>O que precisamos <em>fazer</em>?</td></tr>
+      <tr><td><b>8. Parcerias Principais</b></td><td>Quem nos ajuda? Alianças estratégicas.</td></tr>
+      <tr><td><b>9. Estrutura de Custos</b></td><td>Quais são os principais custos para operar o modelo?</td></tr>
+    </tbody>
+  </table>
+
+  <h3>A proposta de valor como centro</h3>
+  <div class="deep">
+    A proposta de valor é o <b>eixo gravitacional</b> do Canvas. Orienta:
+    <ul>
+      <li>→ Clientes (define segmento, canal, relacionamento)</li>
+      <li>→ Operação (determina recursos e atividades)</li>
+      <li>→ Receita (sustenta o modelo financeiro)</li>
+    </ul>
+    Sem valor claro, os outros 8 blocos perdem coerência.
+  </div>
+
+  <h3>Lógica do modelo — 4 perguntas-chave</h3>
+  <ol>
+    <li>Quem é o cliente?</li>
+    <li>O que ele valoriza?</li>
+    <li>Como entrego isso?</li>
+    <li>Como ganho dinheiro?</li>
+  </ol>
+
+  <p>A <b>coerência</b> entre as respostas é mais importante que a sofisticação individual de cada bloco.</p>
+
+  <h3>Exemplo integrado — Marmitas Saudáveis</h3>
+  <div class="example">
+    <b>Cliente</b>: profissionais urbanos sem tempo · <b>Valor</b>: alimentação saudável, rápida e conveniente · <b>Canal</b>: app mobile · <b>Receita</b>: assinatura mensal.<br><br>
+    Modelo simples, mas <em>coerente</em>: cada bloco reforça o mesmo cliente e a mesma proposta.
+  </div>
+
+  <div class="warning">
+    <b>Limitações do Canvas</b>:
+    <ul>
+      <li>⚠️ Canvas superficial — preenchido sem pesquisa.</li>
+      <li>⚠️ Falta de validação — hipóteses nunca testadas.</li>
+      <li>⚠️ Excesso de suposições — certezas onde deveria haver perguntas.</li>
+    </ul>
+    <b>Canvas ≠ realidade. Canvas = hipótese estruturada que precisa ser validada</b> (Kuratko, 2016).
+  </div>
+
+  <div class="selfcheck">
+    <div class="selfcheck-q">Qual a diferença entre ter uma ideia e ter um modelo de negócio?</div>
+    <details><summary></summary><div class="answer">Ideia é uma percepção criativa, sem validação. Modelo de negócio é uma <b>estrutura coerente</b> que explica como o negócio cria, entrega e captura valor — quem é o cliente, o que ele valoriza, como você entrega isso e como ganha dinheiro. Ideias são abundantes; modelos coerentes são raros e valiosos.</div></details>
+  </div>
+</article>
+
+</main>
+
+<div class="end">
+  <h2>Pronto para o quiz?</h2>
+  <p style="color:var(--muted);font-family:sans-serif">Banco com temas, dificuldade e modo "focar nos erros".</p>
+  <a class="cta" href="revisao-emp2.html">✅ Ir para o Quiz</a>
+</div>
+
+<div class="floating">
+  <a href="index.html" title="Hub">🏠</a>
+  <button onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Topo">↑</button>
+</div>
+
+<div class="lightbox" id="lightbox">
+  <button class="close" onclick="closeLightbox()">×</button>
+  <img id="lightboxImg" alt="">
+</div>
+
+<script>
+  const bar = document.getElementById('progressBar');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const scrolled = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    bar.style.width = scrolled + '%';
+  });
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightboxImg');
+  document.querySelectorAll('figure.pdf-fig img, .img-grid img').forEach(img => {
+    img.addEventListener('click', () => { lbImg.src = img.src; lb.classList.add('open'); });
+  });
+  lb.addEventListener('click', e => { if(e.target === lb) closeLightbox(); });
+  function closeLightbox(){ lb.classList.remove('open'); lbImg.src = ''; }
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') closeLightbox(); });
+</script>
+
+</body>
+</html>

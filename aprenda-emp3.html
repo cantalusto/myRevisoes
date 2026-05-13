@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aprenda — Estratégia e Plano de Negócio</title>
+<style>
+  :root{--bg:#021114;--bg2:#0f2227;--card:#11272d;--border:#1f3a40;--primary:#0d9488;--primary2:#14b8a6;--accent:#f59e0b;--good:#10b981;--bad:#ef4444;--warn:#fbbf24;--pink:#34d399;--text:#e6f7f5;--muted:#94aeae}
+  *{box-sizing:border-box}html{scroll-behavior:smooth}
+  body{margin:0;font-family:Georgia,'Times New Roman',serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:17px}
+  .hero{min-height:60vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:60px 24px;background:radial-gradient(ellipse at top,#0d4f4a 0%,#021114 70%);position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 20% 30%,rgba(13,148,136,.22) 0,transparent 50%),radial-gradient(circle at 80% 70%,rgba(245,158,11,.1) 0,transparent 50%)}
+  .hero-content{position:relative;z-index:1;max-width:800px}
+  .hero h1{font-size:3.2em;margin:0 0 12px;background:linear-gradient(135deg,#14b8a6,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
+  .hero .subtitle{font-size:1.3em;color:var(--muted);font-style:italic;margin-bottom:30px}
+  .hero .meta{display:flex;justify-content:center;gap:30px;flex-wrap:wrap;color:var(--muted);font-size:.9em;font-family:sans-serif}
+  #progressBar{position:fixed;top:0;left:0;height:4px;background:linear-gradient(90deg,var(--primary),var(--accent));z-index:1000;transition:width .1s;width:0%}
+  .toc{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:30px;margin:40px auto;max-width:900px}
+  .toc h2{margin-top:0;color:var(--primary2);font-family:sans-serif}.toc ol{padding-left:24px;font-family:sans-serif}.toc li{margin:10px 0}
+  .toc a{color:var(--text);text-decoration:none;border-bottom:1px dashed transparent;transition:all .2s}
+  .toc a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+  main{max-width:880px;margin:0 auto;padding:40px 24px 80px}
+  .chapter{margin:80px 0;padding-top:40px;border-top:1px solid var(--border)}.chapter:first-child{border-top:none}
+  .chapter-num{display:inline-block;font-family:sans-serif;color:var(--accent);font-size:.85em;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px}
+  .chapter h2{font-size:2.4em;margin:0 0 24px;color:var(--text);line-height:1.2;font-weight:700}
+  .chapter h3{font-size:1.5em;color:var(--primary2);margin:40px 0 12px;font-family:sans-serif}
+  .chapter h4{color:var(--accent);margin:24px 0 8px;font-family:sans-serif;font-size:1.1em}
+  .chapter p{margin:18px 0}
+  .lead{font-size:1.2em;color:var(--muted);font-style:italic;border-left:3px solid var(--primary);padding:8px 0 8px 20px;margin:24px 0}
+  .analogy,.example,.warning,.deep,.story,.def{margin:28px 0;padding:20px 24px;border-radius:12px;font-family:sans-serif;font-size:.95em;line-height:1.7}
+  .analogy{background:linear-gradient(135deg,rgba(52,211,153,.12),rgba(52,211,153,.04));border-left:4px solid var(--pink)}
+  .analogy::before{content:'🎭 Analogia';display:block;font-weight:700;color:var(--pink);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .example{background:linear-gradient(135deg,rgba(245,158,11,.12),rgba(245,158,11,.02));border-left:4px solid var(--accent)}
+  .example::before{content:'💡 Exemplo';display:block;font-weight:700;color:var(--accent);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .warning{background:linear-gradient(135deg,rgba(251,191,36,.12),rgba(251,191,36,.02));border-left:4px solid var(--warn)}
+  .warning::before{content:'⚠️ Atenção';display:block;font-weight:700;color:var(--warn);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .deep{background:linear-gradient(135deg,rgba(13,148,136,.12),rgba(13,148,136,.02));border-left:4px solid var(--primary)}
+  .deep::before{content:'🔍 Aprofundando';display:block;font-weight:700;color:var(--primary2);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .def{background:var(--bg2);border:1px solid var(--border);border-radius:8px}
+  .def::before{content:'📌 Definição';display:block;font-weight:700;color:var(--primary2);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  table{width:100%;border-collapse:collapse;margin:24px 0;background:var(--card);border-radius:12px;overflow:hidden;font-family:sans-serif;font-size:.95em}
+  th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+  th{background:linear-gradient(135deg,var(--primary),#0f766e);color:white;font-weight:700}
+  tr:last-child td{border-bottom:none}tr:hover td{background:rgba(13,148,136,.05)}
+  .key{background:rgba(13,148,136,.15);color:var(--primary2);padding:2px 8px;border-radius:4px;font-weight:600;font-family:sans-serif}
+  blockquote{border-left:4px solid var(--accent);padding:8px 24px;margin:24px 0;font-style:italic;color:var(--muted);background:rgba(245,158,11,.05);border-radius:0 8px 8px 0}
+  .selfcheck{background:var(--card);border:2px dashed var(--primary);border-radius:12px;padding:20px;margin:30px 0;font-family:sans-serif}
+  .selfcheck-q{font-weight:600;color:var(--primary2);margin-bottom:12px}
+  .selfcheck-q::before{content:'🤔 Pergunta para você: ';font-weight:700;color:var(--accent)}
+  details summary{cursor:pointer;color:var(--accent);font-weight:600;outline:none;list-style:none}
+  details summary::before{content:'👁️ Mostrar resposta ▼';font-size:.9em}
+  details[open] summary::before{content:'🙈 Esconder ▲'}
+  details[open] .answer{margin-top:12px;padding:14px;background:var(--bg2);border-radius:8px;border-left:3px solid var(--good);font-style:italic;color:var(--text);font-weight:normal}
+  .floating{position:fixed;right:24px;bottom:24px;display:flex;flex-direction:column;gap:8px;z-index:50}
+  .floating button,.floating a{background:var(--card);border:1px solid var(--border);color:var(--text);width:48px;height:48px;border-radius:50%;cursor:pointer;font-size:1.2em;transition:all .2s;box-shadow:0 4px 12px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;text-decoration:none}
+  .floating button:hover,.floating a:hover{background:var(--primary);transform:scale(1.1)}
+  .end{text-align:center;padding:60px 24px;background:radial-gradient(ellipse at center,rgba(13,148,136,.15),transparent);margin-top:80px;border-top:1px solid var(--border)}
+  .end h2{font-size:2em;color:var(--primary2)}
+  .cta{display:inline-block;margin-top:20px;padding:14px 28px;background:linear-gradient(135deg,var(--primary),var(--accent));color:white;border-radius:99px;text-decoration:none;font-family:sans-serif;font-weight:600;transition:transform .2s}
+  .cta:hover{transform:scale(1.05)}
+  figure.pdf-fig{margin:28px 0;text-align:center;font-family:sans-serif}
+  figure.pdf-fig img{max-width:100%;border-radius:14px;border:1px solid var(--border);background:white;box-shadow:0 12px 32px -10px rgba(0,0,0,.6);transition:transform .3s, box-shadow .3s;cursor:zoom-in}
+  figure.pdf-fig img:hover{transform:translateY(-2px) scale(1.01);box-shadow:0 20px 44px -10px rgba(13,148,136,.25)}
+  figure.pdf-fig figcaption{font-size:.84em;color:var(--muted);margin-top:10px;font-style:italic;padding:0 12px}
+  .img-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:24px 0}
+  .img-grid figure{margin:0}
+  .img-grid img{width:100%;height:200px;object-fit:cover;border-radius:12px;border:1px solid var(--border);background:white;cursor:zoom-in;transition:transform .2s}
+  .img-grid img:hover{transform:scale(1.03)}
+  .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;z-index:200;padding:20px;cursor:zoom-out}
+  .lightbox.open{display:flex}
+  .lightbox img{max-width:96vw;max-height:92vh;border-radius:10px}
+  .lightbox .close{position:absolute;top:18px;right:22px;background:rgba(255,255,255,.1);border:none;color:white;width:44px;height:44px;border-radius:50%;font-size:1.4em;cursor:pointer}
+  @media (max-width: 720px){
+    body{font-size:16px;line-height:1.7}.hero{padding:48px 18px;min-height:auto}
+    .hero h1{font-size:clamp(1.8em,7vw,2.4em)}.hero .subtitle{font-size:1em;margin-bottom:18px}
+    .hero .meta{gap:10px 14px;font-size:.82em}.toc{padding:20px;margin:24px 14px;border-radius:12px}
+    main{padding:24px 16px 60px}.chapter{margin:56px 0;padding-top:28px}
+    .chapter h2{font-size:1.7em}.chapter h3{font-size:1.2em;margin:28px 0 10px}
+    .analogy,.example,.warning,.deep,.story,.def{padding:14px 16px;font-size:.93em}
+    .lead{font-size:1.02em;padding:6px 0 6px 14px;margin:18px 0}
+    table{display:block;overflow-x:auto;font-size:.86em}th,td{padding:9px 11px}
+    .floating{right:14px;bottom:14px}.floating button,.floating a{width:44px;height:44px;font-size:1.05em}
+    .end{padding:40px 18px;margin-top:48px}.end h2{font-size:1.5em}
+    .img-grid{grid-template-columns:1fr 1fr;gap:10px}.img-grid img{height:140px}.selfcheck{padding:16px}
+  }
+  @media (max-width: 420px){.hero h1{font-size:1.7em}.chapter h2{font-size:1.45em}.img-grid{grid-template-columns:1fr}.img-grid img{height:auto}}
+</style>
+</head>
+<body>
+
+<div id="progressBar"></div>
+
+<div class="hero">
+  <div class="hero-content">
+    <h1>Estratégia e<br>Plano de Negócio</h1>
+    <p class="subtitle">"A essência da estratégia é escolher o que NÃO fazer." — Michael Porter</p>
+    <div class="meta">
+      <span>📚 Módulo 3 · Aulas 7, 9 e 10</span>
+      <span>⏱️ ~30 minutos</span>
+      <span>🎯 Missão · Estratégia · Plano · Mercado</span>
+    </div>
+  </div>
+</div>
+
+<div class="toc" id="top">
+  <h2>📑 Sumário</h2>
+  <ol>
+    <li><a href="#cap1">Missão, Visão e Objetivos</a></li>
+    <li><a href="#cap2">Estratégia competitiva (Porter)</a></li>
+    <li><a href="#cap3">Trade-offs e fit estratégico</a></li>
+    <li><a href="#cap4">Plano de Negócios — estrutura</a></li>
+    <li><a href="#cap5">Estudo de Mercado</a></li>
+    <li><a href="#cap6">Análise da Concorrência</a></li>
+    <li><a href="#cap7">Erros, limitações e Lean × Tradicional</a></li>
+  </ol>
+</div>
+
+<main>
+
+<article class="chapter" id="cap1">
+  <div class="chapter-num">Capítulo 1</div>
+  <h2>Missão, Visão e Objetivos</h2>
+
+  <p class="lead">Ideias sem estratégia falham. A maioria das startups fracassa não por falta de inovação, mas por <b>ausência de posicionamento claro e escolhas deliberadas</b> (Porter, 1996).</p>
+
+  <figure class="pdf-fig">
+    <img src="assets/img/emp/aula7/p06.png" alt="Missão - por que existimos?" loading="lazy">
+    <figcaption>Missão define o propósito fundamental da organização (Collins & Porras, 1996).</figcaption>
+  </figure>
+
+  <h3>Missão — Por que existimos?</h3>
+  <div class="def">
+    <b>Missão</b> = propósito fundamental. Missões eficazes são <em>duradouras</em> e orientam decisões estratégicas (Collins & Porras, 1996).
+  </div>
+  <ul>
+    <li><b>Valor gerado</b> — Qual transformação entregamos?</li>
+    <li><b>Público-alvo</b> — Para quem criamos valor?</li>
+    <li><b>Problema resolvido</b> — Qual dor endereçamos?</li>
+  </ul>
+
+  <h3>Visão — Onde queremos chegar?</h3>
+  <div class="def">
+    <b>Visão</b> = estado futuro desejado. Collins & Porras (1994) chamam de <b>BHAG</b> (Big Hairy Audacious Goal) — mobiliza a organização por décadas.
+  </div>
+  <ul>
+    <li><b>Horizonte</b> — 5, 10 ou 20 anos?</li>
+    <li><b>Escala</b> — Local, nacional, global?</li>
+    <li><b>Ambição competitiva</b> — Liderança? Nicho?</li>
+  </ul>
+
+  <h3>Objetivos Estratégicos</h3>
+  <p>O que precisamos alcançar para realizar missão e visão? Objetivos devem ser:</p>
+  <ul>
+    <li><b>Mensuráveis</b> — KPIs quantitativos (receita, market share, NPS).</li>
+    <li><b>Com prazo</b> — curto, médio, longo (Kaplan & Norton, 1992).</li>
+    <li><b>Alinhados ao modelo</b> — coerentes com proposta de valor e recursos.</li>
+  </ul>
+
+  <div class="warning">
+    <b>Erro comum</b>: missão genérica como "ser o melhor" ou "gerar valor". Sem especificidade de público, problema e transformação, a missão não orienta nenhuma decisão.
+  </div>
+</article>
+
+<article class="chapter" id="cap2">
+  <div class="chapter-num">Capítulo 2</div>
+  <h2>Estratégia competitiva (Porter)</h2>
+
+  <p class="lead">Michael Porter (1980) cravou três estratégias genéricas para vantagem competitiva. Toda empresa precisa escolher uma <em>posição</em> — tentar ser tudo dilui o posicionamento.</p>
+
+  <figure class="pdf-fig">
+    <img src="assets/img/emp/aula7/p09.png" alt="Estratégias competitivas de Porter" loading="lazy">
+    <figcaption>Três estratégias genéricas: diferenciação, custo, foco.</figcaption>
+  </figure>
+
+  <table>
+    <thead><tr><th>Estratégia</th><th>Como funciona</th><th>Exemplo</th></tr></thead>
+    <tbody>
+      <tr><td><b>Diferenciação</b></td><td>Oferta única que justifica prêmio de preço. Sustentada por inovação e marca forte.</td><td>Apple, Tesla</td></tr>
+      <tr><td><b>Liderança em Custo</b></td><td>Estrutura de custos mais eficiente do setor. Requer escala e operações enxutas.</td><td>Amazon, Ryanair</td></tr>
+      <tr><td><b>Foco</b></td><td>Servir um segmento específico melhor que qualquer concorrente. Pode combinar diferenciação OU custo, mas em nicho.</td><td>Pequenas empresas verticais</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Como cada uma se manifesta no BMC?</h3>
+  <table>
+    <thead><tr><th>Estratégia</th><th>Bloco predominante no Canvas</th></tr></thead>
+    <tbody>
+      <tr><td>Diferenciação</td><td>Proposta de Valor premium + Relacionamento personalizado</td></tr>
+      <tr><td>Liderança em custo</td><td>Estrutura de Custos enxuta + Atividades eficientes + Parcerias</td></tr>
+      <tr><td>Foco</td><td>Segmentos de Clientes específicos + Canais dedicados</td></tr>
+    </tbody>
+  </table>
+</article>
+
+<article class="chapter" id="cap3">
+  <div class="chapter-num">Capítulo 3</div>
+  <h2>Trade-offs e fit estratégico</h2>
+
+  <blockquote>"A essência da estratégia é escolher o que NÃO fazer." — Porter (1996)</blockquote>
+
+  <div class="def">
+    <b>Trade-off estratégico</b>: servir melhor um segmento implica <em>renunciar</em> a outros. Tentar ser tudo para todos dilui o posicionamento e destrói a margem.
+  </div>
+
+  <h3>Fit de atividades</h3>
+  <p>Vantagem duradoura = <b>encaixe sistêmico entre atividades</b>. É difícil de imitar porque é um sistema, não uma peça isolada. Concorrentes podem copiar uma atividade — mas dificilmente copiam a coerência entre todas.</p>
+
+  <div class="example">
+    <b>IKEA</b>: cliente monta o móvel (atividade) ↔ produtos planos para transporte (atividade) ↔ catálogos detalhados (atividade) ↔ lojas fora do centro com estacionamento (atividade). Cada peça reforça as demais. É o sistema que dá vantagem.
+  </div>
+
+  <h3>Erros estratégicos comuns</h3>
+  <ul>
+    <li><b>Estratégia implícita</b> — não declarada vira inconsistente; equipes operam com prioridades conflitantes.</li>
+    <li><b>BMC incoerente</b> — proposta de valor premium com estrutura de custo de commodity = contradição que destrói a margem.</li>
+    <li><b>"Tudo para todos"</b> — sem foco, sem diferenciação real.</li>
+  </ul>
+</article>
+
+<article class="chapter" id="cap4">
+  <div class="chapter-num">Capítulo 4</div>
+  <h2>Plano de Negócios — estrutura</h2>
+
+  <p class="lead">O plano de negócios é o instrumento central de planejamento. <em>Não elimina o risco — torna o risco claro e analisável.</em></p>
+
+  <div class="def">
+    <b>Plano de Negócios</b> — documento estruturado que descreve o negócio de forma completa: estratégia, mercado, operação, finanças. <em>Mais que um documento, é ferramenta viva de gestão.</em>
+  </div>
+
+  <h3>Finalidades</h3>
+  <ul>
+    <li><b>Reduzir incertezas</b> — antecipar cenários.</li>
+    <li><b>Apoiar decisões</b> — base racional.</li>
+    <li><b>Comunicar o negócio</b> — clareza para parceiros e equipe.</li>
+    <li><b>Atrair investidores</b> — demonstrar viabilidade.</li>
+    <li><b>Integrar áreas</b> — marketing, operação, finanças.</li>
+  </ul>
+
+  <h3>Estrutura geral — 8 seções</h3>
+  <table>
+    <thead><tr><th>#</th><th>Seção</th><th>Conteúdo</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><b>Sumário Executivo</b></td><td>O que é o negócio? Para quem? Como ganha dinheiro? <em>Escreva por último, leia primeiro.</em></td></tr>
+      <tr><td>2</td><td><b>Descrição do Negócio</b></td><td>Problema, solução, proposta de valor.</td></tr>
+      <tr><td>3</td><td><b>Análise de Mercado</b></td><td>Cliente, concorrência, tendências.</td></tr>
+      <tr><td>4</td><td><b>Plano de Marketing</b></td><td>Segmentação, posicionamento, canais.</td></tr>
+      <tr><td>5</td><td><b>Plano Operacional</b></td><td>Processos, recursos, estrutura.</td></tr>
+      <tr><td>6</td><td><b>Plano Financeiro</b></td><td>Investimento inicial, custos, projeções, fluxo de caixa.</td></tr>
+      <tr><td>7</td><td><b>Análise de Viabilidade</b></td><td>Ponto de equilíbrio, payback, rentabilidade.</td></tr>
+      <tr><td>8</td><td><b>Aspectos Legais</b></td><td>Tipo de empresa, regime tributário, estrutura societária.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Plano Financeiro — o coração</h3>
+  <div class="warning">
+    <b>Sem números, o plano é ficção. Com números errados, é ilusão.</b><br><br>
+    Componentes:
+    <ul>
+      <li><b>Investimento inicial</b> — equipamentos, estoque, reforma + capital de giro (3 a 6 meses).</li>
+      <li><b>Custos fixos × variáveis</b> — fixos (aluguel, salários); variáveis (matéria-prima, comissões).</li>
+      <li><b>Projeção de receitas</b> — ticket médio × volume estimado, em 3 cenários (pessimista, realista, otimista).</li>
+      <li><b>Fluxo de caixa</b> — entradas e saídas semanais; um negócio pode ser lucrativo e quebrar por falta de caixa.</li>
+    </ul>
+  </div>
+</article>
+
+<article class="chapter" id="cap5">
+  <div class="chapter-num">Capítulo 5</div>
+  <h2>Estudo de Mercado</h2>
+
+  <p class="lead">Boas ideias não bastam. Entusiasmo não substitui conhecimento. <b>O empreendedor não começa vendendo — começa investigando.</b></p>
+
+  <div class="def">
+    <b>Estudo de mercado</b> — análise sistemática do ambiente em que o negócio pretende atuar. Etapa central da validação da oportunidade.
+  </div>
+
+  <h3>Três dimensões</h3>
+  <table>
+    <thead><tr><th>Dimensão</th><th>Perguntas</th></tr></thead>
+    <tbody>
+      <tr><td><b>Clientes</b></td><td>Quem são? O que precisam? Quanto pagariam? Que alternativas usam?</td></tr>
+      <tr><td><b>Concorrentes</b></td><td>Quem já atende esse mercado? Como competem? Onde estão as lacunas?</td></tr>
+      <tr><td><b>Fornecedores</b></td><td>Quem viabiliza? Custos, prazos, qualidade, risco de dependência?</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Segmentação — mercado não é "todo mundo"</h3>
+  <table>
+    <thead><tr><th>Tipo</th><th>Critérios</th></tr></thead>
+    <tbody>
+      <tr><td>Geográficos</td><td>Região, cidade, bairro</td></tr>
+      <tr><td>Demográficos</td><td>Idade, renda, gênero</td></tr>
+      <tr><td>Psicográficos</td><td>Valores, estilo de vida</td></tr>
+      <tr><td>Comportamentais</td><td>Hábitos, frequência, lealdade</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Conhecendo o cliente — perguntas essenciais</h3>
+  <ol>
+    <li>Que problema/necessidade existe?</li>
+    <li>Para quem isso importa de verdade?</li>
+    <li>Com que frequência essa necessidade aparece?</li>
+    <li>Quanto esse cliente pode/quer gastar?</li>
+    <li>Que alternativas ele já utiliza hoje?</li>
+  </ol>
+</article>
+
+<article class="chapter" id="cap6">
+  <div class="chapter-num">Capítulo 6</div>
+  <h2>Análise da Concorrência</h2>
+
+  <p class="lead">Concorrência não é só ameaça — é <b>fonte de aprendizagem estratégica</b>. Ela revela padrões competitivos, saturação, diferenciais existentes e brechas.</p>
+
+  <h3>Tipos de concorrentes</h3>
+  <table>
+    <thead><tr><th>Tipo</th><th>Definição</th><th>Exemplo</th></tr></thead>
+    <tbody>
+      <tr><td><b>Diretos</b></td><td>Oferecem solução semelhante ao mesmo público</td><td>Cafeteria local × Cafeteria local</td></tr>
+      <tr><td><b>Indiretos</b></td><td>Resolvem o mesmo problema de forma diferente</td><td>Cafeteria × Delivery de bebidas</td></tr>
+      <tr><td><b>Potenciais</b></td><td>Podem entrar no mercado futuramente</td><td>Big Tech entrando no varejo</td></tr>
+    </tbody>
+  </table>
+
+  <h3>O que observar nos concorrentes?</h3>
+  <ul>
+    <li><b>Produto e preço</b> — oferta, posicionamento, qualidade percebida</li>
+    <li><b>Atendimento e canais</b> — experiência do cliente, distribuição</li>
+    <li><b>Comunicação</b> — mensagem, reputação, presença digital</li>
+    <li><b>Diferenciais e fragilidades</b> — vantagens e vulnerabilidades</li>
+  </ul>
+
+  <h3>Fontes de informação</h3>
+  <table>
+    <thead><tr><th>Tipo</th><th>Exemplos</th></tr></thead>
+    <tbody>
+      <tr><td><b>Secundárias</b></td><td>Relatórios setoriais, sites, IBGE, Sebrae, pesquisas publicadas</td></tr>
+      <tr><td><b>Primárias</b></td><td>Entrevistas, questionários, observação, conversa direta</td></tr>
+    </tbody>
+  </table>
+
+  <div class="story">
+    <b>3 ideias-força</b>:
+    <ul>
+      <li>Mercado é evidência (não opinião)</li>
+      <li>Concorrente é parâmetro (não inimigo)</li>
+      <li>Oportunidade é construída (cliente real + problema relevante + diferenciação defensável)</li>
+    </ul>
+  </div>
+</article>
+
+<article class="chapter" id="cap7">
+  <div class="chapter-num">Capítulo 7</div>
+  <h2>Erros, limitações e Lean × Tradicional</h2>
+
+  <p class="lead">Um plano bem escrito <b>não garante</b> sucesso. Reconhecer suas limitações é parte da maturidade empreendedora.</p>
+
+  <h3>Limitações do plano</h3>
+  <ul>
+    <li>⚠️ <b>Previsões falham</b> — o futuro é incerto por natureza</li>
+    <li>🌊 <b>Mercado é dinâmico</b> — concorrentes, tecnologia e clientes mudam</li>
+    <li>😌 <b>Falsa segurança</b> — um plano bonito não é garantia</li>
+    <li>📋 <b>Risco burocrático</b> — pode consumir energia que deveria ir para execução</li>
+  </ul>
+
+  <h3>Plano Tradicional × Lean / Ágil</h3>
+  <table>
+    <thead><tr><th>Tradicional</th><th>Lean / Ágil</th></tr></thead>
+    <tbody>
+      <tr><td>Rigor, estrutura, visão de longo prazo</td><td>Velocidade, validação, adaptação contínua</td></tr>
+      <tr><td>Planeja antes de executar</td><td>Executa, mede, aprende, ajusta</td></tr>
+      <tr><td>Documento extenso</td><td>Lean Canvas / MVP</td></tr>
+    </tbody>
+  </table>
+
+  <div class="story">
+    <b>Resposta:</b> a combinação dos dois modelos é o caminho mais robusto. <em>Planeje o suficiente para agir. Aja rápido o suficiente para aprender.</em>
+  </div>
+
+  <h3>5 verdades sobre o plano</h3>
+  <ol>
+    <li>🧭 <b>Ferramenta estratégica</b> — orienta com clareza</li>
+    <li>📚 <b>Instrumento de aprendizagem</b> — quem planeja conhece melhor</li>
+    <li>⚖️ <b>Base para decisão</b> — reduz incertezas, não as elimina</li>
+    <li>🚫 <b>Não garante sucesso</b> — o mercado decide</li>
+    <li>🚀 <b>Não substitui ação</b> — planejar sem executar é só intenção</li>
+  </ol>
+
+  <div class="selfcheck">
+    <div class="selfcheck-q">Por que Porter diz que "a essência da estratégia é escolher o que NÃO fazer"?</div>
+    <details><summary></summary><div class="answer">Porque tentar atender a todos os clientes com tudo dilui o posicionamento, complica a operação e destrói a margem. Estratégia exige <b>trade-offs</b>: você escolhe um segmento, uma proposta de valor, uma forma de competir — e renuncia às alternativas. É essa renúncia que cria foco, coerência e vantagem competitiva sustentável (o "fit de atividades").</div></details>
+  </div>
+</article>
+
+</main>
+
+<div class="end">
+  <h2>Pronto para o quiz?</h2>
+  <p style="color:var(--muted);font-family:sans-serif">Banco com temas, dificuldade e modo "focar nos erros".</p>
+  <a class="cta" href="revisao-emp3.html">✅ Ir para o Quiz</a>
+</div>
+
+<div class="floating">
+  <a href="index.html" title="Hub">🏠</a>
+  <button onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Topo">↑</button>
+</div>
+
+<div class="lightbox" id="lightbox">
+  <button class="close" onclick="closeLightbox()">×</button>
+  <img id="lightboxImg" alt="">
+</div>
+
+<script>
+  const bar = document.getElementById('progressBar');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const scrolled = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    bar.style.width = scrolled + '%';
+  });
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightboxImg');
+  document.querySelectorAll('figure.pdf-fig img, .img-grid img').forEach(img => {
+    img.addEventListener('click', () => { lbImg.src = img.src; lb.classList.add('open'); });
+  });
+  lb.addEventListener('click', e => { if(e.target === lb) closeLightbox(); });
+  function closeLightbox(){ lb.classList.remove('open'); lbImg.src = ''; }
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') closeLightbox(); });
+</script>
+
+</body>
+</html>

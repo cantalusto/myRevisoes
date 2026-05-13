@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Revisão — Fundamentos do Empreendedorismo</title>
+<style>
+  :root{
+    --bg:#021114; --bg2:#0f2227; --card:#11272d; --border:#1f3a40;
+    --primary:#0d9488; --primary2:#14b8a6; --accent:#f59e0b;
+    --good:#10b981; --bad:#ef4444; --warn:#fbbf24;
+    --text:#e6f7f5; --muted:#94aeae;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+  header{background:linear-gradient(135deg,#0d4f4a,#0d9488);padding:32px 24px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.3)}
+  header h1{margin:0;font-size:2em}
+  header p{margin:8px 0 0;color:#a7f3d0}
+  nav{position:sticky;top:0;background:rgba(2,17,20,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:12px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;z-index:100}
+  nav button{background:var(--card);color:var(--text);border:1px solid var(--border);padding:8px 14px;border-radius:8px;cursor:pointer;font-size:.9em;transition:all .2s}
+  nav button:hover,nav button.active{background:var(--primary);border-color:var(--primary)}
+  main{max-width:1100px;margin:0 auto;padding:24px}
+  section{display:none;animation:fadeIn .4s}
+  section.active{display:block}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  h2{color:var(--primary2);border-bottom:2px solid var(--primary);padding-bottom:8px;margin-top:0}
+  h3{color:var(--accent);margin-top:24px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:16px 0;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+  .card.highlight{border-left:4px solid var(--primary)}
+  table{width:100%;border-collapse:collapse;margin:12px 0;background:var(--bg2);border-radius:8px;overflow:hidden}
+  th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+  th{background:var(--primary);color:white}
+  tr:last-child td{border-bottom:none}
+  .pill{display:inline-block;background:var(--primary);color:white;padding:2px 10px;border-radius:99px;font-size:.8em;margin-right:6px}
+  .pill.good{background:var(--good)} .pill.bad{background:var(--bad)} .pill.warn{background:var(--warn);color:#1f2937}
+  .flash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+  .flash{background:var(--card);border:1px solid var(--border);border-radius:12px;height:180px;perspective:1000px;cursor:pointer}
+  .flash-inner{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+  .flash.flipped .flash-inner{transform:rotateY(180deg)}
+  .flash-front,.flash-back{position:absolute;inset:0;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;text-align:center;padding:16px;border-radius:12px}
+  .flash-front{background:linear-gradient(135deg,#0d4f4a,#0d9488);font-weight:600;font-size:1.05em}
+  .flash-back{background:var(--bg2);transform:rotateY(180deg);font-size:.95em;color:var(--muted)}
+  .quiz-q{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:16px 0}
+  .quiz-q .q{font-weight:600;margin-bottom:12px}
+  .opts{display:flex;flex-direction:column;gap:8px}
+  .opt{background:var(--bg2);border:1px solid var(--border);padding:12px;border-radius:8px;cursor:pointer;transition:all .2s;text-align:left;color:var(--text);font-size:.95em}
+  .opt:hover:not(:disabled){border-color:var(--primary);background:#1a3f3a}
+  .opt.correct{background:rgba(16,185,129,.2);border-color:var(--good);color:#a7f3d0}
+  .opt.wrong{background:rgba(239,68,68,.2);border-color:var(--bad);color:#fecaca}
+  .feedback{margin-top:12px;padding:10px 14px;border-radius:8px;font-size:.9em;display:none}
+  .feedback.show{display:block}
+  .feedback.ok{background:rgba(16,185,129,.15);border-left:3px solid var(--good)}
+  .feedback.no{background:rgba(239,68,68,.15);border-left:3px solid var(--bad)}
+  .progress{position:fixed;bottom:20px;right:20px;background:var(--card);border:1px solid var(--border);padding:12px 18px;border-radius:99px;font-size:.9em;box-shadow:0 4px 20px rgba(0,0,0,.4)}
+  .progress span{color:var(--accent);font-weight:700}
+  .tip{background:rgba(13,148,136,.1);border-left:3px solid var(--primary);padding:10px 14px;border-radius:6px;margin:10px 0;font-size:.92em}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:700px){.grid2{grid-template-columns:1fr}}
+  ul{padding-left:20px} li{margin:4px 0}
+  code{background:var(--bg2);padding:2px 6px;border-radius:4px;font-size:.9em;color:var(--accent)}
+  .btn{background:var(--primary);color:white;border:none;padding:10px 18px;border-radius:8px;cursor:pointer;font-size:.95em;margin-top:10px}
+  .btn:hover{filter:brightness(1.1)}
+  @media (max-width: 720px){
+    body{font-size:15.5px;overflow-x:hidden}
+    header{padding:22px 16px}
+    header h1{font-size:1.35em}
+    header p{font-size:.88em}
+    nav{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;padding:10px 12px;gap:6px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+    nav::-webkit-scrollbar{display:none}
+    nav button, nav a{flex:0 0 auto;font-size:.82em;padding:8px 12px;white-space:nowrap;min-height:38px}
+    main{padding:16px 14px 100px}
+    h2{font-size:1.3em;padding-bottom:6px}
+    h3{font-size:1.1em;margin-top:20px}
+    .card{padding:14px;border-radius:10px;margin:12px 0}
+    table{display:block;overflow-x:auto;font-size:.86em}
+    th,td{padding:9px 11px}
+    .flash-grid{grid-template-columns:1fr;gap:12px}
+    .flash{height:160px}
+    .quiz-q{padding:14px}
+    .opt{padding:12px;font-size:.92em;min-height:44px;line-height:1.45}
+    .progress{bottom:14px;right:14px;left:14px;text-align:center;padding:10px 14px;font-size:.85em;border-radius:14px}
+    .btn{padding:11px 16px;font-size:.92em;min-height:42px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>💼 Fundamentos do Empreendedorismo</h1>
+  <p>Revisão — Módulo 1 · Aulas 1, 2 e 3</p>
+</header>
+
+<nav>
+  <a href="index.html" style="background:var(--accent);color:#021114;border:1px solid var(--accent);padding:8px 14px;border-radius:8px;font-size:.9em;text-decoration:none;font-weight:600">🏠 Hub</a>
+  <button onclick="show('intro',this)" class="active">📖 Conceitos</button>
+  <button onclick="show('hist',this)">📜 História</button>
+  <button onclick="show('risco',this)">🎲 Risco × Incerteza</button>
+  <button onclick="show('perfil',this)">👤 Perfil × Competência</button>
+  <button onclick="show('processo',this)">⚙️ Processo</button>
+  <button onclick="show('flash',this)">🃏 Flashcards</button>
+  <button onclick="show('quiz',this)">✅ Quiz</button>
+</nav>
+
+<main>
+
+<section id="intro" class="active">
+  <h2>📖 Conceitos Fundamentais</h2>
+  <div class="card highlight">
+    <p><b>Empreendedorismo</b> = processo de identificar, avaliar e explorar oportunidades para criar valor (econômico/social/ambiental) sob incerteza, mobilizando recursos de forma inovadora.</p>
+  </div>
+  <h3>Elementos centrais</h3>
+  <ul>
+    <li>Oportunidade · Incerteza · Criação de valor · Mobilização de recursos · Inovação</li>
+  </ul>
+  <h3>Tripla dimensão do valor (Triple Bottom Line — Elkington, 1997)</h3>
+  <table>
+    <thead><tr><th>People</th><th>Planet</th><th>Profit</th></tr></thead>
+    <tbody><tr><td>Impacto social</td><td>Sustentabilidade</td><td>Retorno econômico</td></tr></tbody>
+  </table>
+</section>
+
+<section id="hist">
+  <h2>📜 Evolução do Pensamento</h2>
+  <table>
+    <thead><tr><th>Autor</th><th>Ano</th><th>Contribuição</th></tr></thead>
+    <tbody>
+      <tr><td>Cantillon</td><td>1755</td><td>Introduz <em>entrepreneur</em>; empreendedor = assumidor de risco</td></tr>
+      <tr><td>Say</td><td>1803</td><td>Empreendedor como orquestrador de recursos</td></tr>
+      <tr><td>Schumpeter</td><td>1934</td><td>Inovação e destruição criativa</td></tr>
+      <tr><td>Drucker</td><td>1985</td><td>Empreendedorismo como disciplina aprendível</td></tr>
+      <tr><td>Knight</td><td>1921</td><td>Distingue risco × incerteza</td></tr>
+    </tbody>
+  </table>
+  <h3>Escolas de pensamento</h3>
+  <ul>
+    <li><b>Econômica</b> — oportunidades, valor (Schumpeter, Kirzner)</li>
+    <li><b>Comportamental</b> — traços (McClelland)</li>
+    <li><b>Sociológica</b> — redes, cultura (Weber, Granovetter)</li>
+    <li><b>Austríaca</b> — descoberta em desequilíbrios (Kirzner)</li>
+    <li><b>Contemporâneas</b> — effectuation, lean startup (Sarasvathy, Ries)</li>
+  </ul>
+</section>
+
+<section id="risco">
+  <h2>🎲 Risco × Incerteza</h2>
+  <div class="card highlight">
+    <p>Frank Knight (1921): risco é mensurável; incerteza não. Empreendedor opera sob <b>incerteza genuína</b>.</p>
+  </div>
+  <table>
+    <thead><tr><th>Risco</th><th>Incerteza</th></tr></thead>
+    <tbody>
+      <tr><td>Probabilidades conhecidas</td><td>Imprevisibilidade estrutural</td></tr>
+      <tr><td>Calculável, precificável</td><td>Sem dados históricos confiáveis</td></tr>
+      <tr><td>Ex: inadimplência</td><td>Ex: aceitação de produto inédito</td></tr>
+    </tbody>
+  </table>
+  <h3>Processo decisório — 4 etapas (filtros)</h3>
+  <ol><li>Percepção</li><li>Avaliação</li><li>Julgamento</li><li>Comprometimento</li></ol>
+  <h3>Trade-offs</h3>
+  <ul>
+    <li>Segurança × Autonomia</li>
+    <li>Renda fixa × Potencial de crescimento</li>
+    <li>Estabilidade × Aprendizado acelerado</li>
+  </ul>
+</section>
+
+<section id="perfil">
+  <h2>👤 Perfil × Competência</h2>
+  <div class="card highlight">
+    <p><b>Perfil</b> = traços relativamente estáveis. <b>Competência</b> = capacidade mobilizável, construída com prática.</p>
+  </div>
+  <div class="tip">📐 <b>Competência = Conhecimento + Habilidade + Atitude</b></div>
+  <h3>Mindset empreendedor</h3>
+  <ul>
+    <li>Proatividade</li>
+    <li>Orientação para oportunidade</li>
+    <li>Tolerância à ambiguidade</li>
+    <li>Ação sob incerteza</li>
+  </ul>
+  <h3>Características essenciais</h3>
+  <ul>
+    <li>Iniciativa, proatividade, persistência</li>
+    <li>Autoconfiança, tolerância ao risco</li>
+    <li>Aprendizagem com o erro</li>
+  </ul>
+  <h3>Competências centrais</h3>
+  <ul>
+    <li>Identificação de oportunidades · Criatividade aplicada · Resiliência</li>
+    <li>Mobilização de recursos · Liderança · Comunicação</li>
+    <li>Gestão financeira básica · Planejamento estratégico</li>
+  </ul>
+</section>
+
+<section id="processo">
+  <h2>⚙️ Processo Empreendedor</h2>
+  <h3>6 etapas (Timmons, 1994)</h3>
+  <ol>
+    <li>Identificação da oportunidade</li>
+    <li>Avaliação (viabilidade técnica, comercial, financeira)</li>
+    <li>Planejamento</li>
+    <li>Captação de recursos</li>
+    <li>Implementação</li>
+    <li>Crescimento</li>
+  </ol>
+  <h3>Armadilhas comuns</h3>
+  <ul>
+    <li>Excesso de otimismo</li>
+    <li>Falta de planejamento</li>
+    <li>Subestimação da concorrência</li>
+    <li>Falta de capital de giro</li>
+  </ul>
+  <h3>Limitações estruturais</h3>
+  <ul>
+    <li><b>Liability of newness</b> (Stinchcombe, 1965)</li>
+    <li><b>Liability of smallness</b> (Aldrich & Auster, 1986)</li>
+    <li>Dependência do fundador</li>
+  </ul>
+  <div class="tip">📊 60% das empresas brasileiras fecham até o 5º ano (SEBRAE, 2020).</div>
+</section>
+
+<section id="flash">
+  <h2>🃏 Flashcards</h2>
+  <p>Clique para virar.</p>
+  <div class="flash-grid" id="flashGrid"></div>
+</section>
+
+<section id="quiz">
+  <h2>✅ Quiz Interativo — Escolha o tema</h2>
+  <p>Cada quiz embaralha perguntas e alternativas.</p>
+  <div class="card">
+    <h3 style="margin-top:0">🎯 Escolha o tema</h3>
+    <div id="themePicker" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px"></div>
+    <label style="display:flex;align-items:center;gap:10px;margin-top:10px">
+      Quantidade:
+      <select id="qCount" style="background:var(--bg2);color:var(--text);border:1px solid var(--border);padding:6px 10px;border-radius:6px">
+        <option value="5">5</option><option value="10" selected>10</option><option value="15">15</option><option value="20">20</option><option value="999">Todas</option>
+      </select>
+    </label>
+    <label style="display:flex;align-items:center;gap:10px;margin-top:10px">
+      Dificuldade:
+      <select id="qDiff" style="background:var(--bg2);color:var(--text);border:1px solid var(--border);padding:6px 10px;border-radius:6px">
+        <option value="all" selected>Todas</option><option value="1">🟢 Fácil</option><option value="2">🟡 Médio</option><option value="3">🔴 Difícil</option>
+      </select>
+    </label>
+    <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn" onclick="startQuiz()">🎲 Iniciar / Embaralhar</button>
+      <button class="btn" style="background:var(--accent);color:#021114" onclick="weakSpotsQuiz()">🎯 Focar nos meus erros</button>
+    </div>
+    <div id="quizStats" style="margin-top:12px;color:var(--muted);font-size:.9em"></div>
+  </div>
+  <div id="quizContainer"></div>
+  <div id="quizResult"></div>
+</section>
+
+</main>
+
+<div class="progress">📊 Acertos: <span id="score">0</span>/<span id="total">0</span></div>
+
+<script>
+  function show(id, btn){
+    document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  const FLASH = [
+    ['Empreendedorismo','Processo de identificar, avaliar e explorar oportunidades para criar valor sob incerteza.'],
+    ['Triple Bottom Line','People, Planet, Profit — Elkington, 1997.'],
+    ['Cantillon (1755)','Introduziu o termo entrepreneur; empreendedor como assumidor de risco.'],
+    ['Say (1803)','Empreendedor como orquestrador de fatores produtivos.'],
+    ['Schumpeter (1934)','Inovação e destruição criativa; 5 tipos de inovação.'],
+    ['Drucker (1985)','Empreendedorismo como disciplina aprendível.'],
+    ['Knight (1921)','Risco × Incerteza — risco é mensurável, incerteza não.'],
+    ['Mindset empreendedor','Proatividade, oportunidade, ambiguidade, ação.'],
+    ['Competência','Conhecimento + Habilidade + Atitude.'],
+    ['Perfil × Competência','Perfil é estável; competência é construída.'],
+    ['Liability of Newness','Vulnerabilidade dos novos empreendimentos (Stinchcombe).'],
+    ['Liability of Smallness','Desvantagem por porte pequeno (Aldrich & Auster).'],
+    ['Etapas do processo (6)','Oportunidade → Avaliação → Planejamento → Recursos → Implementação → Crescimento.'],
+    ['Decisão empreendedora','Percepção → Avaliação → Julgamento → Comprometimento.'],
+    ['Trade-off típico','Segurança × autonomia, renda fixa × potencial, estabilidade × aprendizado.'],
+    ['McClelland (1961)','Pesquisador clássico do perfil empreendedor — motivação por realização.'],
+    ['Intenção × Ação','Muitos querem; poucos executam — gap fatal.'],
+    ['Mortalidade empresarial','60% fecham até 5 anos (SEBRAE 2020).'],
+  ];
+  const fg = document.getElementById('flashGrid');
+  FLASH.forEach(([f,b]) => {
+    const c = document.createElement('div');
+    c.className = 'flash';
+    c.innerHTML = `<div class="flash-inner"><div class="flash-front">${f}</div><div class="flash-back">${b}</div></div>`;
+    c.onclick = () => c.classList.toggle('flipped');
+    fg.appendChild(c);
+  });
+
+  const QUIZ_BANK = {
+    "Conceitos Fundamentais": [
+      {q:"Qual a definição mais completa de empreendedorismo?",o:["Apenas abrir uma empresa","Investir em ações","Processo de identificar, avaliar e explorar oportunidades para criar valor sob incerteza, mobilizando recursos de forma inovadora","Trabalhar muitas horas"],a:2,d:1,e:"Definição de Shane & Venkataraman (2000); Hisrich et al. (2014)."},
+      {q:"Os elementos-chave do empreendedorismo NÃO incluem:",o:["Oportunidade","Incerteza","Mobilização de recursos","Garantia de retorno financeiro"],a:3,d:2,e:"Não há garantia — empreender envolve risco e incerteza."},
+      {q:"O Triple Bottom Line (Elkington) propõe três dimensões de valor:",o:["Lucro, lucro, lucro","Pessoas, Planeta, Lucro (People, Planet, Profit)","Cliente, Equipe, Investidor","Vendas, Margem, Caixa"],a:1,d:2,e:"People (social), Planet (ambiental), Profit (econômico)."},
+      {q:"Empreendedores iniciais representam que % da população adulta brasileira (GEM 2022)?",o:["5%","12%","23,3%","45%"],a:2,d:3,e:"GEM 2022 — empreendedorismo no Brasil é fenômeno de massa."},
+    ],
+    "Evolução Histórica": [
+      {q:"Quem introduziu o termo entrepreneur no contexto econômico?",o:["Schumpeter","Say","Cantillon","Drucker"],a:2,d:2,e:"Richard Cantillon, em 1755, em 'Essai sur la Nature du Commerce en Général'."},
+      {q:"Qual autor associou empreendedorismo a 'inovação' e 'destruição criativa'?",o:["Drucker","Schumpeter","Cantillon","Knight"],a:1,d:1,e:"Schumpeter (1934) — empreendedor como agente de mudança via inovação."},
+      {q:"Quem definiu empreendedorismo como disciplina gerencial aprendível?",o:["Cantillon","Schumpeter","Drucker","Say"],a:2,d:2,e:"Peter Drucker (1985) democratizou o empreendedorismo."},
+      {q:"Para Say (1803), o empreendedor é principalmente:",o:["Assumidor de risco","Investidor","Orquestrador/coordenador de fatores produtivos","Vendedor"],a:2,d:2,e:"Say ampliou Cantillon: papel gerencial e organizacional."},
+      {q:"Quantos tipos de inovação Schumpeter identificou?",o:["3","4","5","7"],a:2,d:3,e:"5 tipos: produto, processo, mercado, insumos, organização."},
+      {q:"A escola COMPORTAMENTAL do empreendedorismo enfatiza:",o:["Inovação","Características psicológicas e traços de personalidade","Apenas custos","Marketing digital"],a:1,d:3,e:"McClelland é o nome clássico — motivação por realização."},
+    ],
+    "Risco × Incerteza": [
+      {q:"Qual a diferença essencial entre risco e incerteza (Knight 1921)?",o:["São sinônimos","Risco é tudo o que dá errado; incerteza, tudo que dá certo","Risco tem probabilidades conhecidas; incerteza, não","Risco é interno; incerteza, externa"],a:2,d:2,e:"Knight: risco é mensurável estatisticamente; incerteza, não."},
+      {q:"Empreendedores operam predominantemente sob:",o:["Certeza","Risco apenas","Incerteza genuína","Determinismo"],a:2,d:2,e:"A incerteza é estrutural no empreendedorismo — daí a importância do aprendizado contínuo."},
+      {q:"As 4 etapas do processo decisório empreendedor são, em ordem:",o:["Avaliação → Percepção → Comprometimento → Julgamento","Percepção → Avaliação → Julgamento → Comprometimento","Comprometimento → Avaliação → Julgamento → Percepção","Julgamento → Comprometimento → Percepção → Avaliação"],a:1,d:3,e:"Percepção (identificar) → Avaliação → Julgamento → Comprometimento (agir)."},
+      {q:"Um trade-off CLÁSSICO do empreendedor:",o:["Mais trabalho × menos resultados","Segurança × autonomia","Inovação × estagnação","Lucro × prejuízo"],a:1,d:1,e:"Deixar emprego estável ganha autonomia, perde previsibilidade."},
+      {q:"Probabilidade de inadimplência baseada em histórico de crédito é exemplo de:",o:["Incerteza","Risco","Caos","Determinismo"],a:1,d:2,e:"Risco — distribuição de probabilidades conhecida."},
+      {q:"Aceitação de um produto completamente novo no mercado é exemplo de:",o:["Risco","Incerteza","Cálculo","Previsão"],a:1,d:2,e:"Incerteza — não há dados históricos para calcular."},
+    ],
+    "Perfil × Competência": [
+      {q:"Perfil empreendedor é:",o:["Conjunto de competências treináveis","Disposições individuais relativamente estáveis","Apenas a idade da pessoa","Salário recebido"],a:1,d:2,e:"Perfil = traços, valores, inclinações naturais — pouco mutável."},
+      {q:"Competência empreendedora se define como:",o:["Talento inato","Capacidade mobilizável (conhecimento + habilidade + atitude)","Diploma universitário","Patrimônio acumulado"],a:1,d:1,e:"CHA — fórmula clássica da competência."},
+      {q:"Qual é o principal valor da abordagem de Drucker para o empreendedorismo?",o:["Provar que empreendedor é traço inato","Democratizar — empreendedorismo é aprendível","Eliminar a incerteza","Tornar a estatística obrigatória"],a:1,d:3,e:"Drucker tornou o empreendedorismo acessível como disciplina."},
+      {q:"O mindset empreendedor NÃO inclui:",o:["Proatividade","Orientação para oportunidade","Tolerância à ambiguidade","Aversão a qualquer mudança"],a:3,d:1,e:"Aversão à mudança é o oposto do mindset empreendedor."},
+      {q:"Qual mito sobre o empreendedor é INCORRETO?",o:["Empreendedor é 'visionário genial' que prevê o futuro","Empreendedor é 'amante do risco' que aposta cegamente","Comportamento empreendedor é construído por experiências e aprendizado","Liderança é 'inerente', não desenvolvida"],a:2,d:2,e:"A afirmação correta é a 3 — empreendedorismo é construído."},
+      {q:"Resiliência como competência empreendedora significa:",o:["Não cometer erros","Capacidade de recuperar-se de fracassos com aprendizado","Manter sempre a mesma estratégia","Evitar concorrência"],a:1,d:2,e:"Aprender e seguir em frente após reveses."},
+    ],
+    "Processo Empreendedor": [
+      {q:"As 6 etapas do processo empreendedor (Timmons 1994) começam por:",o:["Captação de recursos","Identificação da oportunidade","Implementação","Crescimento"],a:1,d:2,e:"Sempre começa identificando uma oportunidade."},
+      {q:"Liability of Newness (Stinchcombe 1965) se refere a:",o:["Vantagem dos novos","Vulnerabilidade dos novos empreendimentos por escassez de recursos","Lei tributária","Norma trabalhista"],a:1,d:3,e:"Novos empreendimentos têm capital limitado, equipe inexperiente, sem economia de escala."},
+      {q:"Liability of Smallness se refere a:",o:["Vantagem dos pequenos","Desvantagem dos pequenos: baixo poder de negociação, marca não consolidada","Lei das pequenas empresas","Apenas obrigação fiscal"],a:1,d:3,e:"Aldrich & Auster (1986) — fragilidades inerentes ao porte."},
+      {q:"Uma das principais armadilhas do empreendedor iniciante é:",o:["Planejar demais","Excesso de otimismo, falta de planejamento e subestimar a concorrência","Atender muitos clientes","Empregar muitas pessoas"],a:1,d:1,e:"Subestimar desafios e superestimar receitas é clássico."},
+      {q:"Mortalidade empresarial no Brasil (SEBRAE 2020):",o:["20% fecham até 5 anos","40% fecham até 5 anos","60% fecham até 5 anos","90% fecham até 5 anos"],a:2,d:2,e:"Principal causa: problemas de planejamento e gestão financeira."},
+      {q:"O que transforma INTENÇÃO de empreender em AÇÃO?",o:["Apenas dinheiro","Apenas idade","Evento gatilho, preparação, suporte de mentores, redução do risco percebido","Apenas sorte"],a:2,d:3,e:"Múltiplos fatores se combinam — não basta querer."},
+    ],
+  };
+
+  const STATS_KEY = 'quizStatsEmp1';
+  let currentTheme = "Todos";
+  let currentQuiz = [];
+  let score = 0, answered = 0;
+  const stats = JSON.parse(localStorage.getItem(STATS_KEY) || '{}');
+
+  const tp = document.getElementById('themePicker');
+  const themes = ["Todos", ...Object.keys(QUIZ_BANK)];
+  themes.forEach(t => {
+    const b = document.createElement('button');
+    b.className = 'opt'; b.style.flex='0 0 auto'; b.style.padding='8px 14px';
+    b.textContent = t === "Todos" ? "🎲 Todos" : t;
+    b.onclick = () => {
+      currentTheme = t;
+      document.querySelectorAll('#themePicker .opt').forEach(x => x.classList.remove('correct'));
+      b.classList.add('correct');
+    };
+    if(t === "Todos") b.classList.add('correct');
+    tp.appendChild(b);
+  });
+
+  function getPool(){
+    const diff = document.getElementById('qDiff').value;
+    let pool = currentTheme === "Todos"
+      ? Object.entries(QUIZ_BANK).flatMap(([t,arr]) => arr.map(q => ({...q, theme:t})))
+      : QUIZ_BANK[currentTheme].map(q => ({...q, theme:currentTheme}));
+    if(diff !== "all") pool = pool.filter(q => q.d === +diff);
+    return pool;
+  }
+  function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+  function startQuiz(){
+    const pool = getPool();
+    if(pool.length===0){ alert("Nenhuma questão para esses filtros."); return; }
+    const n = Math.min(+document.getElementById('qCount').value, pool.length);
+    currentQuiz = shuffle(pool).slice(0,n).map(q => {
+      const idx = q.o.map((_,i) => i); const sh = shuffle(idx);
+      return {...q, o: sh.map(i => q.o[i]), a: sh.indexOf(q.a)};
+    });
+    renderQuiz();
+  }
+  function weakSpotsQuiz(){
+    const all = Object.entries(QUIZ_BANK).flatMap(([t,arr]) => arr.map(q => ({...q, theme:t})));
+    const ranked = all.map(q => {
+      const k = q.q; const s = stats[k] || {ok:0,err:0};
+      const total = s.ok+s.err; const errRate = total ? s.err/total : 0;
+      return {q, score: errRate*10 + (total === 0 ? 5 : 0)};
+    }).sort((a,b) => b.score - a.score);
+    const n = Math.min(+document.getElementById('qCount').value, ranked.length);
+    currentQuiz = ranked.slice(0,n).map(r => r.q).map(q => {
+      const idx = q.o.map((_,i) => i); const sh = shuffle(idx);
+      return {...q, o: sh.map(i => q.o[i]), a: sh.indexOf(q.a)};
+    });
+    renderQuiz();
+  }
+  function renderQuiz(){
+    const qc = document.getElementById('quizContainer');
+    qc.innerHTML=''; document.getElementById('quizResult').innerHTML='';
+    score=0; answered=0;
+    document.getElementById('score').textContent=0;
+    document.getElementById('total').textContent=currentQuiz.length;
+    const diffEmoji = {1:"🟢",2:"🟡",3:"🔴"};
+    currentQuiz.forEach((it,i) => {
+      const div = document.createElement('div'); div.className='quiz-q';
+      const themeTag = it.theme ? `<span class="pill">${it.theme}</span>` : '';
+      div.innerHTML = `<div class="q">${themeTag}<span class="pill warn">${diffEmoji[it.d]} ${it.d===1?'Fácil':it.d===2?'Médio':'Difícil'}</span><br>${i+1}. ${it.q}</div><div class="opts"></div><div class="feedback"></div>`;
+      const opts = div.querySelector('.opts');
+      it.o.forEach((opt,j) => {
+        const b = document.createElement('button'); b.className='opt'; b.textContent=opt;
+        b.onclick = () => answer(div,it,j,b); opts.appendChild(b);
+      });
+      qc.appendChild(div);
+    });
+    updateStatsLabel();
+    qc.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  function answer(div,it,j,btn){
+    const opts = div.querySelectorAll('.opt');
+    if([...opts].some(o => o.disabled)) return;
+    opts.forEach((o,k) => { o.disabled = true; if(k===it.a) o.classList.add('correct'); });
+    const fb = div.querySelector('.feedback');
+    const key = it.q;
+    stats[key] = stats[key] || {ok:0,err:0};
+    if(j === it.a){
+      score++; stats[key].ok++;
+      fb.className='feedback show ok'; fb.innerHTML='✅ <b>Correto!</b> '+it.e;
+    } else {
+      stats[key].err++; btn.classList.add('wrong');
+      fb.className='feedback show no'; fb.innerHTML='❌ <b>Não foi dessa vez.</b> '+it.e;
+    }
+    localStorage.setItem(STATS_KEY, JSON.stringify(stats));
+    answered++; document.getElementById('score').textContent=score;
+    if(answered === currentQuiz.length) showResult();
+    updateStatsLabel();
+  }
+  function showResult(){
+    const pct = Math.round(100*score/currentQuiz.length);
+    let msg = pct===100 ? "🏆 Perfeito!" : pct>=80 ? "🌟 Muito bem!" : pct>=60 ? "👍 Bom! Revise os erros." : pct>=40 ? "📚 Está pegando o jeito — refaça!" : "💪 Hora de revisar a teoria!";
+    document.getElementById('quizResult').innerHTML =
+      `<div class="card highlight" style="text-align:center"><h3 style="margin-top:0">Resultado: ${score}/${currentQuiz.length} (${pct}%)</h3><p>${msg}</p>
+      <button class="btn" onclick="startQuiz()">🔄 Novo quiz</button>
+      <button class="btn" style="background:var(--accent);color:#021114;margin-left:8px" onclick="weakSpotsQuiz()">🎯 Focar nos meus erros</button></div>`;
+  }
+  function updateStatsLabel(){
+    const total = Object.values(stats).reduce((s,x) => s+x.ok+x.err, 0);
+    const oks = Object.values(stats).reduce((s,x) => s+x.ok, 0);
+    const pct = total ? Math.round(100*oks/total) : 0;
+    document.getElementById('quizStats').innerHTML =
+      `📊 Histórico: <b>${oks}/${total}</b> (${pct}%) — <a href="#" onclick="event.preventDefault();if(confirm('Apagar histórico?')){localStorage.removeItem('${STATS_KEY}');location.reload()}" style="color:var(--accent)">limpar</a>`;
+  }
+  updateStatsLabel();
+  startQuiz();
+</script>
+
+</body>
+</html>
