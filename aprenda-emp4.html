@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aprenda — Aspectos Legais e Viabilidade</title>
+<style>
+  :root{--bg:#021114;--bg2:#0f2227;--card:#11272d;--border:#1f3a40;--primary:#0d9488;--primary2:#14b8a6;--accent:#f59e0b;--good:#10b981;--bad:#ef4444;--warn:#fbbf24;--pink:#34d399;--text:#e6f7f5;--muted:#94aeae}
+  *{box-sizing:border-box}html{scroll-behavior:smooth}
+  body{margin:0;font-family:Georgia,'Times New Roman',serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:17px}
+  .hero{min-height:60vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:60px 24px;background:radial-gradient(ellipse at top,#0d4f4a 0%,#021114 70%);position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 20% 30%,rgba(13,148,136,.22) 0,transparent 50%),radial-gradient(circle at 80% 70%,rgba(245,158,11,.1) 0,transparent 50%)}
+  .hero-content{position:relative;z-index:1;max-width:800px}
+  .hero h1{font-size:3.2em;margin:0 0 12px;background:linear-gradient(135deg,#14b8a6,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
+  .hero .subtitle{font-size:1.3em;color:var(--muted);font-style:italic;margin-bottom:30px}
+  .hero .meta{display:flex;justify-content:center;gap:30px;flex-wrap:wrap;color:var(--muted);font-size:.9em;font-family:sans-serif}
+  #progressBar{position:fixed;top:0;left:0;height:4px;background:linear-gradient(90deg,var(--primary),var(--accent));z-index:1000;transition:width .1s;width:0%}
+  .toc{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:30px;margin:40px auto;max-width:900px}
+  .toc h2{margin-top:0;color:var(--primary2);font-family:sans-serif}.toc ol{padding-left:24px;font-family:sans-serif}.toc li{margin:10px 0}
+  .toc a{color:var(--text);text-decoration:none;border-bottom:1px dashed transparent;transition:all .2s}
+  .toc a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+  main{max-width:880px;margin:0 auto;padding:40px 24px 80px}
+  .chapter{margin:80px 0;padding-top:40px;border-top:1px solid var(--border)}.chapter:first-child{border-top:none}
+  .chapter-num{display:inline-block;font-family:sans-serif;color:var(--accent);font-size:.85em;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px}
+  .chapter h2{font-size:2.4em;margin:0 0 24px;color:var(--text);line-height:1.2;font-weight:700}
+  .chapter h3{font-size:1.5em;color:var(--primary2);margin:40px 0 12px;font-family:sans-serif}
+  .chapter h4{color:var(--accent);margin:24px 0 8px;font-family:sans-serif;font-size:1.1em}
+  .chapter p{margin:18px 0}
+  .lead{font-size:1.2em;color:var(--muted);font-style:italic;border-left:3px solid var(--primary);padding:8px 0 8px 20px;margin:24px 0}
+  .analogy,.example,.warning,.deep,.story,.def{margin:28px 0;padding:20px 24px;border-radius:12px;font-family:sans-serif;font-size:.95em;line-height:1.7}
+  .analogy{background:linear-gradient(135deg,rgba(52,211,153,.12),rgba(52,211,153,.04));border-left:4px solid var(--pink)}
+  .analogy::before{content:'🎭 Analogia';display:block;font-weight:700;color:var(--pink);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .example{background:linear-gradient(135deg,rgba(245,158,11,.12),rgba(245,158,11,.02));border-left:4px solid var(--accent)}
+  .example::before{content:'💡 Exemplo';display:block;font-weight:700;color:var(--accent);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .warning{background:linear-gradient(135deg,rgba(251,191,36,.12),rgba(251,191,36,.02));border-left:4px solid var(--warn)}
+  .warning::before{content:'⚠️ Atenção';display:block;font-weight:700;color:var(--warn);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .deep{background:linear-gradient(135deg,rgba(13,148,136,.12),rgba(13,148,136,.02));border-left:4px solid var(--primary)}
+  .deep::before{content:'🔍 Aprofundando';display:block;font-weight:700;color:var(--primary2);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  .def{background:var(--bg2);border:1px solid var(--border);border-radius:8px}
+  .def::before{content:'📌 Definição';display:block;font-weight:700;color:var(--primary2);margin-bottom:6px;font-size:.85em;letter-spacing:1px}
+  table{width:100%;border-collapse:collapse;margin:24px 0;background:var(--card);border-radius:12px;overflow:hidden;font-family:sans-serif;font-size:.95em}
+  th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+  th{background:linear-gradient(135deg,var(--primary),#0f766e);color:white;font-weight:700}
+  tr:last-child td{border-bottom:none}tr:hover td{background:rgba(13,148,136,.05)}
+  .key{background:rgba(13,148,136,.15);color:var(--primary2);padding:2px 8px;border-radius:4px;font-weight:600;font-family:sans-serif}
+  blockquote{border-left:4px solid var(--accent);padding:8px 24px;margin:24px 0;font-style:italic;color:var(--muted);background:rgba(245,158,11,.05);border-radius:0 8px 8px 0}
+  .selfcheck{background:var(--card);border:2px dashed var(--primary);border-radius:12px;padding:20px;margin:30px 0;font-family:sans-serif}
+  .selfcheck-q{font-weight:600;color:var(--primary2);margin-bottom:12px}
+  .selfcheck-q::before{content:'🤔 Pergunta para você: ';font-weight:700;color:var(--accent)}
+  details summary{cursor:pointer;color:var(--accent);font-weight:600;outline:none;list-style:none}
+  details summary::before{content:'👁️ Mostrar resposta ▼';font-size:.9em}
+  details[open] summary::before{content:'🙈 Esconder ▲'}
+  details[open] .answer{margin-top:12px;padding:14px;background:var(--bg2);border-radius:8px;border-left:3px solid var(--good);font-style:italic;color:var(--text);font-weight:normal}
+  .floating{position:fixed;right:24px;bottom:24px;display:flex;flex-direction:column;gap:8px;z-index:50}
+  .floating button,.floating a{background:var(--card);border:1px solid var(--border);color:var(--text);width:48px;height:48px;border-radius:50%;cursor:pointer;font-size:1.2em;transition:all .2s;box-shadow:0 4px 12px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;text-decoration:none}
+  .floating button:hover,.floating a:hover{background:var(--primary);transform:scale(1.1)}
+  .end{text-align:center;padding:60px 24px;background:radial-gradient(ellipse at center,rgba(13,148,136,.15),transparent);margin-top:80px;border-top:1px solid var(--border)}
+  .end h2{font-size:2em;color:var(--primary2)}
+  .cta{display:inline-block;margin-top:20px;padding:14px 28px;background:linear-gradient(135deg,var(--primary),var(--accent));color:white;border-radius:99px;text-decoration:none;font-family:sans-serif;font-weight:600;transition:transform .2s}
+  .cta:hover{transform:scale(1.05)}
+  figure.pdf-fig{margin:28px 0;text-align:center;font-family:sans-serif}
+  figure.pdf-fig img{max-width:100%;border-radius:14px;border:1px solid var(--border);background:white;box-shadow:0 12px 32px -10px rgba(0,0,0,.6);transition:transform .3s, box-shadow .3s;cursor:zoom-in}
+  figure.pdf-fig img:hover{transform:translateY(-2px) scale(1.01);box-shadow:0 20px 44px -10px rgba(13,148,136,.25)}
+  figure.pdf-fig figcaption{font-size:.84em;color:var(--muted);margin-top:10px;font-style:italic;padding:0 12px}
+  .img-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:24px 0}
+  .img-grid figure{margin:0}
+  .img-grid img{width:100%;height:200px;object-fit:cover;border-radius:12px;border:1px solid var(--border);background:white;cursor:zoom-in;transition:transform .2s}
+  .img-grid img:hover{transform:scale(1.03)}
+  .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;z-index:200;padding:20px;cursor:zoom-out}
+  .lightbox.open{display:flex}
+  .lightbox img{max-width:96vw;max-height:92vh;border-radius:10px}
+  .lightbox .close{position:absolute;top:18px;right:22px;background:rgba(255,255,255,.1);border:none;color:white;width:44px;height:44px;border-radius:50%;font-size:1.4em;cursor:pointer}
+  @media (max-width: 720px){
+    body{font-size:16px;line-height:1.7}.hero{padding:48px 18px;min-height:auto}
+    .hero h1{font-size:clamp(1.8em,7vw,2.4em)}.hero .subtitle{font-size:1em;margin-bottom:18px}
+    .hero .meta{gap:10px 14px;font-size:.82em}.toc{padding:20px;margin:24px 14px;border-radius:12px}
+    main{padding:24px 16px 60px}.chapter{margin:56px 0;padding-top:28px}
+    .chapter h2{font-size:1.7em}.chapter h3{font-size:1.2em;margin:28px 0 10px}
+    .analogy,.example,.warning,.deep,.story,.def{padding:14px 16px;font-size:.93em}
+    .lead{font-size:1.02em;padding:6px 0 6px 14px;margin:18px 0}
+    table{display:block;overflow-x:auto;font-size:.86em}th,td{padding:9px 11px}
+    .floating{right:14px;bottom:14px}.floating button,.floating a{width:44px;height:44px;font-size:1.05em}
+    .end{padding:40px 18px;margin-top:48px}.end h2{font-size:1.5em}
+    .img-grid{grid-template-columns:1fr 1fr;gap:10px}.img-grid img{height:140px}.selfcheck{padding:16px}
+  }
+  @media (max-width: 420px){.hero h1{font-size:1.7em}.chapter h2{font-size:1.45em}.img-grid{grid-template-columns:1fr}.img-grid img{height:auto}}
+</style>
+</head>
+<body>
+
+<div id="progressBar"></div>
+
+<div class="hero">
+  <div class="hero-content">
+    <h1>Aspectos Legais<br>e Viabilidade</h1>
+    <p class="subtitle">"Aspectos legais e organizacionais não são burocracia periférica — são parte da lógica de viabilização do negócio." — Chiavenato</p>
+    <div class="meta">
+      <span>📚 Módulo 4 · Aulas 11 e 12</span>
+      <span>⏱️ ~25 minutos</span>
+      <span>⚖️ Legal · Organizacional · Financiamento</span>
+    </div>
+  </div>
+</div>
+
+<div class="toc" id="top">
+  <h2>📑 Sumário</h2>
+  <ol>
+    <li><a href="#cap1">Por que aspectos legais e organizacionais importam</a></li>
+    <li><a href="#cap2">Formas jurídicas — MEI, EI, Ltda, S.A.</a></li>
+    <li><a href="#cap3">Regimes tributários</a></li>
+    <li><a href="#cap4">Estrutura organizacional e áreas funcionais</a></li>
+    <li><a href="#cap5">Fontes de financiamento</a></li>
+    <li><a href="#cap6">Viabilidade financeira — indicadores</a></li>
+    <li><a href="#cap7">Triple Bottom Line e armadilhas</a></li>
+  </ol>
+</div>
+
+<main>
+
+<article class="chapter" id="cap1">
+  <div class="chapter-num">Capítulo 1</div>
+  <h2>Por que aspectos legais e organizacionais importam</h2>
+
+  <p class="lead">"Empreender não é apenas criar o negócio, mas também administrá-lo com competência e visão sistêmica." — Chiavenato (2012).</p>
+
+  <div class="def">
+    A dimensão legal-organizacional confere ao negócio:
+    <ul>
+      <li><b>Existência formal</b> — personalidade jurídica perante o Estado e o mercado.</li>
+      <li><b>Definição de responsabilidades</b> — obrigações legais e contratuais dos sócios.</li>
+      <li><b>Organização funcional</b> — estrutura mínima para operar com eficiência.</li>
+      <li><b>Preparação para o crescimento</b> — base institucional para escalar.</li>
+    </ul>
+  </div>
+
+  <h3>O ciclo Criar → Gerir → Viabilizar</h3>
+  <table>
+    <thead><tr><th>Etapa</th><th>Atividade</th></tr></thead>
+    <tbody>
+      <tr><td><b>Criar</b></td><td>Identificar oportunidades e conceber modelo</td></tr>
+      <tr><td><b>Gerir</b></td><td>Organizar, planejar, controlar recursos</td></tr>
+      <tr><td><b>Viabilizar</b></td><td>Garantir sustentabilidade legal, financeira, operacional</td></tr>
+    </tbody>
+  </table>
+
+  <div class="warning">
+    SEBRAE (2022): <b>48% das MPEs encerram antes de 3 anos</b>, frequentemente por ausência de formalização e controle gerencial — não por falta de demanda.
+  </div>
+</article>
+
+<article class="chapter" id="cap2">
+  <div class="chapter-num">Capítulo 2</div>
+  <h2>Formas jurídicas — MEI, EI, Ltda, S.A.</h2>
+
+  <p class="lead">A escolha da forma jurídica não é mera burocracia. Ela afeta diretamente o <b>risco patrimonial</b>, a <b>carga tributária</b> e as possibilidades operacionais.</p>
+
+  <figure class="pdf-fig">
+    <img src="assets/img/emp/aula11/p06.png" alt="Formas jurídicas" loading="lazy">
+    <figcaption>A natureza jurídica é uma decisão estratégica (Salim et al., 2005).</figcaption>
+  </figure>
+
+  <h3>Principais formas</h3>
+  <table>
+    <thead><tr><th>Forma</th><th>Características</th><th>Quando faz sentido</th></tr></thead>
+    <tbody>
+      <tr><td><b>MEI</b><br>(Microempreendedor Individual)</td><td>Mais simples. Faturamento até R$ 81 mil/ano (limite atual; pode mudar). Responsabilidade ilimitada.</td><td>Início de carreira solo, baixo investimento, atividades permitidas pela tabela MEI.</td></tr>
+      <tr><td><b>EI</b><br>(Empresário Individual)</td><td>Sem separação patrimonial — responsabilidade ilimitada. Sem sócios.</td><td>Atividade individual, faturamento maior que MEI.</td></tr>
+      <tr><td><b>Ltda</b><br>(Sociedade Limitada)</td><td><b>Responsabilidade limitada</b> ao capital social. Flexibilidade contratual. Sócios podem ser PF ou PJ.</td><td>A grande maioria dos negócios com mais de um sócio.</td></tr>
+      <tr><td><b>S.A.</b><br>(Sociedade Anônima)</td><td>Capital dividido em ações. Maior complexidade e custo de conformidade. Permite captação via mercado acionário.</td><td>Empresas que projetam captação de investidores ou IPO.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="deep">
+    Uma startup de tecnologia que projeta <em>captação de investidores</em> deve optar por <b>S.A.</b> (ou modelos como Ltda transformável), mesmo com maior custo de conformidade — porque a estrutura permite emissão de ações e <em>vesting</em> formal.
+  </div>
+
+  <h3>Responsabilidade limitada × ilimitada</h3>
+  <ul>
+    <li><b>Ilimitada</b> (MEI, EI) — o patrimônio pessoal do empreendedor pode ser usado para pagar dívidas da empresa.</li>
+    <li><b>Limitada</b> (Ltda, S.A.) — em regra, o patrimônio pessoal é protegido; só o capital social responde.</li>
+  </ul>
+</article>
+
+<article class="chapter" id="cap3">
+  <div class="chapter-num">Capítulo 3</div>
+  <h2>Regimes tributários</h2>
+
+  <p class="lead">O regime tributário define <em>como</em> e <em>quanto</em> a empresa paga em impostos. Errar a escolha pode custar caro.</p>
+
+  <table>
+    <thead><tr><th>Regime</th><th>Característica</th><th>Faturamento limite</th></tr></thead>
+    <tbody>
+      <tr><td><b>Simples Nacional</b></td><td>Unifica até <b>8 tributos</b> em uma única guia (DAS). Alíquota varia por atividade.</td><td>Até R$ 4,8 milhões/ano</td></tr>
+      <tr><td><b>Lucro Presumido</b></td><td>Imposto calculado sobre <em>presunção</em> do lucro a partir do faturamento. IRPJ e CSLL fixos.</td><td>Até R$ 78 milhões/ano</td></tr>
+      <tr><td><b>Lucro Real</b></td><td>Imposto sobre o lucro <em>efetivamente apurado</em>. Obrigatório para faturamentos altos ou setores específicos.</td><td>Sem limite (obrigatório acima de R$ 78 mi)</td></tr>
+    </tbody>
+  </table>
+
+  <div class="example">
+    Para a maioria das MPEs, o <b>Simples Nacional</b> é o regime estratégico — reduz complexidade e geralmente diminui a carga tributária.
+  </div>
+
+  <h3>Estrutura societária</h3>
+  <p>Quem são os sócios? Qual a participação de cada um? Quais as responsabilidades? Essas definições devem estar no <b>contrato social</b> (ou estatuto, em S.A.).</p>
+</article>
+
+<article class="chapter" id="cap4">
+  <div class="chapter-num">Capítulo 4</div>
+  <h2>Estrutura organizacional e áreas funcionais</h2>
+
+  <p class="lead">"A ausência de estrutura formal não elimina a estrutura — ela apenas a torna informal, imprevisível e ineficiente." — Mintzberg (2003).</p>
+
+  <figure class="pdf-fig">
+    <img src="assets/img/emp/aula11/p07.png" alt="Aspectos organizacionais" loading="lazy">
+    <figcaption>Estrutura organizacional define como autoridade, tarefas e recursos são distribuídos (Maximiano).</figcaption>
+  </figure>
+
+  <div class="def">
+    A <b>estrutura organizacional</b> define como <em>autoridade</em>, <em>tarefas</em> e <em>recursos</em> são distribuídos na empresa.
+  </div>
+
+  <h3>Dimensões organizacionais</h3>
+  <ul>
+    <li><b>Divisão de responsabilidades</b> — quem decide, quem executa, quem controla.</li>
+    <li><b>Áreas funcionais</b> — operações, finanças, marketing, gestão de pessoas.</li>
+    <li><b>Autoridade e coordenação</b> — cadeia de comando, mecanismos de integração.</li>
+    <li><b>Fluxo de decisão</b> — rotinas mínimas para evitar a improvisação.</li>
+  </ul>
+
+  <h3>Áreas funcionais mínimas (Dornelas, 2021)</h3>
+  <table>
+    <thead><tr><th>Área</th><th>Conteúdo</th></tr></thead>
+    <tbody>
+      <tr><td><b>Operações</b></td><td>Produção, entrega, controle de qualidade</td></tr>
+      <tr><td><b>Finanças</b></td><td>Fluxo de caixa, contabilidade, controle orçamentário</td></tr>
+      <tr><td><b>Marketing / Comercial</b></td><td>Aquisição de clientes, vendas, marca</td></tr>
+      <tr><td><b>Gestão de Pessoas</b></td><td>Recrutamento, capacitação, cultura</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Erros comuns</h3>
+  <div class="warning">
+    Abertura sem definição de papéis gera:
+    <ul>
+      <li>❓ <b>Quem decide?</b> Ausência de autoridade clara → conflitos e paralisia.</li>
+      <li>❓ <b>Quem executa?</b> Sobreposição de funções → baixa produtividade.</li>
+      <li>❓ <b>Quem controla?</b> Sem controle, desvios passam despercebidos.</li>
+      <li>❓ <b>Quem responde?</b> Indefinição de responsabilidade legal expõe sócios ao risco patrimonial.</li>
+    </ul>
+  </div>
+
+  <div class="story">
+    Mesmo startups enxutas precisam de um <b>organograma mínimo</b> — ainda que informal — para coordenar atividades (Ries, 2012).
+  </div>
+</article>
+
+<article class="chapter" id="cap5">
+  <div class="chapter-num">Capítulo 5</div>
+  <h2>Fontes de financiamento</h2>
+
+  <p class="lead">A pergunta real não é <em>quanto</em> captar, mas <em>de quem</em> captar — e a que custo. Cada fonte implica uma cessão diferente: dinheiro, controle ou tempo.</p>
+
+  <figure class="pdf-fig">
+    <img src="assets/img/emp/aula12/p06.png" alt="Fontes de financiamento" loading="lazy">
+    <figcaption>As principais opções se dividem entre controle, dívida, escala e comunidade.</figcaption>
+  </figure>
+
+  <h3>Os 4 grupos de fontes</h3>
+  <table>
+    <thead><tr><th>Fonte</th><th>O que é</th><th>Vantagem</th><th>Desvantagem</th></tr></thead>
+    <tbody>
+      <tr><td><b>Capital Próprio<br>(Bootstrapping)</b></td><td>Recursos do próprio empreendedor — poupança, lucro reinvestido, family & friends</td><td>Controle total, sem diluição</td><td>Crescimento lento, risco pessoal elevado</td></tr>
+      <tr><td><b>Capital de Terceiros<br>(Dívida)</b></td><td>Empréstimos bancários, financiamentos</td><td>Mantém equity (controle)</td><td>Obrigação de pagamento fixo + juros</td></tr>
+      <tr><td><b>Capital de Risco<br>(Equity)</b></td><td>Cessão de participação em troca de aporte (Angel, VC, Private Equity)</td><td>Acelera escala, traz mentoria e rede</td><td>Diluição do controle e do lucro</td></tr>
+      <tr><td><b>Crowdfunding</b></td><td>Captação coletiva via plataformas digitais</td><td>Valida demanda antes da escala</td><td>Exige campanha forte e entrega das recompensas</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Bootstrapping em detalhes</h3>
+  <div class="example">
+    <b>Como funciona</b>:
+    <ol>
+      <li><b>Pré-operacional</b>: economias pessoais ou family & friends cobrem custos iniciais (CNPJ, estoque, site, equipamentos).</li>
+      <li><b>Operacional</b>: o lucro é reinvestido sistematicamente.</li>
+      <li><b>Crescimento orgânico</b>: escala no ritmo que o mercado permite.</li>
+    </ol>
+    <b>Exemplos reais</b>: Mailchimp e GitHub cresceram via bootstrapping antes de aceitar capital externo.<br><br>
+    Bootstrapping não é falta de ambição — é uma escolha estratégica que produz empresas <b>mais eficientes</b>.
+  </div>
+
+  <h3>Capital de Risco (Equity)</h3>
+  <ul>
+    <li><b>Angel Investor</b> — pessoa física, estágios iniciais (seed). Ticket: R$ 50 mil – 500 mil. Oferece mentoria + rede.</li>
+    <li><b>Venture Capital (VC)</b> — fundos para startups de alto crescimento. Participação 10-30%. Saída via IPO ou M&A. Ex: Kaszek, Monashees.</li>
+    <li><b>Private Equity</b> — empresas maduras, reestruturação/expansão. Horizonte 5-7 anos.</li>
+  </ul>
+
+  <div class="warning">
+    A negociação do <b>valuation</b> (valor da empresa) é o ponto central. Superestimar afasta investidores; subestimar dilui demais o fundador.
+  </div>
+
+  <h3>Crowdfunding</h3>
+  <ul>
+    <li><b>Recompensa</b> — apoiadores recebem o produto antes do lançamento (Catarse, Kickstarter).</li>
+    <li><b>Equity</b> — investidores recebem participação. No Brasil regulado pela CVM (Resolução 88/2022, captação até R$ 15 mi/ano). Plataformas: Eqseed, Kria.</li>
+    <li><b>Doação</b> — sem retorno, comum em causas sociais.</li>
+    <li><b>Dívida (P2P lending)</b> — empréstimo coletivo com juros.</li>
+  </ul>
+</article>
+
+<article class="chapter" id="cap6">
+  <div class="chapter-num">Capítulo 6</div>
+  <h2>Viabilidade financeira — indicadores</h2>
+
+  <p class="lead">Viabilidade = capacidade do negócio gerar retorno sustentável ao longo do tempo. Avalia-se em <b>três dimensões</b>.</p>
+
+  <table>
+    <thead><tr><th>Dimensão</th><th>Pergunta</th></tr></thead>
+    <tbody>
+      <tr><td><b>Técnica</b></td><td>É possível operar?</td></tr>
+      <tr><td><b>Mercado</b></td><td>Existe demanda real?</td></tr>
+      <tr><td><b>Financeira</b></td><td>O caixa sustenta?</td></tr>
+    </tbody>
+  </table>
+
+  <figure class="pdf-fig">
+    <img src="assets/img/emp/aula12/p11.png" alt="Componentes da viabilidade financeira" loading="lazy">
+    <figcaption>Da saída de capital ao equilíbrio operacional.</figcaption>
+  </figure>
+
+  <h3>Componentes da viabilidade financeira</h3>
+  <ol>
+    <li><b>Investimento inicial</b> — Capex + reserva de capital de giro.</li>
+    <li><b>Custos fixos e variáveis</b> — estrutura que define o ponto de equilíbrio.</li>
+    <li><b>Receitas projetadas</b> — premissas <em>validadas</em>, não desejadas.</li>
+    <li><b>Fluxo de caixa</b> — o pulso vital do negócio.</li>
+  </ol>
+
+  <h3>Indicadores essenciais</h3>
+  <table>
+    <thead><tr><th>Indicador</th><th>Pergunta que responde</th></tr></thead>
+    <tbody>
+      <tr><td><b>Payback</b></td><td>Em quanto tempo recupero o investimento?</td></tr>
+      <tr><td><b>VPL</b><br>(Valor Presente Líquido)</td><td>O projeto cria ou destrói valor hoje?</td></tr>
+      <tr><td><b>TIR</b><br>(Taxa Interna de Retorno)</td><td>Qual a rentabilidade intrínseca?</td></tr>
+      <tr><td><b>Ponto de Equilíbrio</b><br>(Break-even)</td><td>A partir de quando as receitas cobrem os custos?</td></tr>
+    </tbody>
+  </table>
+
+  <div class="def">
+    O negócio começa a <em>existir</em> quando <b>receita = custos</b>. Antes disso, é um projeto subsidiado por capital próprio ou de terceiros.
+  </div>
+
+  <div class="warning">
+    Esses indicadores não respondem se o negócio é <em>bom</em> — respondem se é <em>viável nas condições projetadas</em>.
+  </div>
+</article>
+
+<article class="chapter" id="cap7">
+  <div class="chapter-num">Capítulo 7</div>
+  <h2>Triple Bottom Line e armadilhas</h2>
+
+  <p class="lead">Investidores, reguladores e consumidores avaliam negócios em <b>três dimensões simultâneas</b>. Apenas lucrar não basta.</p>
+
+  <h3>Triple Bottom Line (Elkington, 1997)</h3>
+  <table>
+    <thead><tr><th>Dimensão</th><th>O que avalia</th></tr></thead>
+    <tbody>
+      <tr><td><b>People</b></td><td>Impacto social positivo e responsável</td></tr>
+      <tr><td><b>Planet</b></td><td>Operação ambientalmente sustentável</td></tr>
+      <tr><td><b>Profit</b></td><td>Retorno financeiro que perpetua o negócio</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Erros que destroem negócios</h3>
+  <div class="warning">
+    <b>Antes do mercado</b>:
+    <ul>
+      <li><b>Superestimar receitas</b> — projeções baseadas em desejo.</li>
+      <li><b>Subestimar custos</b> — omissão de impostos, inadimplência, retrabalho.</li>
+      <li><b>Ignorar o fluxo de caixa</b> — lucro contábil ≠ caixa disponível.</li>
+    </ul>
+  </div>
+
+  <blockquote>"Negócios quebram por falta de caixa, não por falta de ideia."</blockquote>
+
+  <p>A maioria das falências ocorre em negócios <em>lucrativos no papel</em> — mas insolventes na prática. Gestão de fluxo de caixa é competência estratégica, não operacional.</p>
+
+  <h3>Trade-offs na formalização</h3>
+  <p>A escolha entre alternativas jurídicas e organizacionais envolve tensões:</p>
+  <ul>
+    <li><b>Simplicidade × Proteção patrimonial</b> — MEI é simples, mas tem responsabilidade ilimitada.</li>
+    <li><b>Custo de conformidade × Capacidade de captação</b> — S.A. é cara, mas permite captação via ações.</li>
+    <li><b>Velocidade × Solidez institucional</b> — começar informal é rápido, mas trava o crescimento.</li>
+  </ul>
+
+  <div class="story">
+    <b>Não há solução universal — há adequação estratégica.</b> A escolha ótima depende do porte, modelo de negócio e objetivos de longo prazo.
+  </div>
+
+  <h3>Síntese — os 3 alinhamentos fundamentais</h3>
+  <ul>
+    <li><b>Legalidade</b> — garante existência, proteção e acesso a mercados formais.</li>
+    <li><b>Organização</b> — viabiliza a execução eficiente e o crescimento sustentável.</li>
+    <li><b>Alinhamento</b> — a coerência entre forma jurídica, estrutura e estratégia é o diferencial competitivo.</li>
+  </ul>
+
+  <div class="selfcheck">
+    <div class="selfcheck-q">Por que um negócio lucrativo pode quebrar por falta de caixa?</div>
+    <details><summary></summary><div class="answer">Porque <b>lucro</b> é um conceito contábil que conta receitas e despesas no <em>regime de competência</em> (quando ocorrem), enquanto <b>caixa</b> é o dinheiro disponível na conta no <em>regime de caixa</em> (quando entra e sai). Uma empresa pode ter vendido muito, registrar lucro, mas ainda não ter recebido os pagamentos — enquanto precisa pagar fornecedores, salários e impostos hoje. Sem capital de giro adequado e gestão de fluxo de caixa, o negócio quebra mesmo sendo "lucrativo".</div></details>
+  </div>
+</article>
+
+</main>
+
+<div class="end">
+  <h2>Pronto para o quiz?</h2>
+  <p style="color:var(--muted);font-family:sans-serif">Banco com temas, dificuldade e modo "focar nos erros".</p>
+  <a class="cta" href="revisao-emp4.html">✅ Ir para o Quiz</a>
+</div>
+
+<div class="floating">
+  <a href="index.html" title="Hub">🏠</a>
+  <button onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Topo">↑</button>
+</div>
+
+<div class="lightbox" id="lightbox">
+  <button class="close" onclick="closeLightbox()">×</button>
+  <img id="lightboxImg" alt="">
+</div>
+
+<script>
+  const bar = document.getElementById('progressBar');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const scrolled = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    bar.style.width = scrolled + '%';
+  });
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightboxImg');
+  document.querySelectorAll('figure.pdf-fig img, .img-grid img').forEach(img => {
+    img.addEventListener('click', () => { lbImg.src = img.src; lb.classList.add('open'); });
+  });
+  lb.addEventListener('click', e => { if(e.target === lb) closeLightbox(); });
+  function closeLightbox(){ lb.classList.remove('open'); lbImg.src = ''; }
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') closeLightbox(); });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Revisão — Aspectos Legais e Viabilidade</title>
+<style>
+  :root{--bg:#021114;--bg2:#0f2227;--card:#11272d;--border:#1f3a40;--primary:#0d9488;--primary2:#14b8a6;--accent:#f59e0b;--good:#10b981;--bad:#ef4444;--warn:#fbbf24;--text:#e6f7f5;--muted:#94aeae}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+  header{background:linear-gradient(135deg,#0d4f4a,#0d9488);padding:32px 24px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.3)}
+  header h1{margin:0;font-size:2em}header p{margin:8px 0 0;color:#a7f3d0}
+  nav{position:sticky;top:0;background:rgba(2,17,20,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:12px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;z-index:100}
+  nav button{background:var(--card);color:var(--text);border:1px solid var(--border);padding:8px 14px;border-radius:8px;cursor:pointer;font-size:.9em;transition:all .2s}
+  nav button:hover,nav button.active{background:var(--primary);border-color:var(--primary)}
+  main{max-width:1100px;margin:0 auto;padding:24px}
+  section{display:none;animation:fadeIn .4s}section.active{display:block}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  h2{color:var(--primary2);border-bottom:2px solid var(--primary);padding-bottom:8px;margin-top:0}h3{color:var(--accent);margin-top:24px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:16px 0;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+  .card.highlight{border-left:4px solid var(--primary)}
+  table{width:100%;border-collapse:collapse;margin:12px 0;background:var(--bg2);border-radius:8px;overflow:hidden}
+  th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+  th{background:var(--primary);color:white}tr:last-child td{border-bottom:none}
+  .pill{display:inline-block;background:var(--primary);color:white;padding:2px 10px;border-radius:99px;font-size:.8em;margin-right:6px}
+  .pill.warn{background:var(--warn);color:#1f2937}
+  .flash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+  .flash{background:var(--card);border:1px solid var(--border);border-radius:12px;height:180px;perspective:1000px;cursor:pointer}
+  .flash-inner{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+  .flash.flipped .flash-inner{transform:rotateY(180deg)}
+  .flash-front,.flash-back{position:absolute;inset:0;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;text-align:center;padding:16px;border-radius:12px}
+  .flash-front{background:linear-gradient(135deg,#0d4f4a,#0d9488);font-weight:600;font-size:1.05em}
+  .flash-back{background:var(--bg2);transform:rotateY(180deg);font-size:.95em;color:var(--muted)}
+  .quiz-q{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:16px 0}
+  .quiz-q .q{font-weight:600;margin-bottom:12px}.opts{display:flex;flex-direction:column;gap:8px}
+  .opt{background:var(--bg2);border:1px solid var(--border);padding:12px;border-radius:8px;cursor:pointer;transition:all .2s;text-align:left;color:var(--text);font-size:.95em}
+  .opt:hover:not(:disabled){border-color:var(--primary);background:#1a3f3a}
+  .opt.correct{background:rgba(16,185,129,.2);border-color:var(--good);color:#a7f3d0}
+  .opt.wrong{background:rgba(239,68,68,.2);border-color:var(--bad);color:#fecaca}
+  .feedback{margin-top:12px;padding:10px 14px;border-radius:8px;font-size:.9em;display:none}.feedback.show{display:block}
+  .feedback.ok{background:rgba(16,185,129,.15);border-left:3px solid var(--good)}
+  .feedback.no{background:rgba(239,68,68,.15);border-left:3px solid var(--bad)}
+  .progress{position:fixed;bottom:20px;right:20px;background:var(--card);border:1px solid var(--border);padding:12px 18px;border-radius:99px;font-size:.9em;box-shadow:0 4px 20px rgba(0,0,0,.4)}
+  .progress span{color:var(--accent);font-weight:700}
+  .tip{background:rgba(13,148,136,.1);border-left:3px solid var(--primary);padding:10px 14px;border-radius:6px;margin:10px 0;font-size:.92em}
+  ul{padding-left:20px}li{margin:4px 0}
+  .btn{background:var(--primary);color:white;border:none;padding:10px 18px;border-radius:8px;cursor:pointer;font-size:.95em;margin-top:10px}.btn:hover{filter:brightness(1.1)}
+  .pdf-thumbs{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:14px 0}
+  .pdf-thumbs img{width:100%;height:140px;object-fit:cover;border-radius:8px;border:1px solid var(--border);background:white;cursor:zoom-in;transition:transform .2s}
+  .pdf-thumbs img:hover{transform:scale(1.04)}
+  .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;z-index:200;padding:20px;cursor:zoom-out}
+  .lightbox.open{display:flex}.lightbox img{max-width:96vw;max-height:92vh;border-radius:10px}
+  .lightbox .close{position:absolute;top:18px;right:22px;background:rgba(255,255,255,.1);border:none;color:white;width:44px;height:44px;border-radius:50%;font-size:1.4em;cursor:pointer}
+  @media (max-width: 720px){
+    body{font-size:15.5px;overflow-x:hidden}
+    header{padding:22px 16px}header h1{font-size:1.35em}header p{font-size:.88em}
+    nav{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;padding:10px 12px;gap:6px;scrollbar-width:none}
+    nav::-webkit-scrollbar{display:none}
+    nav button,nav a{flex:0 0 auto;font-size:.82em;padding:8px 12px;white-space:nowrap;min-height:38px}
+    main{padding:16px 14px 100px}h2{font-size:1.3em;padding-bottom:6px}h3{font-size:1.1em;margin-top:20px}
+    .card{padding:14px;border-radius:10px;margin:12px 0}
+    table{display:block;overflow-x:auto;font-size:.86em}th,td{padding:9px 11px}
+    .flash-grid{grid-template-columns:1fr;gap:12px}.flash{height:160px}
+    .quiz-q{padding:14px}.opt{padding:12px;font-size:.92em;min-height:44px;line-height:1.45}
+    .progress{bottom:14px;right:14px;left:14px;text-align:center;padding:10px 14px;font-size:.85em;border-radius:14px}
+    .btn{padding:11px 16px;font-size:.92em;min-height:42px}.pdf-thumbs img{height:110px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>⚖️ Aspectos Legais e Viabilidade</h1>
+  <p>Revisão — Módulo 4 · Aulas 11 e 12</p>
+</header>
+
+<nav>
+  <a href="index.html" style="background:var(--accent);color:#021114;border:1px solid var(--accent);padding:8px 14px;border-radius:8px;font-size:.9em;text-decoration:none;font-weight:600">🏠 Hub</a>
+  <button onclick="show('intro',this)" class="active">📖 Intro</button>
+  <button onclick="show('legal',this)">⚖️ Legal</button>
+  <button onclick="show('org',this)">🏢 Organização</button>
+  <button onclick="show('fin',this)">💰 Financiamento</button>
+  <button onclick="show('viab',this)">📊 Viabilidade</button>
+  <button onclick="show('flash',this)">🃏 Flashcards</button>
+  <button onclick="show('quiz',this)">✅ Quiz</button>
+</nav>
+
+<main>
+
+<section id="intro" class="active">
+  <h2>📖 Visão Geral</h2>
+  <div class="card highlight">
+    <p>Forma jurídica + regime tributário + estrutura organizacional + fontes de financiamento + análise de viabilidade. <b>Aspectos legais não são burocracia periférica — são parte da viabilização.</b></p>
+  </div>
+  <div class="pdf-thumbs">
+    <img src="assets/img/emp/aula11/p06.png" alt="Formas jurídicas">
+    <img src="assets/img/emp/aula12/p06.png" alt="Fontes financiamento">
+    <img src="assets/img/emp/aula12/p11.png" alt="Viabilidade">
+  </div>
+</section>
+
+<section id="legal">
+  <h2>⚖️ Aspectos Legais</h2>
+  <h3>Formas jurídicas</h3>
+  <table>
+    <thead><tr><th>Forma</th><th>Resp.</th><th>Quando</th></tr></thead>
+    <tbody>
+      <tr><td>MEI</td><td>Ilimitada</td><td>Faturamento até R$ 81 mil/ano</td></tr>
+      <tr><td>EI</td><td>Ilimitada</td><td>Individual, sem sócios</td></tr>
+      <tr><td>Ltda</td><td>Limitada ao capital social</td><td>Maioria dos negócios com sócios</td></tr>
+      <tr><td>S.A.</td><td>Limitada (ações)</td><td>Captação de investidores, IPO</td></tr>
+    </tbody>
+  </table>
+  <h3>Regimes tributários</h3>
+  <table>
+    <thead><tr><th>Regime</th><th>Limite</th><th>Característica</th></tr></thead>
+    <tbody>
+      <tr><td>Simples Nacional</td><td>R$ 4,8 mi/ano</td><td>Unifica até 8 tributos em 1 guia (DAS)</td></tr>
+      <tr><td>Lucro Presumido</td><td>R$ 78 mi/ano</td><td>Presunção do lucro a partir do faturamento</td></tr>
+      <tr><td>Lucro Real</td><td>Sem limite</td><td>Imposto sobre lucro efetivo (obrigatório acima de R$ 78 mi)</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="org">
+  <h2>🏢 Estrutura Organizacional</h2>
+  <div class="pdf-thumbs">
+    <img src="assets/img/emp/aula11/p07.png" alt="Estrutura">
+    <img src="assets/img/emp/aula11/p10.png" alt="Áreas funcionais">
+  </div>
+  <h3>4 áreas funcionais mínimas</h3>
+  <table>
+    <thead><tr><th>Área</th><th>Conteúdo</th></tr></thead>
+    <tbody>
+      <tr><td>Operações</td><td>Produção, entrega, qualidade</td></tr>
+      <tr><td>Finanças</td><td>Caixa, contabilidade, orçamento</td></tr>
+      <tr><td>Marketing/Comercial</td><td>Aquisição, vendas, marca</td></tr>
+      <tr><td>Gestão de Pessoas</td><td>Recrutamento, capacitação, cultura</td></tr>
+    </tbody>
+  </table>
+  <div class="tip">📊 SEBRAE: 48% das MPEs encerram antes de 3 anos — frequentemente por falta de formalização e controle.</div>
+  <h3>Erros comuns</h3>
+  <ul>
+    <li>Quem decide? Falta de autoridade clara</li>
+    <li>Quem executa? Sobreposição de funções</li>
+    <li>Quem controla? Sem controle, desvios passam</li>
+    <li>Quem responde? Indefinição de responsabilidade</li>
+  </ul>
+</section>
+
+<section id="fin">
+  <h2>💰 Fontes de Financiamento</h2>
+  <div class="pdf-thumbs">
+    <img src="assets/img/emp/aula12/p06.png" alt="4 fontes">
+    <img src="assets/img/emp/aula12/p08.png" alt="Equity">
+  </div>
+  <table>
+    <thead><tr><th>Fonte</th><th>O que cede</th><th>Quando faz sentido</th></tr></thead>
+    <tbody>
+      <tr><td><b>Bootstrapping</b></td><td>Tempo (cresce devagar)</td><td>Manter controle total</td></tr>
+      <tr><td><b>Dívida bancária</b></td><td>Juros futuros</td><td>Quando o caixa suporta pagamento fixo</td></tr>
+      <tr><td><b>Equity (Angel/VC)</b></td><td>Participação acionária</td><td>Acelerar escala, mercados grandes</td></tr>
+      <tr><td><b>Crowdfunding</b></td><td>Recompensas, equity, doação</td><td>Valida demanda + capta com comunidade</td></tr>
+    </tbody>
+  </table>
+  <h3>Capital de Risco (Equity)</h3>
+  <ul>
+    <li><b>Angel</b> — pessoa física, R$ 50k–500k, mentoria + rede</li>
+    <li><b>VC</b> — fundos (10-30%), saída IPO/M&A</li>
+    <li><b>Private Equity</b> — empresas maduras, horizonte 5-7 anos</li>
+  </ul>
+  <div class="tip">⚠️ <b>Valuation</b> é o ponto central. Superestimar afasta investidores; subestimar dilui demais o fundador.</div>
+</section>
+
+<section id="viab">
+  <h2>📊 Viabilidade</h2>
+  <h3>3 dimensões</h3>
+  <ul>
+    <li><b>Técnica</b> — é possível operar?</li>
+    <li><b>Mercado</b> — existe demanda?</li>
+    <li><b>Financeira</b> — caixa sustenta?</li>
+  </ul>
+  <h3>Componentes financeiros</h3>
+  <ul>
+    <li>Investimento inicial + capital de giro</li>
+    <li>Custos fixos × variáveis</li>
+    <li>Receitas projetadas (cenários)</li>
+    <li>Fluxo de caixa</li>
+  </ul>
+  <h3>Indicadores essenciais</h3>
+  <table>
+    <thead><tr><th>Indicador</th><th>Responde</th></tr></thead>
+    <tbody>
+      <tr><td>Payback</td><td>Em quanto tempo recupero o investimento?</td></tr>
+      <tr><td>VPL</td><td>O projeto cria ou destrói valor hoje?</td></tr>
+      <tr><td>TIR</td><td>Qual a rentabilidade intrínseca?</td></tr>
+      <tr><td>Ponto de Equilíbrio</td><td>A partir de quando receita = custos?</td></tr>
+    </tbody>
+  </table>
+  <h3>Triple Bottom Line</h3>
+  <table>
+    <thead><tr><th>Dimensão</th><th>Foco</th></tr></thead>
+    <tbody>
+      <tr><td>People</td><td>Impacto social</td></tr>
+      <tr><td>Planet</td><td>Sustentabilidade</td></tr>
+      <tr><td>Profit</td><td>Retorno financeiro</td></tr>
+    </tbody>
+  </table>
+  <div class="tip">💬 "Negócios quebram por falta de caixa, não por falta de ideia."</div>
+</section>
+
+<section id="flash">
+  <h2>🃏 Flashcards</h2>
+  <p>Clique para virar.</p>
+  <div class="flash-grid" id="flashGrid"></div>
+</section>
+
+<section id="quiz">
+  <h2>✅ Quiz Interativo — Escolha o tema</h2>
+  <p>Cada quiz embaralha perguntas e alternativas.</p>
+  <div class="card">
+    <h3 style="margin-top:0">🎯 Escolha o tema</h3>
+    <div id="themePicker" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px"></div>
+    <label style="display:flex;align-items:center;gap:10px;margin-top:10px">Quantidade:
+      <select id="qCount" style="background:var(--bg2);color:var(--text);border:1px solid var(--border);padding:6px 10px;border-radius:6px">
+        <option value="5">5</option><option value="10" selected>10</option><option value="15">15</option><option value="20">20</option><option value="999">Todas</option>
+      </select>
+    </label>
+    <label style="display:flex;align-items:center;gap:10px;margin-top:10px">Dificuldade:
+      <select id="qDiff" style="background:var(--bg2);color:var(--text);border:1px solid var(--border);padding:6px 10px;border-radius:6px">
+        <option value="all" selected>Todas</option><option value="1">🟢 Fácil</option><option value="2">🟡 Médio</option><option value="3">🔴 Difícil</option>
+      </select>
+    </label>
+    <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn" onclick="startQuiz()">🎲 Iniciar / Embaralhar</button>
+      <button class="btn" style="background:var(--accent);color:#021114" onclick="weakSpotsQuiz()">🎯 Focar nos meus erros</button>
+    </div>
+    <div id="quizStats" style="margin-top:12px;color:var(--muted);font-size:.9em"></div>
+  </div>
+  <div id="quizContainer"></div>
+  <div id="quizResult"></div>
+</section>
+
+</main>
+
+<div class="progress">📊 Acertos: <span id="score">0</span>/<span id="total">0</span></div>
+
+<div class="lightbox" id="lightbox"><button class="close" onclick="closeLightbox()">×</button><img id="lightboxImg" alt=""></div>
+
+<script>
+  function show(id, btn){
+    document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightboxImg');
+  document.querySelectorAll('.pdf-thumbs img').forEach(img => {
+    img.addEventListener('click', () => { lbImg.src = img.src; lb.classList.add('open'); });
+  });
+  lb.addEventListener('click', e => { if(e.target === lb) closeLightbox(); });
+  function closeLightbox(){ lb.classList.remove('open'); lbImg.src = ''; }
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') closeLightbox(); });
+
+  const FLASH = [
+    ['MEI','Microempreendedor Individual — limite R$ 81 mil/ano. Responsabilidade ilimitada.'],
+    ['Ltda','Sociedade Limitada — responsabilidade limitada ao capital social. Mais comum.'],
+    ['S.A.','Sociedade Anônima — capital em ações. Permite captação via mercado.'],
+    ['Simples Nacional','Unifica até 8 tributos. Limite R$ 4,8 mi/ano.'],
+    ['Lucro Presumido','Imposto sobre presunção do lucro a partir do faturamento. Limite R$ 78 mi.'],
+    ['Lucro Real','Imposto sobre lucro efetivamente apurado. Sem limite.'],
+    ['Áreas funcionais','Operações, Finanças, Marketing/Comercial, Gestão de Pessoas.'],
+    ['Bootstrapping','Financiamento com recursos próprios. Controle total, crescimento lento.'],
+    ['Angel Investor','Pessoa física, estágio inicial, R$ 50k-500k + mentoria.'],
+    ['Venture Capital (VC)','Fundo para startups de alto crescimento — participação 10-30%.'],
+    ['Equity Crowdfunding','Captação coletiva com participação societária. CVM Res. 88/2022.'],
+    ['Valuation','Valor da empresa — central em rodadas de equity.'],
+    ['Triple Bottom Line','People, Planet, Profit (Elkington).'],
+    ['Payback','Em quanto tempo recupero o investimento?'],
+    ['VPL','O projeto cria ou destrói valor hoje?'],
+    ['TIR','Taxa Interna de Retorno — rentabilidade intrínseca.'],
+    ['Ponto de Equilíbrio','A partir de quando receita = custos.'],
+    ['Lucro ≠ Caixa','Negócio lucrativo no papel pode quebrar por falta de caixa.'],
+  ];
+  const fg = document.getElementById('flashGrid');
+  FLASH.forEach(([f,b]) => {
+    const c = document.createElement('div'); c.className = 'flash';
+    c.innerHTML = `<div class="flash-inner"><div class="flash-front">${f}</div><div class="flash-back">${b}</div></div>`;
+    c.onclick = () => c.classList.toggle('flipped');
+    fg.appendChild(c);
+  });
+
+  const QUIZ_BANK = {
+    "Formas Jurídicas e Tributação": [
+      {q:"O MEI tem responsabilidade:",o:["Limitada ao capital","Ilimitada (patrimônio pessoal responde)","Compartilhada com sócios","Inexistente"],a:1,d:2,e:"MEI e EI têm responsabilidade ilimitada — patrimônio pessoal é exposto."},
+      {q:"Qual forma jurídica permite captação via MERCADO DE AÇÕES?",o:["MEI","EI","Ltda","S.A."],a:3,d:1,e:"A S.A. tem capital dividido em ações negociáveis."},
+      {q:"Faturamento limite do Simples Nacional:",o:["R$ 81 mil/ano","R$ 360 mil/ano","R$ 4,8 milhões/ano","R$ 78 milhões/ano"],a:2,d:2,e:"Até R$ 4,8 mi/ano permite optar pelo Simples Nacional."},
+      {q:"Vantagem principal do Simples Nacional:",o:["Isenta de todos os impostos","Unifica até 8 tributos em uma única guia (DAS)","Permite IPO automaticamente","Elimina contabilidade"],a:1,d:1,e:"Simplificação tributária — vantagem estratégica para MPEs."},
+      {q:"Para uma startup que projeta captação de investidores:",o:["MEI é a melhor opção","Ltda transformável ou S.A. são mais adequados, apesar do custo maior","EI é obrigatório","Não existe diferença"],a:1,d:3,e:"Captação de equity exige estrutura formal com ações ou quotas transferíveis."},
+      {q:"Responsabilidade LIMITADA significa:",o:["Empreendedor não tem responsabilidades","Apenas o capital social responde — patrimônio pessoal é protegido","Lucro limitado","Atividades restritas"],a:1,d:2,e:"Em regra, só o capital social responde por dívidas."},
+    ],
+    "Estrutura Organizacional": [
+      {q:"Quais são as 4 áreas funcionais mínimas?",o:["TI, Vendas, Logística, Compras","Operações, Finanças, Marketing/Comercial, Gestão de Pessoas","CEO, CFO, COO, CTO","Norte, Sul, Leste, Oeste"],a:1,d:1,e:"Áreas funcionais essenciais para qualquer operação."},
+      {q:"Segundo Mintzberg, a AUSÊNCIA de estrutura formal:",o:["Elimina a estrutura","Apenas a torna informal, imprevisível e ineficiente","Reduz custos","É a melhor opção"],a:1,d:2,e:"Estrutura existe sempre — formal ou informal."},
+      {q:"Erro comum em negócios sem estrutura:",o:["Lucro excessivo","Conflitos por falta de definição de papéis (quem decide, executa, controla)","Excesso de organização","Falta de mercado"],a:1,d:2,e:"Sobreposição de funções e paralisia decisória."},
+      {q:"Dados SEBRAE (2022) sobre MPEs:",o:["10% encerram antes de 3 anos","48% encerram antes de 3 anos","100% sobrevivem 10 anos","Não há dados"],a:1,d:2,e:"Quase metade encerra cedo — frequentemente por falta de formalização e controle."},
+    ],
+    "Fontes de Financiamento": [
+      {q:"BOOTSTRAPPING significa:",o:["Pedir dinheiro emprestado em bancos","Financiar com recursos próprios (poupança, lucro reinvestido)","Vender ações na bolsa","Crowdfunding obrigatório"],a:1,d:1,e:"Mantém controle total, mas cresce mais devagar."},
+      {q:"Angel Investor é tipicamente:",o:["Banco","Pessoa física de alto patrimônio investindo em estágios iniciais","Fundo de pensão","Governo"],a:1,d:2,e:"Ticket médio: R$ 50k–500k; oferece capital + mentoria + rede."},
+      {q:"Venture Capital exige tipicamente:",o:["Empresas centenárias","Startups com alto potencial de crescimento; participação de 10-30%","Apenas garantias bancárias","Investimento em imóveis"],a:1,d:2,e:"Saída via IPO ou M&A em 5-10 anos."},
+      {q:"O VALUATION é importante porque:",o:["Define o nome da empresa","Define quanto da empresa o investidor recebe pelo aporte","Define os impostos","Define o organograma"],a:1,d:2,e:"Superestimar afasta; subestimar dilui o fundador."},
+      {q:"Crowdfunding EQUITY no Brasil é regulado pela:",o:["Anatel","CVM (Resolução 88/2022)","Banco Central","Receita Federal"],a:1,d:3,e:"CVM regula crowdfunding equity — captação até R$ 15 mi/ano."},
+      {q:"DESVANTAGEM principal do bootstrapping:",o:["Perda de controle","Crescimento lento limitado pelo caixa disponível + risco pessoal elevado","Diluição de equity","Obrigação de pagamento de juros"],a:1,d:2,e:"Trade-off: controle total × velocidade de crescimento."},
+      {q:"Pegando dinheiro de BANCO (dívida):",o:["Perde-se o controle do negócio","Mantém-se o equity, mas há obrigação de pagamento fixo + juros","Não há custos","Recebe-se mentoria automática"],a:1,d:2,e:"Dívida ≠ Equity: dívida obriga pagamento; equity dilui controle."},
+    ],
+    "Viabilidade Financeira": [
+      {q:"Viabilidade financeira responde se:",o:["A ideia é bonita","O caixa sustenta o negócio ao longo do tempo","O mercado é grande","O produto é único"],a:1,d:2,e:"Foco em sustentabilidade financeira — não apenas viabilidade da ideia."},
+      {q:"PAYBACK responde:",o:["Quanto eu lucro?","Em quanto tempo recupero o investimento?","Qual a margem?","Quem é o cliente?"],a:1,d:1,e:"Tempo de retorno do capital investido."},
+      {q:"VPL (Valor Presente Líquido) responde:",o:["Quanto eu pago de imposto?","O projeto cria ou destrói valor hoje?","Quanto vale o estoque?","Qual o lucro mensal?"],a:1,d:3,e:"VPL positivo = projeto cria valor; negativo = destrói."},
+      {q:"PONTO DE EQUILÍBRIO (break-even):",o:["Lucro máximo","Receita = Custos. Antes disso o negócio é subsidiado","Apenas o aluguel","Custo fixo zero"],a:1,d:2,e:"\"O negócio começa a existir quando receita = custos.\""},
+      {q:"TIR (Taxa Interna de Retorno) indica:",o:["Tributação aplicada","Rentabilidade intrínseca do projeto","Tarifa bancária","Taxa de inadimplência"],a:1,d:3,e:"Permite comparar projetos pela rentabilidade esperada."},
+      {q:"Triple Bottom Line (Elkington):",o:["Apenas lucro","People, Planet, Profit — três dimensões de avaliação","Apenas sustentabilidade","Receita, Custo, Margem"],a:1,d:2,e:"Investidores, reguladores e consumidores avaliam negócios pelas 3 dimensões."},
+      {q:"Por que um negócio LUCRATIVO pode quebrar?",o:["Não pode","Lucro contábil ≠ caixa; falta de gestão de fluxo de caixa leva à insolvência","Apenas se o produto for ruim","Apenas em crises"],a:1,d:3,e:"Receita futura não paga conta presente — gestão de caixa é estratégica."},
+    ],
+  };
+
+  const STATS_KEY = 'quizStatsEmp4';
+  let currentTheme = "Todos"; let currentQuiz = []; let score = 0, answered = 0;
+  const stats = JSON.parse(localStorage.getItem(STATS_KEY) || '{}');
+
+  const tp = document.getElementById('themePicker');
+  const themes = ["Todos", ...Object.keys(QUIZ_BANK)];
+  themes.forEach(t => {
+    const b = document.createElement('button');
+    b.className = 'opt'; b.style.flex='0 0 auto'; b.style.padding='8px 14px';
+    b.textContent = t === "Todos" ? "🎲 Todos" : t;
+    b.onclick = () => {
+      currentTheme = t;
+      document.querySelectorAll('#themePicker .opt').forEach(x => x.classList.remove('correct'));
+      b.classList.add('correct');
+    };
+    if(t === "Todos") b.classList.add('correct');
+    tp.appendChild(b);
+  });
+
+  function getPool(){
+    const diff = document.getElementById('qDiff').value;
+    let pool = currentTheme === "Todos"
+      ? Object.entries(QUIZ_BANK).flatMap(([t,arr]) => arr.map(q => ({...q, theme:t})))
+      : QUIZ_BANK[currentTheme].map(q => ({...q, theme:currentTheme}));
+    if(diff !== "all") pool = pool.filter(q => q.d === +diff);
+    return pool;
+  }
+  function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+  function startQuiz(){
+    const pool = getPool();
+    if(pool.length===0){ alert("Nenhuma questão para esses filtros."); return; }
+    const n = Math.min(+document.getElementById('qCount').value, pool.length);
+    currentQuiz = shuffle(pool).slice(0,n).map(q => {
+      const idx = q.o.map((_,i) => i); const sh = shuffle(idx);
+      return {...q, o: sh.map(i => q.o[i]), a: sh.indexOf(q.a)};
+    });
+    renderQuiz();
+  }
+  function weakSpotsQuiz(){
+    const all = Object.entries(QUIZ_BANK).flatMap(([t,arr]) => arr.map(q => ({...q, theme:t})));
+    const ranked = all.map(q => {
+      const k = q.q; const s = stats[k] || {ok:0,err:0};
+      const total = s.ok+s.err; const errRate = total ? s.err/total : 0;
+      return {q, score: errRate*10 + (total === 0 ? 5 : 0)};
+    }).sort((a,b) => b.score - a.score);
+    const n = Math.min(+document.getElementById('qCount').value, ranked.length);
+    currentQuiz = ranked.slice(0,n).map(r => r.q).map(q => {
+      const idx = q.o.map((_,i) => i); const sh = shuffle(idx);
+      return {...q, o: sh.map(i => q.o[i]), a: sh.indexOf(q.a)};
+    });
+    renderQuiz();
+  }
+  function renderQuiz(){
+    const qc = document.getElementById('quizContainer');
+    qc.innerHTML=''; document.getElementById('quizResult').innerHTML='';
+    score=0; answered=0;
+    document.getElementById('score').textContent=0;
+    document.getElementById('total').textContent=currentQuiz.length;
+    const diffEmoji = {1:"🟢",2:"🟡",3:"🔴"};
+    currentQuiz.forEach((it,i) => {
+      const div = document.createElement('div'); div.className='quiz-q';
+      const themeTag = it.theme ? `<span class="pill">${it.theme}</span>` : '';
+      div.innerHTML = `<div class="q">${themeTag}<span class="pill warn">${diffEmoji[it.d]} ${it.d===1?'Fácil':it.d===2?'Médio':'Difícil'}</span><br>${i+1}. ${it.q}</div><div class="opts"></div><div class="feedback"></div>`;
+      const opts = div.querySelector('.opts');
+      it.o.forEach((opt,j) => {
+        const b = document.createElement('button'); b.className='opt'; b.textContent=opt;
+        b.onclick = () => answer(div,it,j,b); opts.appendChild(b);
+      });
+      qc.appendChild(div);
+    });
+    updateStatsLabel();
+    qc.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  function answer(div,it,j,btn){
+    const opts = div.querySelectorAll('.opt');
+    if([...opts].some(o => o.disabled)) return;
+    opts.forEach((o,k) => { o.disabled = true; if(k===it.a) o.classList.add('correct'); });
+    const fb = div.querySelector('.feedback');
+    const key = it.q;
+    stats[key] = stats[key] || {ok:0,err:0};
+    if(j === it.a){
+      score++; stats[key].ok++;
+      fb.className='feedback show ok'; fb.innerHTML='✅ <b>Correto!</b> '+it.e;
+    } else {
+      stats[key].err++; btn.classList.add('wrong');
+      fb.className='feedback show no'; fb.innerHTML='❌ <b>Não foi dessa vez.</b> '+it.e;
+    }
+    localStorage.setItem(STATS_KEY, JSON.stringify(stats));
+    answered++; document.getElementById('score').textContent=score;
+    if(answered === currentQuiz.length) showResult();
+    updateStatsLabel();
+  }
+  function showResult(){
+    const pct = Math.round(100*score/currentQuiz.length);
+    let msg = pct===100 ? "🏆 Perfeito!" : pct>=80 ? "🌟 Muito bem!" : pct>=60 ? "👍 Bom! Revise os erros." : pct>=40 ? "📚 Está pegando o jeito — refaça!" : "💪 Hora de revisar a teoria!";
+    document.getElementById('quizResult').innerHTML =
+      `<div class="card highlight" style="text-align:center"><h3 style="margin-top:0">Resultado: ${score}/${currentQuiz.length} (${pct}%)</h3><p>${msg}</p>
+      <button class="btn" onclick="startQuiz()">🔄 Novo quiz</button>
+      <button class="btn" style="background:var(--accent);color:#021114;margin-left:8px" onclick="weakSpotsQuiz()">🎯 Focar nos meus erros</button></div>`;
+  }
+  function updateStatsLabel(){
+    const total = Object.values(stats).reduce((s,x) => s+x.ok+x.err, 0);
+    const oks = Object.values(stats).reduce((s,x) => s+x.ok, 0);
+    const pct = total ? Math.round(100*oks/total) : 0;
+    document.getElementById('quizStats').innerHTML =
+      `📊 Histórico: <b>${oks}/${total}</b> (${pct}%) — <a href="#" onclick="event.preventDefault();if(confirm('Apagar histórico?')){localStorage.removeItem('${STATS_KEY}');location.reload()}" style="color:var(--accent)">limpar</a>`;
+  }
+  updateStatsLabel();
+  startQuiz();
+</script>
+
+</body>
+</html>
